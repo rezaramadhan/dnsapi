@@ -1,6 +1,7 @@
 """This module handle a DNS Zone management."""
 
 import re
+import json
 
 RCLASS_LIST = ['IN', 'CH']
 RTYPE_LIST = ['A', 'AAAA', 'MX', 'NS', 'PTR', 'CNAME', 'SOA', 'URI', 'TXT']
@@ -57,6 +58,11 @@ class DNSResourceRecord():
         """Change class to string, each attribute is separated by a tab."""
         return self.__repr__()
 
+    def toJSON(self):
+        """Convert class to JSON file."""
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
+
 
 class RecordData():
     """RecordData class.
@@ -81,6 +87,11 @@ class RecordData():
         """Parse rdata from the given tokens."""
         self.address = tokens[0]
         # file_lines.pop(0)
+
+    def toJSON(self):
+        """Convert class to JSON file."""
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
 
 
 class MXRecordData(RecordData):
@@ -325,5 +336,9 @@ class DNSZone():
 
         # print zonefile_lines
         self.directives = self.parse_directives(zonefile_lines)
-
         self.resource_records = self.parse_records(zonefile_lines)
+
+    def toJSON(self):
+        """Convert class to JSON file."""
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
