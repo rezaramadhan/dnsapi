@@ -1,0 +1,104 @@
+$TTL 1H
+@	SOA	uat-dns-01.	root.uat-dns-01.gdn.lokal. (	2017052401
+						3H
+						1H
+						1W
+						1H )
+			NS	uat-dns-01.
+	IN	MX	10	rsh-postfix-01.gdn.lokal.
+uat-dns-01	IN	1H	A	172.17.21.30
+ntp	IN	1H	A	172.17.10.1
+repo	IN	1H	A	172.17.21.19
+priestw81	IN	1H	A	172.16.253.22
+priestm81	IN	1H	A	172.16.253.18
+stagingblibli	IN	1H	A	172.16.200.16
+stagingmarketing	IN	1H	A	172.16.201.46
+nagios		IN	1H	A	172.16.197.68
+cacti		IN	CNAME 	nagios
+graphite	IN	CNAME	nagios
+wiki		IN	CNAME	nagios
+webdevmarketing IN	1H	A	10.176.11.25
+stagingblibli2    IN	1H	A	172.17.131.6
+merchanttraining2 IN	1H	A	172.16.200.87
+venicetraining2	IN	1H	A	172.16.201.92
+wcsextuat	IN	1H	A	172.16.200.30
+veniceuat	IN	1H	A	172.16.200.31
+reportuat	IN	1H	A	172.16.200.33
+blibli		IN	1H	A	172.16.253.22
+venice		IN	1H	A	172.16.64.124
+wcsext 		IN	1H	A	172.16.253.25
+log-management	IN	1H	A	172.16.64.28
+stagingblibli3	IN	1H	A	172.16.200.76
+stagingblibli4	IN	1H	A	172.16.200.66
+cs-otrs		IN      1H      A	172.16.199.100
+puppet		IN      1H      A       172.16.200.7
+jenkins		IN	1H	A	172.16.247.79
+otrs		IN	1H	A	172.16.247.80
+sonar		IN      1H      A       172.16.247.78
+openbravo-test	IN	1H	A	172.16.200.22
+asset-infra	IN	1H	A	172.16.247.58
+cms		IN	1H	A	172.16.253.19
+stagingblibli5	IN	1H	A	172.17.30.11
+pap		IN	1H	A	172.16.201.212
+seoul-uat4	IN	1H	A	172.16.200.13
+stockholm	IN	1H	A	172.16.253.30
+maven-test	IN	1H	A	172.17.21.16
+macro           IN      1H      A   	172.16.199.25
+wwwtraining1	IN      1H      A	172.16.200.49
+static-uat1	IN      1H      A	172.16.200.49
+siva-uat1	IN      1H      A	172.16.200.49
+wwwtraining2    IN      1H      A       172.16.200.50
+static-uat2     IN      1H      A       172.16.200.50
+siva-uat2       IN      1H      A       172.16.200.50
+wwwtraining3    IN      1H      A       172.16.200.53
+static-uat3     IN      1H      A       172.16.200.53
+siva-uat3	IN      1H      A       172.16.200.53
+wwwtraining4    IN      1H      A       172.16.200.31
+static-uat4     IN      1H      A       172.16.200.31
+siva-uat4       IN      1H      A       172.16.200.31
+wwwtraining5    IN      1H      A       172.17.30.12
+static-uat5     IN      1H      A       172.17.137.8
+siva-uat5       IN      1H      A       172.17.30.13
+prodpuppet	IN      1H      A       172.16.197.70
+uatpuppet	IN      1H      A       172.16.200.4
+gdn-ofw-01	IN	1H	A	172.16.199.37
+gdn-git-01	IN	1H	A	172.17.21.13
+uat-bamboo-bld-01	IN	1H	A	172.17.21.50
+uat-bamboo-bld-02	IN	1H	A	172.17.21.58
+uat-bamboo-bld-03	IN	1H	A	172.17.21.59
+uat-bamboo-bld-04	IN	1H	A	172.17.21.60
+uat-bamboo-bld-05	IN	1H	A	172.17.21.61
+uat-bamboo-db-01	IN	1H	A	172.17.21.62
+uat-bamboo-ui-01	IN	1H	A	172.17.21.34
+cas-uat2	IN	1H	A	172.17.30.109
+rsh-pwdns-02	IN	1H	A	172.17.20.8
+rsh-pwdns-03	IN	1H	A	172.17.20.8
+hdocker	IN	1H	A	172.17.130.27
+gdn-img-01	IN	1H	A	172.17.21.29
+puppet-opensource	IN	1H	A	172.17.21.7
+tbn-squid-01	IN	1H	CNAME	tbn-squid-01.gdn-app.com.
+wsdl-uat2	IN	1H	A	172.17.30.129
+UAT1-MESOSMASTER-01	IN	1H	A	10.0.11.52
+UAT1-MESOSSLAVE-01	IN	1H	A	10.0.11.53
+UAT1-MESOSSLAVE-02	IN	1H	A	10.0.11.54
+UAT1-MESOSSLAVE-03	IN	1H	A	10.0.11.55
+authentication	IN	1H	A	172.16.64.93
+db-stash-01	IN	1H	A	172.17.21.66
+gdn-ldap-01	IN	1H	A	172.17.21.18
+budi		IN	1H	A	172.17.17.17
+gdn-cashatomcat-01 	IN	1H	A	172.17.130.11
+gdn-cashatomcat-02	IN	1H	A	172.17.130.16
+chef-workstation	IN	1H	A	172.17.21.78
+chefserver		IN	1H	A	172.17.21.77
+gdn-mls-01		IN	1H	A	172.17.21.36
+xdocumentuat-1		IN	1H	A	172.17.30.206
+xdocumentuat-2		IN	1H	A	172.17.30.207
+xdocumentuat-3		IN	1H	A	172.17.30.208
+tmsship	IN	1H	A	172.16.64.200
+tmsauth	IN	1H	A	172.16.64.201
+rsh-postfix-01	IN	1H	A	172.17.20.46
+freeipa	IN	1H	A	172.17.21.88
+ipaclient	IN	1H	A	172.17.20.43
+dkim	IN	1H	A	172.16.65.18
+postfix	IN	1H	A	172.16.65.19
+prod-ldap	IN	1H	A	172.16.65.232

@@ -1,0 +1,8 @@
+$TTL 1H														
+@	SOA	dns.blibli.lokal.	root.aaa.blibli.lokal. (	96
+						3H
+						1H
+						1W
+						1H )
+													   NS	dns.blibli.lokal.	
+22	PTR	aaaaaa.blibli.com.	
