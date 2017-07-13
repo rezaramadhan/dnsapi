@@ -3,7 +3,8 @@ from django.views.generic import View
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
+from settings import FILE_LOCATION
+from dns import *
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ZoneView(View):
@@ -35,6 +36,7 @@ class ZoneView(View):
         This endpoint will return { "status" : "ok" } if adding a new record is
         successfull and {"status" : "fail"} otherwise
         """
+        print FILE_LOCATION
         return HttpResponse("Hello, zone post." + str(zone_origin))
 
     def get(self, request, zone_origin):
