@@ -1,3 +1,6 @@
+{% load staticfiles %}
+{% load webui_templatetags %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,12 +8,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DNS Management</title>
 
-<link href="assets/css/bootstrap.min.css" rel="stylesheet">
-<link href="assets/css/datepicker3.css" rel="stylesheet">
-<link href="assets/css/styles.css" rel="stylesheet">
-
+<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/datepicker3.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
 <!--Icons-->
-<script src="assets/js/lumino.glyphs.js"></script>
+<script src="{% static 'assets/js/lumino.glyphs.js' %}"></script>
+
+<!-- Stylesheet Block -->
+{% block stylesheet %}{% endblock %}
 
 <!--[if lt IE 9]>
 <script src="js/html5shiv.js"></script>
@@ -48,6 +53,8 @@
 	</nav>
 
 <!-- ########### Section : SIDEBAR ########### -->
+
+
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 		<form role="search">
 			<div class="form-group">
@@ -57,27 +64,32 @@
 
 		<!-- ## Menu Sidebar -->
 		<ul class="nav menu">
-			<li class="active">
-				<a href="index.html">
+			{% url 'index' as urlpath %}
+			<li {% if request.path == urlpath %}class="active"{% endif %}>
+				<a href="{% url 'index' %}">
 					<svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>
 					Dashboard
 				</a>
 			</li>
-			<li>
-				<a href="network.html">
+			{% url 'network' as urlpath %}
+			<li {% if request.path|startswith:urlpath %}class="active"{% endif %}>
+				<a href="{% url 'network' %}">
 					<svg class="glyph stroked wireless router"><use xlink:href="#stroked-wireless-router"></use></svg>
 					Networking
 				</a>
 			</li>
 			<li>
-				<a href="report.html">
+				<a href="{% url 'index' %}">
 					<svg class="glyph stroked line-graph"><use xlink:href="#stroked-line-graph"></use></svg>
 					Report
 				</a>
 			</li>
-			<li class="parent ">
+			<li class="parent " >
 				<a href="#" data-toggle="collapse" >
-					<span data-toggle="collapse" href="#sub-item-1"><svg class="glyph stroked chevron-down"><use xlink:href="#stroked-chevron-down"></use></svg></span> Dropdown
+					<span data-toggle="collapse" href="#sub-item-1">
+						<svg class="glyph stroked chevron-down"><use xlink:href="#stroked-chevron-down"></use></svg>
+					</span>
+					Other
 				</a>
 				<ul class="children collapse" id="sub-item-1">
 					<li>
@@ -103,241 +115,30 @@
 		</ul>
 		<div class="attribution">Spacewalk Team, DevOps Intern
 			<br/>
-			<a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/" style="color: #333;">Medialoot</a>
-			<a href="http://www.glyphs.co" style="color: #333;">Glyphs</a>
+			<a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/" target="_blank" style="color: #333;">Medialoot</a>
+			<a href="http://www.glyphs.co" target="_blank" style="color: #333;">Glyphs</a>
 		</div>
 	</div><!--/.sidebar-->
 
 
 	<!-- ########### Section : MAIN PAGE ########### -->
 	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
-		<!-- ## DIR-PATH -->
-		<div class="row">
-			<ol class="breadcrumb">
-				<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-				<li class="active">Icons</li>
-			</ol>
-		</div>
 
-		<!-- ## HEADER -->
-		<div class="row">
-			<div class="col-lg-12">
-				<h1 class="page-header">Dashboard</h1>
-			</div>
-		</div>
-
-		<!-- ## OVERVIEW BOX -->
-		<div class="row home-box">
-			<div class="col-xs-12 col-md-6 col-lg-3">
-				<div class="panel panel-blue panel-widget ">
-					<div class="row no-padding">
-						<div class="col-sm-3 col-lg-5 widget-left">
-							<svg class="glyph stroked table"><use xlink:href="#stroked-table"/></svg>
-						</div>
-						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">4</div>
-							<div class="text-muted">Zones</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-md-6 col-lg-3">
-				<div class="panel panel-orange panel-widget">
-					<div class="row no-padding">
-						<div class="col-sm-3 col-lg-5 widget-left">
-							<svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>
-						</div>
-						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">187</div>
-							<div class="text-muted">Records</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-md-6 col-lg-3">
-				<div class="panel panel-teal panel-widget">
-					<div class="row no-padding">
-						<div class="col-sm-3 col-lg-5 widget-left">
-							<svg class="glyph stroked clock"><use xlink:href="#stroked-clock"/></svg>
-						</div>
-						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">15:03</div>
-							<div class="text-muted">Last Update</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</div><!--/.row-->
-
-
-		<div class="row home-box">
-			<div class="col-md-7">
-				<div class="panel panel-primary">
-				</div>
-			</div>
-		</div>
-
-		<!-- ## ROW 2 -->
-		<div class="row home-box">
-			<!-- ## TABLE UPDATED RECORD -->
-			<div class="col-md-8">
-
-				<div class="panel panel-primary">
-					<div class="panel-heading">Last Updated Record</div>
-					<div class="panel-body">
-						<table  data-toggle="table" id="table-style"
-										data-url="assets/tables/datarecord.json"
-										data-page-size="5"
-										data-page-list="[10,5]"
-										data-only-info-pagination="true"
-										data-pagination="true"
-										data-row-style="rowStyle"
-										data-sort-name="r_date"
-										data-sort-order="desc"
-										data-sorter="s">
-						    <thead>
-						    <tr>
-						        <th data-field="r_hostname" >Record Name</th>
-						        <th data-field="r_type" >Type</th>
-						        <th data-field="r_value" >Record Data</th>
-										<th data-field="r_date" >Last Update</th>
-						    </tr>
-						    </thead>
-						</table>
-						<script>
-								$(function () {
-										$('#hover, #striped, #condensed').click(function () {
-												var classes = 'table';
-
-												if ($('#hover').prop('checked')) {
-														classes += ' table-hover';
-												}
-												if ($('#condensed').prop('checked')) {
-														classes += ' table-condensed';
-												}
-												$('#table-style').bootstrapTable('destroy')
-														.bootstrapTable({
-																classes: classes,
-																striped: $('#striped').prop('checked')
-														});
-										});
-								});
-
-								function rowStyle(row, index) {
-										var classes = ['active', 'success', 'info', 'warning', 'danger'];
-
-										if (index % 2 === 0 && index / 2 < classes.length) {
-												return {
-														classes: classes[index / 2]
-												};
-										}
-										return {};
-								}
-						</script>
-
-					</div>
-				</div>
-			</div>
-
-			<!-- ## WIDGET PLAN -->
-			<div class="col-md-4">
-				<div class="panel panel-blue">
-					<div class="panel-heading dark-overlay"><svg class="glyph stroked clipboard-with-paper"><use xlink:href="#stroked-clipboard-with-paper"></use></svg>To-do List</div>
-					<div class="panel-body">
-						<ul class="todo-list">
-						<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Make a plan for today</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Update Basecamp</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Send email to Jane</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Drink coffee</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Do some work</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Tidy up workspace</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div class="panel-footer">
-						<div class="input-group">
-							<input id="btn-input" type="text" class="form-control input-md" placeholder="Add new task" />
-							<span class="input-group-btn">
-								<button class="btn btn-primary btn-md" id="btn-todo">Add</button>
-							</span>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div><!--/.row-->
+		{% block content %}{% endblock %}
 
 	</div>	<!--/.main-->
 	<!-- #### END OF MAIN DIV -->
 
-	<script src="assets/js/jquery-1.11.1.min.js"></script>
-	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/chart.min.js"></script>
-	<script src="assets/js/chart-data.js"></script>
-	<script src="assets/js/easypiechart.js"></script>
-	<script src="assets/js/easypiechart-data.js"></script>
-	<script src="assets/js/bootstrap-datepicker.js"></script>
-	<script src="assets/js/bootstrap-table.js"></script>
+	<script src="{% static 'assets/js/jquery-1.11.1.min.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'assets/js/chart.min.js' %}"></script>
+	<script src="{% static 'assets/js/chart-data.js' %}"></script>
+	<script src="{% static 'assets/js/easypiechart.js' %}"></script>
+	<script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap-datepicker.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap-table.js' %}"></script>
+
+	{% block script %}{% endblock %}
 
 
 </body>
