@@ -1,4 +1,5 @@
 """Class-based view for record handling."""
+import json
 from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponse, Http404
@@ -35,14 +36,17 @@ class RecordView(View):
                 ...
             },
         }
+
+        And return {"status" : "notfound"} if the record or zone file is not exist
         """
         try:
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
-            print zone.find_record(record_name).toJSON()
-            # handle the get request
-            return HttpResponse("{'status': 'ok'}")
+            record = zone.find_record(record_name)
+            return HttpResponse(record.toJSON() if record
+                                else "{'status' : 'notfound'}")
         except:
+            return HttpResponse("{'status' : 'notfound'}")
 
     def delete(self, request, zone_origin, record_name):
         """DELET Method handler, used to delete a record.
@@ -50,17 +54,26 @@ class RecordView(View):
         This endpoint recieve no JSON data. If there's any, it will be ignored.
 
         This endpoint will return { "status" : "ok" } if deleting a record is
-        successfull and {"status" : "fail"} otherwise
+        successfull and {"status" : "failed"} otherwise
+
+        @TODO: Handle kalo ga nemu
         """
         # handle the post request
-        return HttpResponse("Hello, record delete." + str(zone_origin))
+        try:
+            zone = DNSZone()
+            zone.read_from_file(FILE_LOCATION[zone_origin])
+            zone.delete_record(record_name)
+            print zone
+            zone.write_to_file(FILE_LOCATION[zone_origin])
+            return HttpResponse("{'status' : 'ok'}")
+        except:
+            return HttpResponse("{'status' : 'failed'}")
 
     def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
 
         This endpoint recieve the following JSON file:
         {
-            "name" : "record_name",
             "rclass" : "record_rclass",
             "ttl" : "record_ttl",
             "rtype" : "record_rtype",
@@ -75,5 +88,17 @@ class RecordView(View):
         This endpoint will return { "status" : "ok" } if updating a record is
         successfull and {"status" : "fail"} otherwise
         """
-        # handle the get request
-        return HttpResponse("Hello, record put." + str(zone_origin))
+        try:
+            payload = json.loads(request.body.decode('utf-8'))
+            # print body
+            zone = DNSZone()
+
+            zone.read_from_file(FILE_LOCATION[zone_origin])
+            record = zone.find_record(record_name)
+            print record.toJSON()
+            record.fromJSON(payload)
+            print record.toJSON()
+            # zone.write_to_file(FILE_LOCATION[zone_origin])
+            return HttpResponse("{'status' : 'ok'}")
+        except:
+            return HttpResponse("{'status' : 'failed'}")

@@ -63,6 +63,13 @@ class DNSResourceRecord():
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
 
+    def fromJSON(self, json_obj):
+        """Public constructor to create class from a json string."""
+        self.ttl = json_obj['ttl'] if 'ttl' in json_obj else self.ttl
+        self.rclass = json_obj['rclass'] if 'rclass' in json_obj else self.rclass
+        self.rtype = json_obj['rtype'] if 'rtype' in json_obj else self.rtype
+        if 'rdata' in json_obj else:
+            self.rdata.fromJSON(json_obj['rdata'])
 
 class RecordData():
     """RecordData class.
@@ -88,11 +95,15 @@ class RecordData():
         self.address = tokens[0]
         # file_lines.pop(0)
 
+    def fromJSON(self, json_obj):
+        """Public constructor to create class from a json string."""
+        print json_obj
+        self.address = json_obj['address'] if 'address' in json_obj else self.address
+
     def toJSON(self):
         """Convert class to JSON file."""
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
-
 
 class MXRecordData(RecordData):
     """MXRecordData class.
@@ -113,6 +124,10 @@ class MXRecordData(RecordData):
         self.address = tokens[1]
         # file_lines.pop(0)
 
+    def fromJSON(self, json_obj):
+        """Public constructor to create class from a json string."""
+        self.priority = json_obj['priority'] if 'priority' in json_obj else self.priority
+        self.address = json_obj['address'] if 'address' in json_obj else self.address
 
 class SOARecordData(RecordData):
     """SOARecordData class.
@@ -190,6 +205,16 @@ class SOARecordData(RecordData):
         self.slv_retry = soa_tokens[2]
         self.slv_expire = soa_tokens[3]
         self.max_time_cache = soa_tokens[4]
+
+    def fromJSON(self, json_obj):
+        """Public constructor to create class from a json string."""
+        self.admin_email = json_obj['admin_email'] if 'admin_email' in json_obj else self.admin_email
+        self.authoritative_server = json_obj['authoritative_server'] if 'authoritative_server' in json_obj else self.authoritative_server
+        self.serial_no = json_obj['serial_no'] if 'serial_no' in json_obj else self.serial_no
+        self.slv_refresh_period = json_obj['slv_refresh_period'] if 'slv_refresh_period' in json_obj else self.slv_refresh_period
+        self.slv_retry = json_obj['slv_retry'] if 'slv_retry' in json_obj else self.slv_retry
+        self.slv_expire = json_obj['slv_expire'] if 'slv_expire' in json_obj else self.slv_expire
+        self.max_time_cache = json_obj['max_time_cache'] if 'max_time_cache' in json_obj else self.max_time_cache
 
 
 class DNSZone():
