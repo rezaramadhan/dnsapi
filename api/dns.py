@@ -68,8 +68,9 @@ class DNSResourceRecord():
         self.ttl = json_obj['ttl'] if 'ttl' in json_obj else self.ttl
         self.rclass = json_obj['rclass'] if 'rclass' in json_obj else self.rclass
         self.rtype = json_obj['rtype'] if 'rtype' in json_obj else self.rtype
-        if 'rdata' in json_obj else:
+        if 'rdata' in json_obj:
             self.rdata.fromJSON(json_obj['rdata'])
+
 
 class RecordData():
     """RecordData class.
