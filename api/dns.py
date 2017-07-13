@@ -326,9 +326,15 @@ class DNSZone():
         while (len(zonefile_lines) > 0):
             tokens = re.split('[ \t]*', zonefile_lines[0].rstrip('\n'))
 
-            record = DNSResourceRecord(name=tokens[0])
+            record = DNSResourceRecord()
 
-            for i in range(1, len(tokens)):
+            if tokens[0] in RCLASS_LIST or tokens[0] in RTYPE_LIST:
+                startidx = 0
+            else:
+                startidx = 1
+                record.name = tokens[0]
+
+            for i in range(startidx, len(tokens)):
                 if tokens[i] in RCLASS_LIST:
                     record.rclass = tokens[i]
                 elif self.is_token_ttl(tokens[i]):
@@ -359,6 +365,7 @@ class DNSZone():
             zonefile_lines = zonefile.readlines()
             for i in range(0, len(zonefile_lines)):
                 zonefile_lines[i] = re.sub('\r?\n', '', zonefile_lines[i])
+                zonefile_lines[i] = re.sub(';.*', '', zonefile_lines[i])
 
         # print zonefile_lines
         self.directives = self.parse_directives(zonefile_lines)
