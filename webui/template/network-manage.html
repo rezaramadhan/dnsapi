@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DNS Management</title>
+
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/datepicker3.css" rel="stylesheet">
+<link href="assets/css/styles.css" rel="stylesheet">
+
+<!--Icons-->
+<script src="assets/js/lumino.glyphs.js"></script>
+
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+
+</head>
+
+<body>
+
+	<!-- ########### Section : NAVBAR ########### -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><span>DNS</span> Management</a>
+				<ul class="user-menu">
+					<li class="dropdown pull-right">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> User <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Profile</a></li>
+							<li><a href="#"><svg class="glyph stroked gear"><use xlink:href="#stroked-gear"></use></svg> Settings</a></li>
+							<li><a href="#"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+
+		</div><!-- /.container-fluid -->
+	</nav>
+
+<!-- ########### Section : SIDEBAR ########### -->
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+
+		<!-- ## Menu Sidebar -->
+		<ul class="nav menu">
+			<li >
+				<a href="index.html">
+					<svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>
+					Dashboard
+				</a>
+			</li>
+			<li class="active">
+				<a href="network.html">
+					<svg class="glyph stroked wireless router"><use xlink:href="#stroked-wireless-router"></use></svg>
+					Networking
+				</a>
+			</li>
+			<li>
+				<a href="report.html">
+					<svg class="glyph stroked line-graph"><use xlink:href="#stroked-line-graph"></use></svg>
+					Report
+				</a>
+			</li>
+			<li class="parent ">
+				<a href="#" data-toggle="collapse" >
+					<span data-toggle="collapse" href="#sub-item-1"><svg class="glyph stroked chevron-down"><use xlink:href="#stroked-chevron-down"></use></svg></span> Dropdown
+				</a>
+				<ul class="children collapse" id="sub-item-1">
+					<li>
+						<a class="" href="#">
+							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 1
+						</a>
+					</li>
+					<li>
+						<a class="" href="#">
+							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 2
+						</a>
+					</li>
+					<li>
+						<a class="" href="#">
+							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 3
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li role="presentation" class="divider"></li>
+			<li><a href="login.html"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Login Page</a></li>
+		</ul>
+		<div class="attribution">Spacewalk Team, DevOps Intern
+			<br/>
+			<a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/" style="color: #333;">Medialoot</a>
+			<a href="http://www.glyphs.co" style="color: #333;">Glyphs</a>
+		</div>
+	</div><!--/.sidebar-->
+
+
+	<!-- ########### Section : MAIN PAGE ########### -->
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<!-- ## DIR-PATH -->
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
+				<li class="active">Icons</li>
+			</ol>
+		</div>
+
+		<!-- ## HEADER -->
+
+		<div class="row home-box">
+			<div class="col-md-12">
+				<div class="panel panel-primary">
+				</div>
+			</div>
+		</div>
+
+
+		<!-- ## PANEL TAB CREATE RECORD -->
+		<div class="row home-box">
+			<div class="col-lg-12">
+				<h2>Create New Record</h2>
+			</div>
+
+			<div class="col-md-12">
+				<div class="panel panel-info">
+					<div class="panel-body tabs">
+
+						<ul class="nav nav-pills tab-heading-info">
+							<li class="active">
+								<a href="#pilltabA" data-toggle="tab">A</a></li>
+							<li><a href="#pilltabAAAA" data-toggle="tab">AAAA</a></li>
+							<li><a href="#pilltabCNAME" data-toggle="tab">CNAME</a></li>
+							<li><a href="#pilltabMX" data-toggle="tab">MX</a></li>
+							<li><a href="#pilltabTXT" data-toggle="tab">TXT</a></li>
+							<li><a href="#pilltabNS" data-toggle="tab">NS</a></li>
+							<li><a href="#pilltabSRV" data-toggle="tab">SRV</a></li>
+						</ul>
+
+						<div class="tab-content" >
+							<div class="tab-pane fade in active text-box" id="pilltabA">
+								<p>A records are for IPv4 addresses only and tell a request where your domain should direct to. </p>
+								<!-- ## Add Record Form -->
+								<form role="form" class="form-in">
+									<div class="form-group-in">
+										<label>Hostname</label>
+										<input class="form-control" placeholder="Enter Hostname">
+									</div>
+									<div class="form-group-in">
+										<label>Will Direct To</label>
+										<input class="form-control" placeholder="Select Resource or custom IP">
+									</div>
+									<div class="form-group-in">
+										<label>TTL (Seconds)</label>
+										<select class="form-control">
+											<option>60</option>
+											<option>120</option>
+											<option>1800</option>
+											<option selected>3600</option>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
+								</form>
+							</div>
+
+							<div class="tab-pane fade text-box" id="pilltabAAAA">
+								<p>AAAA records are for IPv6 addresses only and tell a request where your domain should direct to. </p>
+								<!-- ## Add Record Form -->
+								<form role="form" class="form-in">
+									<div class="form-group-in">
+										<label>Hostname</label>
+										<input class="form-control" placeholder="Enter Hostname">
+									</div>
+									<div class="form-group-in">
+										<label>Will Direct To</label>
+										<input class="form-control" placeholder="Select Resource or custom IP">
+									</div>
+									<div class="form-group-in">
+										<label>TTL (Seconds)</label>
+										<select class="form-control">
+											<option>60</option>
+											<option>120</option>
+											<option>1800</option>
+											<option selected>3600</option>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
+								</form>
+							</div>
+
+							<div class="tab-pane fade text-box" id="pilltabCNAME">
+								<p>CNAME records act as an alias by mapping a hostname to another hostname. </p>
+								<!-- ## Add Record Form -->
+								<form role="form" class="form-in">
+									<div class="form-group-in">
+										<label>Hostname</label>
+										<input class="form-control" placeholder="Enter Hostname">
+									</div>
+									<div class="form-group-in">
+										<label>Is An Alias Of</label>
+										<input class="form-control" placeholder="Enter Hostname">
+									</div>
+									<div class="form-group-in">
+										<label>TTL (Seconds)</label>
+										<select class="form-control">
+											<option>60</option>
+											<option>120</option>
+											<option>1800</option>
+											<option selected>3600</option>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
+								</form>
+							</div>
+
+							<div class="tab-pane fade text-box" id="pilltabMX">
+								<p>MX records specify the mail servers responsible for accepting emails on behalf of your domain,
+									and priority value if your provider has a number of mail servers for contingency. </p>
+								<!-- ## Add Record Form -->
+								<form role="form" class="form-in">
+									<div class="form-group-in">
+										<label>Hostname</label>
+										<input class="form-control" placeholder="Enter Hostname">
+									</div>
+									<div class="form-group-in">
+										<label>Mail Providers Mail Servers</label>
+										<input class="form-control" placeholder="Enter Mail Providers Servers">
+									</div>
+									<div class="form-group-in">
+										<label>Priority</label>
+										<input class="form-control" placeholder="e.g. 10">
+									</div>
+									<div class="form-group-in">
+										<label>TTL (Seconds)</label>
+										<select class="form-control">
+											<option>1800</option>
+											<option>3600</option>
+											<option>7200</option>
+											<option selected>14400</option>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
+								</form>
+							</div>
+
+							<div class="tab-pane fade text-box" id="pilltabTXT">
+								<p>TXT records are used to associate a string of text with hostname. These are primarily used for verification.</p>
+								<!-- ## Add Record Form -->
+								<form role="form" class="form-in">
+									<div class="form-group-in form-group">
+										<label>Value</label>
+										<input class="form-control" placeholder="Paste TXT string here">
+									</div>
+									<div class="form-group-in">
+										<label>Will Direct To</label>
+										<input class="form-control" placeholder="Select Resource or custom IP">
+									</div>
+									<div class="form-group-in">
+										<label>TTL (Seconds)</label>
+										<select class="form-control">
+											<option>60</option>
+											<option>120</option>
+											<option>1800</option>
+											<option selected>3600</option>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
+								</form>
+							</div>
+
+							<div class="tab-pane fade text-box" id="pilltabNS">
+								<p>SRV records specify the location (hostname and port number) of servers for specific services.
+									You can use service records to direct certain types of traffic to particular sercers.. </p>
+								<!-- ## Add Record Form -->
+								<form role="form" class="form-in">
+									<div class="form-group-in">
+										<label>Hostname</label>
+										<input class="form-control" placeholder="Enter Hostname">
+									</div>
+									<div class="form-group-in">
+										<label>Will Direct To</label>
+										<input class="form-control" placeholder="Enter Nameserver">
+									</div>
+									<div class="form-group-in">
+										<label>TTL (Seconds)</label>
+										<select class="form-control">
+											<option>60</option>
+											<option>120</option>
+											<option>1800</option>
+											<option selected>3600</option>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
+								</form>
+							</div>
+
+							<div class="tab-pane fade text-box" id="pilltabSRV">
+								<p>A records are for IPv4 addresses only and tell a request where your domain should direct to. </p>
+								<!-- ## Add Record Form -->
+								<form role="form" class="form-in">
+									<div class="form-group-in">
+										<label>Hostname</label>
+										<input class="form-control" placeholder="Enter Hostname">
+									</div>
+									<div class="form-group-in">
+										<label>Will Direct To</label>
+										<input class="form-control" placeholder="Select Resource or custom IP">
+									</div>
+									<div class="form-group-in">
+										<label>TTL (Seconds)</label>
+										<select class="form-control">
+											<option>60</option>
+											<option>120</option>
+											<option>1800</option>
+											<option selected>3600</option>
+										</select>
+									</div>
+									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
+								</form>
+							</div>
+
+						</div>
+					</div>
+				</div><!--/.panel-->
+			</div><!-- /.col-->
+
+		</div><!-- /.row -->
+
+
+
+
+		<!-- ## DNS RECORD - TABLE  -->
+		<div class="row home-box">
+			<div class="col-lg-12">
+				<h2>DNS Record</h2>
+			</div>
+
+			<div class="row table-box">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">List of registered DNS records.</div>
+						<div class="panel-body">
+							<table 	data-toggle="table"
+											data-url="assets/tables/datarecord.json"
+											data-show-refresh="true"
+											data-show-toggle="true"
+											data-show-columns="true"
+											data-search="true"
+											data-select-item-name="toolbar1"
+											data-pagination="true"
+											data-sort-name="name"
+											data-sort-order="desc">
+							    <thead>
+							    <tr>
+							        <th data-field="r_type" data-sortable="true" >Type</th>
+							        <th data-field="r_hostname" data-sortable="true">Hostname</th>
+							        <th data-field="r_value"  data-sortable="true">Value</th>
+							        <th data-field="r_ttl" data-sortable="true">TTL</th>
+											<th data-field="action" data-align="center"
+													data-formatter="actionFormatter" data-events="actionEvents">Action</th>
+							    </tr>
+							    </thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div><!--/.row-->
+
+
+	</div>	<!--/.main-->
+
+	<script src="assets/js/jquery-1.11.1.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/chart.min.js"></script>
+	<script src="assets/js/chart-data.js"></script>
+	<script src="assets/js/easypiechart.js"></script>
+	<script src="assets/js/easypiechart-data.js"></script>
+	<script src="assets/js/bootstrap-datepicker.js"></script>
+	<script src="assets/js/bootstrap-table.js"></script>
+	<script>
+			function actionFormatter(value, row, index) {
+				return [
+						'<a class="edit btn-action action-edit" href="javascript:void(0)" title="Edit">',
+						'<i class="glyphicon glyphicon-edit"></i>',
+						'</a>',
+						'<a class="remove btn-action action-del" href="javascript:void(0)" title="Remove">',
+						'<i class="glyphicon glyphicon-remove"></i>',
+						'</a>'
+				].join('');
+			}
+
+			window.actionEvents = {
+				'click .edit': function (e, value, row, index) {
+						alert('Edit, row: ' + JSON.stringify(row));
+						console.log(value, row, index);
+				},
+				'click .remove': function (e, value, row, index) {
+						alert('You click remove icon, row: ' + JSON.stringify(row));
+						console.log(value, row, index);
+				}
+			};
+	</script>
+
+</body>
+
+</html>

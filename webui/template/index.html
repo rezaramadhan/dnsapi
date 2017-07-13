@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DNS Management</title>
+
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/datepicker3.css" rel="stylesheet">
+<link href="assets/css/styles.css" rel="stylesheet">
+
+<!--Icons-->
+<script src="assets/js/lumino.glyphs.js"></script>
+
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+
+</head>
+
+<body>
+
+	<!-- ########### Section : NAVBAR ########### -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><span>DNS</span> Management</a>
+				<ul class="user-menu">
+					<li class="dropdown pull-right">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> User <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Profile</a></li>
+							<li><a href="#"><svg class="glyph stroked gear"><use xlink:href="#stroked-gear"></use></svg> Settings</a></li>
+							<li><a href="#"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+
+		</div><!-- /.container-fluid -->
+	</nav>
+
+<!-- ########### Section : SIDEBAR ########### -->
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+
+		<!-- ## Menu Sidebar -->
+		<ul class="nav menu">
+			<li class="active">
+				<a href="index.html">
+					<svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>
+					Dashboard
+				</a>
+			</li>
+			<li>
+				<a href="network.html">
+					<svg class="glyph stroked wireless router"><use xlink:href="#stroked-wireless-router"></use></svg>
+					Networking
+				</a>
+			</li>
+			<li>
+				<a href="report.html">
+					<svg class="glyph stroked line-graph"><use xlink:href="#stroked-line-graph"></use></svg>
+					Report
+				</a>
+			</li>
+			<li class="parent ">
+				<a href="#" data-toggle="collapse" >
+					<span data-toggle="collapse" href="#sub-item-1"><svg class="glyph stroked chevron-down"><use xlink:href="#stroked-chevron-down"></use></svg></span> Dropdown
+				</a>
+				<ul class="children collapse" id="sub-item-1">
+					<li>
+						<a class="" href="#">
+							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 1
+						</a>
+					</li>
+					<li>
+						<a class="" href="#">
+							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 2
+						</a>
+					</li>
+					<li>
+						<a class="" href="#">
+							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 3
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li role="presentation" class="divider"></li>
+			<li><a href="login.html"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Login Page</a></li>
+		</ul>
+		<div class="attribution">Spacewalk Team, DevOps Intern
+			<br/>
+			<a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/" style="color: #333;">Medialoot</a>
+			<a href="http://www.glyphs.co" style="color: #333;">Glyphs</a>
+		</div>
+	</div><!--/.sidebar-->
+
+
+	<!-- ########### Section : MAIN PAGE ########### -->
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<!-- ## DIR-PATH -->
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
+				<li class="active">Icons</li>
+			</ol>
+		</div>
+
+		<!-- ## HEADER -->
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">Dashboard</h1>
+			</div>
+		</div>
+
+		<!-- ## OVERVIEW BOX -->
+		<div class="row home-box">
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-blue panel-widget ">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked table"><use xlink:href="#stroked-table"/></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">4</div>
+							<div class="text-muted">Zones</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-orange panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">187</div>
+							<div class="text-muted">Records</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-teal panel-widget">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked clock"><use xlink:href="#stroked-clock"/></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">15:03</div>
+							<div class="text-muted">Last Update</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div><!--/.row-->
+
+
+		<div class="row home-box">
+			<div class="col-md-7">
+				<div class="panel panel-primary">
+				</div>
+			</div>
+		</div>
+
+		<!-- ## ROW 2 -->
+		<div class="row home-box">
+			<!-- ## TABLE UPDATED RECORD -->
+			<div class="col-md-8">
+
+				<div class="panel panel-primary">
+					<div class="panel-heading">Last Updated Record</div>
+					<div class="panel-body">
+						<table  data-toggle="table" id="table-style"
+										data-url="assets/tables/datarecord.json"
+										data-page-size="5"
+										data-page-list="[10,5]"
+										data-only-info-pagination="true"
+										data-pagination="true"
+										data-row-style="rowStyle"
+										data-sort-name="r_date"
+										data-sort-order="desc"
+										data-sorter="s">
+						    <thead>
+						    <tr>
+						        <th data-field="r_hostname" >Record Name</th>
+						        <th data-field="r_type" >Type</th>
+						        <th data-field="r_value" >Record Data</th>
+										<th data-field="r_date" >Last Update</th>
+						    </tr>
+						    </thead>
+						</table>
+						<script>
+								$(function () {
+										$('#hover, #striped, #condensed').click(function () {
+												var classes = 'table';
+
+												if ($('#hover').prop('checked')) {
+														classes += ' table-hover';
+												}
+												if ($('#condensed').prop('checked')) {
+														classes += ' table-condensed';
+												}
+												$('#table-style').bootstrapTable('destroy')
+														.bootstrapTable({
+																classes: classes,
+																striped: $('#striped').prop('checked')
+														});
+										});
+								});
+
+								function rowStyle(row, index) {
+										var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+										if (index % 2 === 0 && index / 2 < classes.length) {
+												return {
+														classes: classes[index / 2]
+												};
+										}
+										return {};
+								}
+						</script>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- ## WIDGET PLAN -->
+			<div class="col-md-4">
+				<div class="panel panel-blue">
+					<div class="panel-heading dark-overlay"><svg class="glyph stroked clipboard-with-paper"><use xlink:href="#stroked-clipboard-with-paper"></use></svg>To-do List</div>
+					<div class="panel-body">
+						<ul class="todo-list">
+						<li class="todo-list-item">
+								<div class="checkbox">
+									<input type="checkbox" id="checkbox" />
+									<label for="checkbox">Make a plan for today</label>
+								</div>
+								<div class="pull-right action-buttons">
+									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
+									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
+									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
+								</div>
+							</li>
+							<li class="todo-list-item">
+								<div class="checkbox">
+									<input type="checkbox" id="checkbox" />
+									<label for="checkbox">Update Basecamp</label>
+								</div>
+								<div class="pull-right action-buttons">
+									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
+									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
+									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
+								</div>
+							</li>
+							<li class="todo-list-item">
+								<div class="checkbox">
+									<input type="checkbox" id="checkbox" />
+									<label for="checkbox">Send email to Jane</label>
+								</div>
+								<div class="pull-right action-buttons">
+									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
+									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
+									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
+								</div>
+							</li>
+							<li class="todo-list-item">
+								<div class="checkbox">
+									<input type="checkbox" id="checkbox" />
+									<label for="checkbox">Drink coffee</label>
+								</div>
+								<div class="pull-right action-buttons">
+									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
+									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
+									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
+								</div>
+							</li>
+							<li class="todo-list-item">
+								<div class="checkbox">
+									<input type="checkbox" id="checkbox" />
+									<label for="checkbox">Do some work</label>
+								</div>
+								<div class="pull-right action-buttons">
+									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
+									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
+									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
+								</div>
+							</li>
+							<li class="todo-list-item">
+								<div class="checkbox">
+									<input type="checkbox" id="checkbox" />
+									<label for="checkbox">Tidy up workspace</label>
+								</div>
+								<div class="pull-right action-buttons">
+									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
+									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
+									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="panel-footer">
+						<div class="input-group">
+							<input id="btn-input" type="text" class="form-control input-md" placeholder="Add new task" />
+							<span class="input-group-btn">
+								<button class="btn btn-primary btn-md" id="btn-todo">Add</button>
+							</span>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div><!--/.row-->
+
+	</div>	<!--/.main-->
+	<!-- #### END OF MAIN DIV -->
+
+	<script src="assets/js/jquery-1.11.1.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/chart.min.js"></script>
+	<script src="assets/js/chart-data.js"></script>
+	<script src="assets/js/easypiechart.js"></script>
+	<script src="assets/js/easypiechart-data.js"></script>
+	<script src="assets/js/bootstrap-datepicker.js"></script>
+	<script src="assets/js/bootstrap-table.js"></script>
+
+
+</body>
+
+</html>

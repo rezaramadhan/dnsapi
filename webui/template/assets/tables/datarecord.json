@@ -1,0 +1,119 @@
+[
+    {
+        "id": 0,
+        "r_type": "A",
+        "r_hostname": "uat-dns-01",
+        "r_value": "172.17.21.30",
+        "r_ttl": "3600",
+        "r_date": "12/7/2017 15:50 WIB"
+
+    },
+    {
+        "id": 1,
+        "r_type": "A",
+        "r_hostname": "ntp",
+        "r_value": "172.17.10.1",
+        "r_ttl": "3600",
+        "r_date": "10/7/2017 19:20 WIB"
+
+    },
+    {
+        "id": 2,
+        "r_type": "A",
+        "r_hostname": "priestw81",
+        "r_value": "172.16.253.22",
+        "r_ttl": "3600",
+        "r_date": "26/6/2017 08:49 WIB"
+
+    },
+    {
+        "id": 3,
+        "r_type": "A",
+        "r_hostname": "priestw81",
+        "r_value": "172.16.253.18",
+        "r_ttl": "3600",
+        "r_date": "12/7/2017 15:50 WIB"
+
+    },
+    {
+        "id": 4,
+        "r_type": "A",
+        "r_hostname": "stagingblibli",
+        "r_value": "172.16.200.16",
+        "r_ttl": "3600",
+        "r_date": ""
+
+    },
+    {
+        "id": 5,
+        "r_type": "A",
+        "r_hostname": "stagingmarketing",
+        "r_value": "172.16.201.46",
+        "r_ttl": "3600",
+        "r_date": ""
+
+    },
+    {
+        "id": 6,
+        "r_type": "A",
+        "r_hostname": "nagios",
+        "r_value": "172.16.197.68",
+        "r_ttl": "3600",
+        "r_date": ""
+
+    },
+    {
+        "id": 7,
+        "r_type": "CNAME",
+        "r_hostname": "cacti",
+        "r_value": "nagios",
+        "r_ttl": "",
+        "r_date": ""
+
+    },
+    {
+        "id": 8,
+        "r_type": "CNAME",
+        "r_hostname": "graphite",
+        "r_value": "nagios",
+        "r_ttl": "",
+        "r_date": ""
+
+    },
+    {
+        "id": 9,
+        "r_type": "CNAME",
+        "r_hostname": "wiki",
+        "r_value": "nagios",
+        "r_ttl": "",
+        "r_date": ""
+
+    },
+    {
+        "id": 10,
+        "r_type": "A",
+        "r_hostname": "webdevmarketing",
+        "r_value": "10.176.11.25",
+        "r_ttl": "3600",
+        "r_date": ""
+
+    },
+    {
+        "id": 11,
+        "r_type": "A",
+        "r_hostname": "stagingblibli2",
+        "r_value": "172.17.131.6",
+        "r_ttl": "3600",
+        "r_date": ""
+
+    },
+    {
+        "id": 12,
+        "r_type": "A",
+        "r_hostname": "merchanttraining2",
+        "r_value": "172.16.200.87",
+        "r_ttl": "3600",
+        "r_date": ""
+
+    }
+]
