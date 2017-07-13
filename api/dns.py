@@ -139,7 +139,7 @@ class SOARecordData(RecordData):
         str_repr = ""
         str_repr += self.authoritative_server + "\t"
         str_repr += self.admin_email + "\t" + "("
-        str_repr += "\t" + self.serial_no + "\n"
+        str_repr += "\t" + str(self.serial_no) + "\n"
         str_repr += "\t\t\t\t\t\t" + self.slv_refresh_period + "\n"
         str_repr += "\t\t\t\t\t\t" + self.slv_retry + "\n"
         str_repr += "\t\t\t\t\t\t" + self.slv_expire + "\n"
@@ -224,6 +224,14 @@ class DNSZone():
                 return record
         return None
 
+    def increment_soa(self):
+        """Increment a SOA's serial number by 1."""
+        for record in self.resource_records:
+            if (record.rtype == "SOA"):
+                break
+
+        record.rdata.serial_no = int(record.rdata.serial_no) + 1
+
     def delete_record(self, name):
         """Delete a record that has a certain name.
 
@@ -231,12 +239,14 @@ class DNSZone():
         """
         try:
             self.resource_records.remove(self.find_record(name))
+            self.increment_soa()
         except:
             pass
 
     def add_record(self, record):
         """Add a record to a Zone resource records."""
         self.resource_records.append(record)
+        self.increment_soa()
 
     def update_record(self, name, new_record):
         """Update a record that has a certain name.
@@ -246,6 +256,7 @@ class DNSZone():
         try:
             record_idx = self.resource_records.index(self.find_record(name))
             self.resource_records[record_idx] = new_record
+            self.increment_soa()
         except:
             pass
 
@@ -312,7 +323,7 @@ class DNSZone():
             for i in range(0, len(zonefile_lines)):
                 zonefile_lines[i] = re.sub('\r?\n', '', zonefile_lines[i])
 
-        print zonefile_lines
+        # print zonefile_lines
         self.directives = self.parse_directives(zonefile_lines)
 
         self.resource_records = self.parse_records(zonefile_lines)
