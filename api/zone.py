@@ -36,8 +36,19 @@ class ZoneView(View):
         This endpoint will return { "status" : "ok" } if adding a new record is
         successfull and {"status" : "fail"} otherwise
         """
-        print FILE_LOCATION
-        return HttpResponse("Hello, zone post." + str(zone_origin))
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            zone = DNSZone()
+            zone.read_from_file(FILE_LOCATION[zone_origin])
+            # print zone.toJSON()
+            new_record = DNSResourceRecord()
+            new_record.fromJSON(body)
+            zone.add_record(new_record)
+            print new_record.toJSON()
+            zone.write_to_file(FILE_LOCATION[zone_origin])
+            return HttpResponse("{ 'status' : 'ok' }")
+        except:
+            return HttpResponse("{ 'status' : 'fail' }")
 
     def get(self, request, zone_origin):
         """GET Method handler, used to retrieve all information about a zone.
@@ -67,4 +78,10 @@ class ZoneView(View):
         }
         """
         # handle the get request
-        return HttpResponse("Hello, zone get." + str(zone_origin))
+        try:
+            zone = DNSZone()
+            zone.read_from_file(FILE_LOCATION[zone_origin])
+            return HttpResponse(zone.toJSON())
+        # handle the get request
+        except:
+            return HttpResponse("{ 'status' : 'fail' }")

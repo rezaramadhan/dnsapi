@@ -212,6 +212,7 @@ class DNSResourceRecord():
 
     def fromJSON(self, json_obj):
         """Public constructor to create class from a json string."""
+        self.name = json_obj['name'] if 'name' in json_obj else self.name
         self.ttl = json_obj['ttl'] if 'ttl' in json_obj else self.ttl
         self.rclass = json_obj['rclass'] if 'rclass' in json_obj else self.rclass
         self.rtype = json_obj['rtype'] if 'rtype' in json_obj else self.rtype
