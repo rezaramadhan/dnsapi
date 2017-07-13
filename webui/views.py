@@ -13,4 +13,4 @@ def network(request):
     return render(request, 'network.html')
 
 def zones(request):
-    return render(request, 'network-manage.html')
+    return render(request, 'zones-manage.html')
