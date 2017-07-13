@@ -1,4 +1,3 @@
-{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DNS Management</title>
 
-<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'assets/css/datepicker3.css' %}" rel="stylesheet">
-<link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/datepicker3.css" rel="stylesheet">
+<link href="assets/css/styles.css" rel="stylesheet">
 
 <!--Icons-->
-<script src="{% static 'assets/js/lumino.glyphs.js' %}"></script>
+<script src="assets/js/lumino.glyphs.js"></script>
 
 <!--[if lt IE 9]>
 <script src="js/html5shiv.js"></script>
@@ -59,13 +58,13 @@
 		<!-- ## Menu Sidebar -->
 		<ul class="nav menu">
 			<li class="active">
-				<a href="/">
+				<a href="index.html">
 					<svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>
 					Dashboard
 				</a>
 			</li>
 			<li>
-				<a href="/network">
+				<a href="network.html">
 					<svg class="glyph stroked wireless router"><use xlink:href="#stroked-wireless-router"></use></svg>
 					Networking
 				</a>
@@ -188,7 +187,7 @@
 					<div class="panel-heading">Last Updated Record</div>
 					<div class="panel-body">
 						<table  data-toggle="table" id="table-style"
-										data-url="{% static 'assets/tables/datarecord.json' %}"
+										data-url="assets/tables/datarecord.json"
 										data-page-size="5"
 										data-page-list="[10,5]"
 										data-only-info-pagination="true"
@@ -331,14 +330,14 @@
 	</div>	<!--/.main-->
 	<!-- #### END OF MAIN DIV -->
 
-	<script src="{% static 'assets/js/jquery-1.11.1.min.js' %}"></script>
-	<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-	<script src="{% static 'assets/js/chart.min.js' %}"></script>
-	<script src="{% static 'assets/js/chart-data.js' %}"></script>
-	<script src="{% static 'assets/js/easypiechart.js' %}"></script>
-	<script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
-	<script src="{% static 'assets/js/bootstrap-datepicker.js' %}"></script>
-	<script src="{% static 'assets/js/bootstrap-table.js' %}"></script>
+	<script src="assets/js/jquery-1.11.1.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/chart.min.js"></script>
+	<script src="assets/js/chart-data.js"></script>
+	<script src="assets/js/easypiechart.js"></script>
+	<script src="assets/js/easypiechart-data.js"></script>
+	<script src="assets/js/bootstrap-datepicker.js"></script>
+	<script src="assets/js/bootstrap-table.js"></script>
 
 
 </body>

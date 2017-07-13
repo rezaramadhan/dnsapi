@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DNS Management</title>
 
-<link href="assets/css/bootstrap.min.css" rel="stylesheet">
-<link href="assets/css/datepicker3.css" rel="stylesheet">
-<link href="assets/css/styles.css" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/datepicker3.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
 
 <!--Icons-->
-<script src="assets/js/lumino.glyphs.js"></script>
+<script src="{% static 'assets/js/lumino.glyphs.js' %}"></script>
 
 <!--[if lt IE 9]>
 <script src="js/html5shiv.js"></script>
@@ -58,13 +59,13 @@
 		<!-- ## Menu Sidebar -->
 		<ul class="nav menu">
 			<li >
-				<a href="index.html">
+				<a href="/">
 					<svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>
 					Dashboard
 				</a>
 			</li>
 			<li class="active">
-				<a href="network.html">
+				<a href="/network">
 					<svg class="glyph stroked wireless router"><use xlink:href="#stroked-wireless-router"></use></svg>
 					Networking
 				</a>
@@ -205,7 +206,7 @@
 												<div class="text-muted">Zones</div>
 											</div>
 											<div class="col-sm-3 col-lg-3 widget-button">
-												<a href="network-manage.html" class="btn btn-success">MANAGE ZONE </a>
+												<a href="/network/zones" class="btn btn-success">MANAGE ZONE </a>
 											</div>
 										</div>
 									</div>
@@ -224,14 +225,14 @@
 	</div>	<!--/.main-->
 	<!-- #### END OF MAIN DIV -->
 
-	<script src="assets/js/jquery-1.11.1.min.js"></script>
-	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/chart.min.js"></script>
-	<script src="assets/js/chart-data.js"></script>
-	<script src="assets/js/easypiechart.js"></script>
-	<script src="assets/js/easypiechart-data.js"></script>
-	<script src="assets/js/bootstrap-datepicker.js"></script>
-	<script src="assets/js/bootstrap-table.js"></script>
+	<script src="{% static 'assets/js/jquery-1.11.1.min.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'assets/js/chart.min.js' %}"></script>
+	<script src="{% static 'assets/js/chart-data.js' %}"></script>
+	<script src="{% static 'assets/js/easypiechart.js' %}"></script>
+	<script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap-datepicker.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap-table.js' %}"></script>
 	<script>
 		$('#calendar').datepicker({
 		});
