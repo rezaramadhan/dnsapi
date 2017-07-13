@@ -4,7 +4,8 @@ from django.views.generic import View
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
+from dns import DNSZone
+from settings import FILE_LOCATION
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RecordView(View):
@@ -35,8 +36,13 @@ class RecordView(View):
             },
         }
         """
-        # handle the get request
-        return HttpResponse("Hello, record get." + str(zone_origin))
+        try:
+            zone = DNSZone()
+            zone.read_from_file(FILE_LOCATION[zone_origin])
+            print zone.find_record(record_name).toJSON()
+            # handle the get request
+            return HttpResponse("{'status': 'ok'}")
+        except:
 
     def delete(self, request, zone_origin, record_name):
         """DELET Method handler, used to delete a record.
