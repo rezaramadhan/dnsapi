@@ -16,7 +16,7 @@ class ZoneView(View):
 
     http_method_names = ['get', 'post']
 
-    def post(self, request, arg):
+    def post(self, request, zone_origin):
         """POST Method handler, used to create a new resource record.
 
         This endpoint recieve the following JSON file:
@@ -35,9 +35,9 @@ class ZoneView(View):
         This endpoint will return { "status" : "ok" } if adding a new record is
         successfull and {"status" : "fail"} otherwise
         """
-        return HttpResponse("Hello, zone post." + str(arg))
+        return HttpResponse("Hello, zone post." + str(zone_origin))
 
-    def get(self, request, arg):
+    def get(self, request, zone_origin):
         """GET Method handler, used to retrieve all information about a zone.
 
         This endpoint recieve no JSON data, if there's any, it will be ignored.
@@ -65,4 +65,4 @@ class ZoneView(View):
         }
         """
         # handle the get request
-        return HttpResponse("Hello, zone get." + str(arg))
+        return HttpResponse("Hello, zone get." + str(zone_origin))

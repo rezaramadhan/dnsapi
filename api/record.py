@@ -18,7 +18,7 @@ class RecordView(View):
 
     http_method_names = ['get', 'put', 'delete']
 
-    def get(self, request, arg1, arg2):
+    def get(self, request, zone_origin, record_name):
         """GET Method handler, used to retrieve all information about a record.
 
         This endpoint recieve no JSON data. If there's any, it will be ignored.
@@ -36,9 +36,9 @@ class RecordView(View):
         }
         """
         # handle the get request
-        return HttpResponse("Hello, record get." + str(arg1))
+        return HttpResponse("Hello, record get." + str(zone_origin))
 
-    def delete(self, request, arg1, arg2):
+    def delete(self, request, zone_origin, record_name):
         """DELET Method handler, used to delete a record.
 
         This endpoint recieve no JSON data. If there's any, it will be ignored.
@@ -47,9 +47,9 @@ class RecordView(View):
         successfull and {"status" : "fail"} otherwise
         """
         # handle the post request
-        return HttpResponse("Hello, record delete." + str(arg1))
+        return HttpResponse("Hello, record delete." + str(zone_origin))
 
-    def put(self, request, arg1, arg2):
+    def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
 
         This endpoint recieve the following JSON file:
@@ -70,4 +70,4 @@ class RecordView(View):
         successfull and {"status" : "fail"} otherwise
         """
         # handle the get request
-        return HttpResponse("Hello, record put." + str(arg1))
+        return HttpResponse("Hello, record put." + str(zone_origin))
