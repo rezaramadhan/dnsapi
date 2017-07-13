@@ -7,70 +7,6 @@ RCLASS_LIST = ['IN', 'CH']
 RTYPE_LIST = ['A', 'AAAA', 'MX', 'NS', 'PTR', 'CNAME', 'SOA', 'URI', 'TXT']
 
 
-class DNSResourceRecord():
-    """DNSResourceRecord class.
-
-    A class that handles a single resource record in a DNS Zone, usually
-    a resource record described in one line within DNS Zone file.
-    The description consists of several fields separated by white space
-    (spaces or tabs) as follows:
-    name  |  ttl  |  record class  |  record type  |  record data
-
-    note that ttl and record class' order might be exchanged
-    references: https://en.wikipedia.org/wiki/Zone_file
-
-    @ivar name: a resource record name, the first field in the line
-    @type name: string
-    @ivar ttl: a resource record ttl, perhaps the second or third field
-    @type ttl: string
-    @ivar rclass: a resource record class
-    @type rclass: string
-    @ivar rtype: a resource record type
-    @type rtype: string
-    @ivar rtype: a resource record data,
-                 depend on resource type might have different data
-    @type rtype: dns.ResourceData
-
-    @TODO: change ttl to integer, convert on print
-    """
-
-    def __init__(self, name="", ttl="", rclass="", rtype="", rdata=""):
-        """Public constructor."""
-        self.name = name
-        self.ttl = ttl
-        self.rclass = rclass
-        self.rtype = rtype
-        self.rdata = rdata
-
-    def __repr__(self):
-        """Change class to string, each attribute is separated by a tab."""
-        str_repr = self.name
-        if self.rclass:
-            str_repr += "\t" + self.rclass
-        if self.ttl:
-            str_repr += "\t" + self.ttl
-        if self.rtype:
-            str_repr += "\t" + self.rtype
-        str_repr += "\t" + str(self.rdata)
-        return str_repr
-
-    def __str__(self):
-        """Change class to string, each attribute is separated by a tab."""
-        return self.__repr__()
-
-    def toJSON(self):
-        """Convert class to JSON file."""
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
-
-    def fromJSON(self, json_obj):
-        """Public constructor to create class from a json string."""
-        self.ttl = json_obj['ttl'] if 'ttl' in json_obj else self.ttl
-        self.rclass = json_obj['rclass'] if 'rclass' in json_obj else self.rclass
-        self.rtype = json_obj['rtype'] if 'rtype' in json_obj else self.rtype
-        if 'rdata' in json_obj:
-            self.rdata.fromJSON(json_obj['rdata'])
-
 
 class RecordData():
     """RecordData class.
@@ -216,6 +152,71 @@ class SOARecordData(RecordData):
         self.slv_retry = json_obj['slv_retry'] if 'slv_retry' in json_obj else self.slv_retry
         self.slv_expire = json_obj['slv_expire'] if 'slv_expire' in json_obj else self.slv_expire
         self.max_time_cache = json_obj['max_time_cache'] if 'max_time_cache' in json_obj else self.max_time_cache
+
+
+class DNSResourceRecord():
+    """DNSResourceRecord class.
+
+    A class that handles a single resource record in a DNS Zone, usually
+    a resource record described in one line within DNS Zone file.
+    The description consists of several fields separated by white space
+    (spaces or tabs) as follows:
+    name  |  ttl  |  record class  |  record type  |  record data
+
+    note that ttl and record class' order might be exchanged
+    references: https://en.wikipedia.org/wiki/Zone_file
+
+    @ivar name: a resource record name, the first field in the line
+    @type name: string
+    @ivar ttl: a resource record ttl, perhaps the second or third field
+    @type ttl: string
+    @ivar rclass: a resource record class
+    @type rclass: string
+    @ivar rtype: a resource record type
+    @type rtype: string
+    @ivar rtype: a resource record data,
+                 depend on resource type might have different data
+    @type rtype: dns.ResourceData
+
+    @TODO: change ttl to integer, convert on print
+    """
+
+    def __init__(self, name="", ttl="", rclass="", rtype="", rdata=RecordData()):
+        """Public constructor."""
+        self.name = name
+        self.ttl = ttl
+        self.rclass = rclass
+        self.rtype = rtype
+        self.rdata = rdata
+
+    def __repr__(self):
+        """Change class to string, each attribute is separated by a tab."""
+        str_repr = self.name
+        if self.rclass:
+            str_repr += "\t" + self.rclass
+        if self.ttl:
+            str_repr += "\t" + self.ttl
+        if self.rtype:
+            str_repr += "\t" + self.rtype
+        str_repr += "\t" + str(self.rdata)
+        return str_repr
+
+    def __str__(self):
+        """Change class to string, each attribute is separated by a tab."""
+        return self.__repr__()
+
+    def toJSON(self):
+        """Convert class to JSON file."""
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
+
+    def fromJSON(self, json_obj):
+        """Public constructor to create class from a json string."""
+        self.ttl = json_obj['ttl'] if 'ttl' in json_obj else self.ttl
+        self.rclass = json_obj['rclass'] if 'rclass' in json_obj else self.rclass
+        self.rtype = json_obj['rtype'] if 'rtype' in json_obj else self.rtype
+        if 'rdata' in json_obj:
+            self.rdata.fromJSON(json_obj['rdata'])
 
 
 class DNSZone():
