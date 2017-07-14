@@ -244,8 +244,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">List of registered DNS records.</div>
 						<div class="panel-body">
-							<table 	data-toggle="table"
-											data-url="assets/tables/datarecord.json"
+							<table id="resourcerecord"
 											data-show-refresh="true"
 											data-show-toggle="true"
 											data-show-columns="true"
@@ -253,13 +252,14 @@
 											data-select-item-name="toolbar1"
 											data-pagination="true"
 											data-sort-name="name"
-											data-sort-order="desc">
+											data-sort-order="asc">
 							    <thead>
 							    <tr>
-							        <th data-field="r_type" data-sortable="true" >Type</th>
-							        <th data-field="r_hostname" data-sortable="true">Hostname</th>
-							        <th data-field="r_value"  data-sortable="true">Value</th>
-							        <th data-field="r_ttl" data-sortable="true">TTL</th>
+											<th data-formatter="runningFormatter">Index</th>
+							        <th data-field="rtype" data-sortable="true" >Type</th>
+							        <th data-field="name" data-sortable="true">Hostname</th>
+							        <th data-field="rdata.address"  data-sortable="true">Value</th>
+							        <th data-field="ttl" data-sortable="true">TTL</th>
 											<th data-field="action" data-align="center"
 													data-formatter="actionFormatter" data-events="actionEvents">Action</th>
 							    </tr>
@@ -276,6 +276,52 @@
 {% load staticfiles%}
 
 	<script>
+			function responFlatenedJson(data) {
+				var result = {};
+				var resultarray = [];
+				function recurse (cur, prop) {
+						if (Object(cur) !== cur) {
+								result[prop] = cur;
+						} else if (Array.isArray(cur)) {
+								 for(var i=0, l=cur.length; i<l; i++)
+										 recurse(cur[i], prop + "[" + i + "]");
+								if (l == 0)
+										result[prop] = [];
+						} else {
+								var isEmpty = true;
+								for (var p in cur) {
+										isEmpty = false;
+										recurse(cur[p], prop ? prop+"."+p : p);
+								}
+								if (isEmpty && prop)
+										result[prop] = {};
+						}
+				}
+				//Recurse is absolute function to flattened an object jsonFromFile
+				//Below loop is to only flatten each object inside array, not
+				//the whole array, so the result is still array of object (with flattened object).
+				//credit : kucik.in
+				for(var i=0, l=data.length; i<l; i++){
+						recurse(data[i], "");
+						resultarray.push(result);
+						result = {}
+				}
+				return resultarray;
+				//original code to flattened whole array
+				// recurse(data, "");
+    		// return result;
+			}
+
+			$.getJSON("http://{{ request.get_host }}/api/gdn.lokal", function (jsonFromFile) {
+					$('#resourcerecord').bootstrapTable({
+						data: responFlatenedJson(jsonFromFile.resource_records)
+					})
+			});
+
+	</script>
+
+	<script>
+
 			function actionFormatter(value, row, index) {
 				return [
 						'<a class="edit btn-action action-edit" href="javascript:void(0)" title="Edit">',
@@ -285,6 +331,10 @@
 						'<i class="glyphicon glyphicon-remove"></i>',
 						'</a>'
 				].join('');
+			}
+
+			function runningFormatter(value, row, index) {
+			    return index+1;
 			}
 
 			window.actionEvents = {
