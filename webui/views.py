@@ -12,5 +12,7 @@ def index(request):
 def network(request):
     return render(request, 'network.html')
 
-def zones(request):
-    return render(request, 'zones-manage.html')
+def zones(request, zones_id):
+    return render(request, 'zones-manage.html', {
+                'zones_id': zones_id,
+            })

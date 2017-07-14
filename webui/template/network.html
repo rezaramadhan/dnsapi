@@ -1,13 +1,11 @@
 {% extends 'layout.html' %}
 
+{% block pathurl %}
+	<li>Network</li>
+{% endblock %}
+
 {% block content %}
 		<!-- ## DIR-PATH -->
-		<div class="row">
-			<ol class="breadcrumb">
-				<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-				<li class="active">Icons</li>
-			</ol>
-		</div>
 
 		<!-- ## HEADER -->
 		<div class="row">
@@ -95,7 +93,7 @@
 												<div class="text-muted">Zones</div>
 											</div>
 											<div class="col-sm-3 col-lg-3 widget-button">
-												<a href="/network/zones" class="btn btn-success">MANAGE ZONE </a>
+												<a href="{% url 'zones' 'gdn.lokal' %}" class="btn btn-success">MANAGE ZONE </a>
 											</div>
 										</div>
 									</div>
@@ -109,7 +107,7 @@
 												<div class="text-muted">Zones</div>
 											</div>
 											<div class="col-sm-3 col-lg-3 widget-button">
-												<a href="/network/zones" class="btn btn-success">MANAGE ZONE </a>
+												<a href="{% url 'zones' '172.16.64' %}" class="btn btn-success">MANAGE ZONE </a>
 											</div>
 										</div>
 									</div>

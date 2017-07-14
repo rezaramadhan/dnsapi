@@ -1,14 +1,14 @@
 {% extends 'layout.html' %}
 
+{% block pathurl %}
+	<li> Network</li>
+	<li>Zones</li>
+	<li>{{zones_id}}</li>
+{% endblock %}
+
 {% block content %}
 {% load staticfiles%}
-		<!-- ## DIR-PATH -->
-		<div class="row">
-			<ol class="breadcrumb">
-				<li><a href="#"><svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg></a></li>
-				<li class="active">Icons</li>
-			</ol>
-		</div>
+
 
 		<!-- ## HEADER -->
 
@@ -236,13 +236,13 @@
 		<!-- ## DNS RECORD - TABLE  -->
 		<div class="row home-box">
 			<div class="col-lg-12">
-				<h2>DNS Record</h2>
+				<h2>DNS Record : <a>{{zones_id}}</a></h2>
 			</div>
 
 			<div class="row table-box">
 				<div class="col-lg-12">
 					<div class="panel panel-default">
-						<div class="panel-heading">List of registered DNS records.</div>
+						<div class="panel-heading">List of registered DNS records on {{zones_id}} zones.</div>
 						<div class="panel-body">
 							<table id="resourcerecord"
 											data-show-refresh="true"
@@ -312,7 +312,7 @@
     		// return result;
 			}
 
-			$.getJSON("http://{{ request.get_host }}/api/gdn.lokal", function (jsonFromFile) {
+			$.getJSON("http://{{ request.get_host }}/api/{{zones_id}}", function (jsonFromFile) {
 					$('#resourcerecord').bootstrapTable({
 						data: responFlatenedJson(jsonFromFile.resource_records)
 					})
