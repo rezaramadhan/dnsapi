@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
-from settings import TEMPLATES
+
 from utils.zones_form import ZoneForm
 from utils.message_notif import get_message_notif
 import json

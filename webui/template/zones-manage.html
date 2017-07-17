@@ -56,12 +56,7 @@
 									</div>
 									<div class="form-group-in">
 										<label for="f_ttl">TTL (Seconds)</label>
-										<select id="f_ttl" name="f_ttl" class="form-control" required>
-											<option>60</option>
-											<option>120</option>
-											<option>1800</option>
-											<option selected>1H</option>
-										</select>
+										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="" placeholder="None">
 									</div>
 									<input type="hidden" id="f_type" name="f_type" value="A">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
@@ -83,12 +78,7 @@
 									</div>
 									<div class="form-group-in">
 										<label for="f_ttl">TTL (Seconds)</label>
-										<select id="f_ttl" name="f_ttl" class="form-control" required>
-											<option>60</option>
-											<option>120</option>
-											<option>1800</option>
-											<option selected>1H</option>
-										</select>
+										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="" placeholder="None">
 									</div>
 									<input type="hidden" id="f_type" name="f_type" value="AAAA">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
@@ -110,12 +100,7 @@
 									</div>
 									<div class="form-group-in">
 										<label for="f_ttl">TTL (Seconds)</label>
-										<select id="f_ttl" name="f_ttl" class="form-control" required>
-											<option>60</option>
-											<option>120</option>
-											<option>1800</option>
-											<option selected>1H</option>
-										</select>
+										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="" placeholder="None">
 									</div>
 									<input type="hidden" id="f_type" name="f_type" value="CNAME">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
@@ -142,13 +127,7 @@
 									</div>
 									<div class="form-group-in">
 										<label for="f_ttl">TTL (Seconds)</label>
-										<select id="f_ttl" name="f_ttl" class="form-control">
-											<option value="" selected>None</option>
-											<option>60</option>
-											<option>120</option>
-											<option>1800</option>
-											<option >1H</option>
-										</select>
+										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="" placeholder="None">
 									</div>
 									<input type="hidden" id="f_type" name="f_type" value="MX">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
@@ -170,13 +149,7 @@
 									</div>
 									<div class="form-group-in">
 										<label for="f_ttl">TTL (Seconds)</label>
-										<select id="f_ttl" name="f_ttl" class="form-control">
-											<option value="" selected>None</option>
-											<option>60</option>
-											<option>120</option>
-											<option>1800</option>
-											<option >1H</option>
-										</select>
+										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="" placeholder="None">
 									</div>
 									<input type="hidden" id="f_type" name="f_type" value="TXT">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
@@ -199,13 +172,7 @@
 									</div>
 									<div class="form-group-in">
 										<label for="f_ttl">TTL (Seconds)</label>
-										<select id="f_ttl" name="f_ttl" class="form-control">
-											<option value="" selected>None</option>
-											<option>60</option>
-											<option>120</option>
-											<option>1800</option>
-											<option >1H</option>
-										</select>
+										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="" placeholder="None">
 									</div>
 									<input type="hidden" id="f_type" name="f_type" value="NS">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
@@ -335,5 +302,22 @@
 						console.log(value, row, index);
 				}
 			};
+	</script>
+	<script>
+		var ttl_tags = [
+			{"label": "1H", "code": "1H"},
+			{"label": "60", "code": "60"},
+			{"label": "120", "code": "120"},
+			{"label": "1200", "code": "1200"},
+			{"label": "2400", "code": "2400"},
+			{"label": "3600", "code": "3600"},
+			{"label": "7200", "code": "7200"},
+			{"label": "14400", "code": "14400"},
+			{"label": "28800", "code": "28800"},
+		];
+
+		$(".f_ttl" ).autocomplete({
+			source: ttl_tags
+		});
 	</script>
 {% endblock %}
