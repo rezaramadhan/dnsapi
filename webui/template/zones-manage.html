@@ -38,31 +38,32 @@
 							<li><a href="#pilltabMX" data-toggle="tab">MX</a></li>
 							<li><a href="#pilltabTXT" data-toggle="tab">TXT</a></li>
 							<li><a href="#pilltabNS" data-toggle="tab">NS</a></li>
-							<li><a href="#pilltabSRV" data-toggle="tab">SRV</a></li>
 						</ul>
 
 						<div class="tab-content" >
 							<div class="tab-pane fade in active text-box" id="pilltabA">
 								<p>A records are for IPv4 addresses only and tell a request where your domain should direct to. </p>
 								<!-- ## Add Record Form -->
-								<form role="form" class="form-in">
+								<form action="{{ request.path }}" method="post" role="form" class="form-in">
+									 {% csrf_token %}
 									<div class="form-group-in">
-										<label>Hostname</label>
-										<input class="form-control" placeholder="Enter Hostname">
+										<label for="f_hostname">Hostname</label>
+										<input id="f_hostname" name="f_hostname" class="form-control" placeholder="Enter Hostname" required>
 									</div>
 									<div class="form-group-in">
-										<label>Will Direct To</label>
-										<input class="form-control" placeholder="Select Resource or custom IP">
+										<label for="f_value">Will Direct To</label>
+										<input id="f_value" name="f_value" class="form-control" placeholder="Select Resource or custom IP" required>
 									</div>
 									<div class="form-group-in">
-										<label>TTL (Seconds)</label>
-										<select class="form-control">
+										<label for="f_ttl">TTL (Seconds)</label>
+										<select id="f_ttl" name="f_ttl" class="form-control" required>
 											<option>60</option>
 											<option>120</option>
 											<option>1800</option>
-											<option selected>3600</option>
+											<option selected>1H</option>
 										</select>
 									</div>
+									<input type="hidden" id="f_type" name="f_type" value="A">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
 								</form>
 							</div>
@@ -70,24 +71,26 @@
 							<div class="tab-pane fade text-box" id="pilltabAAAA">
 								<p>AAAA records are for IPv6 addresses only and tell a request where your domain should direct to. </p>
 								<!-- ## Add Record Form -->
-								<form role="form" class="form-in">
+								<form action="{{ request.path }}" method="post" role="form" class="form-in">
+									 {% csrf_token %}
 									<div class="form-group-in">
-										<label>Hostname</label>
-										<input class="form-control" placeholder="Enter Hostname">
+										<label for="f_hostname">Hostname</label>
+										<input id="f_hostname" name="f_hostname" class="form-control" placeholder="Enter Hostname" required>
 									</div>
 									<div class="form-group-in">
-										<label>Will Direct To</label>
-										<input class="form-control" placeholder="Select Resource or custom IP">
+										<label for="f_value">Will Direct To</label>
+										<input id="f_value" name="f_value" class="form-control" placeholder="Select Resource or custom IP" required>
 									</div>
 									<div class="form-group-in">
-										<label>TTL (Seconds)</label>
-										<select class="form-control">
+										<label for="f_ttl">TTL (Seconds)</label>
+										<select id="f_ttl" name="f_ttl" class="form-control" required>
 											<option>60</option>
 											<option>120</option>
 											<option>1800</option>
-											<option selected>3600</option>
+											<option selected>1H</option>
 										</select>
 									</div>
+									<input type="hidden" id="f_type" name="f_type" value="AAAA">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
 								</form>
 							</div>
@@ -95,24 +98,26 @@
 							<div class="tab-pane fade text-box" id="pilltabCNAME">
 								<p>CNAME records act as an alias by mapping a hostname to another hostname. </p>
 								<!-- ## Add Record Form -->
-								<form role="form" class="form-in">
+								<form action="{{ request.path }}" method="post" role="form" class="form-in">
+									 {% csrf_token %}
 									<div class="form-group-in">
-										<label>Hostname</label>
-										<input class="form-control" placeholder="Enter Hostname">
+										<label for="f_hostname">Hostname</label>
+										<input id="f_hostname" name="f_hostname" class="form-control" placeholder="Enter Hostname" required>
 									</div>
 									<div class="form-group-in">
-										<label>Is An Alias Of</label>
-										<input class="form-control" placeholder="Enter Hostname">
+										<label for="f_value">Is An Alias Of</label>
+										<input id="f_value" name="f_value" class="form-control" placeholder="Enter Hostname" required>
 									</div>
 									<div class="form-group-in">
-										<label>TTL (Seconds)</label>
-										<select class="form-control">
+										<label for="f_ttl">TTL (Seconds)</label>
+										<select id="f_ttl" name="f_ttl" class="form-control" required>
 											<option>60</option>
 											<option>120</option>
 											<option>1800</option>
-											<option selected>3600</option>
+											<option selected>1H</option>
 										</select>
 									</div>
+									<input type="hidden" id="f_type" name="f_type" value="CNAME">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
 								</form>
 							</div>
@@ -121,28 +126,31 @@
 								<p>MX records specify the mail servers responsible for accepting emails on behalf of your domain,
 									and priority value if your provider has a number of mail servers for contingency. </p>
 								<!-- ## Add Record Form -->
-								<form role="form" class="form-in">
+								<form action="{{ request.path }}" method="post" role="form" class="form-in">
+									 {% csrf_token %}
 									<div class="form-group-in">
-										<label>Hostname</label>
-										<input class="form-control" placeholder="Enter Hostname">
+										<label for="f_hostname">Hostname</label>
+										<input id="f_hostname" name="f_hostname" class="form-control" value="" placeholder="Enter Hostname (optional)">
 									</div>
 									<div class="form-group-in">
-										<label>Mail Providers Mail Servers</label>
-										<input class="form-control" placeholder="Enter Mail Providers Servers">
+										<label for="f_value">Mail Providers Mail Servers</label>
+										<input id="f_value" name="f_value" class="form-control" placeholder="Enter Mail Providers Servers" required>
 									</div>
 									<div class="form-group-in">
-										<label>Priority</label>
-										<input class="form-control" placeholder="e.g. 10">
+										<label for="f_priority">Priority</label>
+										<input id="f_priority" name="f_priority" class="form-control" placeholder="e.g. 10">
 									</div>
 									<div class="form-group-in">
-										<label>TTL (Seconds)</label>
-										<select class="form-control">
+										<label for="f_ttl">TTL (Seconds)</label>
+										<select id="f_ttl" name="f_ttl" class="form-control">
+											<option value="" selected>None</option>
+											<option>60</option>
+											<option>120</option>
 											<option>1800</option>
-											<option>3600</option>
-											<option>7200</option>
-											<option selected>14400</option>
+											<option >1H</option>
 										</select>
 									</div>
+									<input type="hidden" id="f_type" name="f_type" value="MX">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
 								</form>
 							</div>
@@ -150,75 +158,56 @@
 							<div class="tab-pane fade text-box" id="pilltabTXT">
 								<p>TXT records are used to associate a string of text with hostname. These are primarily used for verification.</p>
 								<!-- ## Add Record Form -->
-								<form role="form" class="form-in">
-									<div class="form-group-in form-group">
-										<label>Value</label>
-										<input class="form-control" placeholder="Paste TXT string here">
+								<form action="{{ request.path }}" method="post" role="form" class="form-in">
+									 {% csrf_token %}
+									<div class="form-group-in">
+										<label for="f_hostname">Hostname</label>
+										<input id="f_hostname" name="f_hostname" class="form-control" placeholder="" required>
 									</div>
 									<div class="form-group-in">
-										<label>Will Direct To</label>
-										<input class="form-control" placeholder="Select Resource or custom IP">
+										<label for="f_value">Value</label>
+										<input id="f_value" name="f_value" class="form-control" placeholder="Paste TXT string here" required>
 									</div>
 									<div class="form-group-in">
-										<label>TTL (Seconds)</label>
-										<select class="form-control">
+										<label for="f_ttl">TTL (Seconds)</label>
+										<select id="f_ttl" name="f_ttl" class="form-control">
+											<option value="" selected>None</option>
 											<option>60</option>
 											<option>120</option>
 											<option>1800</option>
-											<option selected>3600</option>
+											<option >1H</option>
 										</select>
 									</div>
+									<input type="hidden" id="f_type" name="f_type" value="TXT">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
 								</form>
 							</div>
 
 							<div class="tab-pane fade text-box" id="pilltabNS">
-								<p>SRV records specify the location (hostname and port number) of servers for specific services.
-									You can use service records to direct certain types of traffic to particular sercers.. </p>
+								<p>NS records specify the servers which are providing DNS services for your domain.
+									You can use these to create subzones if you need to direct part of your trafic to another DNS service.</p>
 								<!-- ## Add Record Form -->
-								<form role="form" class="form-in">
+								<form action="{{ request.path }}" method="post" role="form" class="form-in">
+									 {% csrf_token %}
 									<div class="form-group-in">
-										<label>Hostname</label>
-										<input class="form-control" placeholder="Enter Hostname">
+										<label for="f_hostname">Hostname</label>
+										<input id="f_hostname" name="f_hostname" class="form-control" value="" placeholder="Enter Hostname (optional)">
 									</div>
 									<div class="form-group-in">
-										<label>Will Direct To</label>
-										<input class="form-control" placeholder="Enter Nameserver">
+										<label for="f_value">Will Direct To</label>
+										<input id="f_value" name="f_value" class="form-control" placeholder="Enter Nameserver" required>
 									</div>
 									<div class="form-group-in">
-										<label>TTL (Seconds)</label>
-										<select class="form-control">
+										<label for="f_ttl">TTL (Seconds)</label>
+										<select id="f_ttl" name="f_ttl" class="form-control">
+											<option value="" selected>None</option>
 											<option>60</option>
 											<option>120</option>
 											<option>1800</option>
-											<option selected>3600</option>
+											<option >1H</option>
 										</select>
 									</div>
-									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
-								</form>
-							</div>
-
-							<div class="tab-pane fade text-box" id="pilltabSRV">
-								<p>A records are for IPv4 addresses only and tell a request where your domain should direct to. </p>
-								<!-- ## Add Record Form -->
-								<form role="form" class="form-in">
-									<div class="form-group-in">
-										<label>Hostname</label>
-										<input class="form-control" placeholder="Enter Hostname">
-									</div>
-									<div class="form-group-in">
-										<label>Will Direct To</label>
-										<input class="form-control" placeholder="Select Resource or custom IP">
-									</div>
-									<div class="form-group-in">
-										<label>TTL (Seconds)</label>
-										<select class="form-control">
-											<option>60</option>
-											<option>120</option>
-											<option>1800</option>
-											<option selected>3600</option>
-										</select>
-									</div>
+									<input type="hidden" id="f_type" name="f_type" value="NS">
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
 								</form>
 							</div>
@@ -251,16 +240,15 @@
 											data-search="true"
 											data-select-item-name="toolbar1"
 											data-pagination="true"
-											data-sort-name="name"
 											data-sort-order="asc">
 							    <thead>
 							    <tr>
-											<th data-formatter="runningFormatter">Index</th>
+											<th data-formatter="runningFormatter" >Index</th>
 							        <th data-field="rtype" data-sortable="true" >Type</th>
 							        <th data-field="name" data-sortable="true">Hostname</th>
 							        <th data-field="rdata.address"  data-sortable="true">Value</th>
 							        <th data-field="ttl" data-sortable="true">TTL</th>
-											<th data-field="action" data-align="center"
+											<th  data-align="center"
 													data-formatter="actionFormatter" data-events="actionEvents">Action</th>
 							    </tr>
 							    </thead>
