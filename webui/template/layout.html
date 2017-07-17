@@ -132,6 +132,15 @@
 			</ol>
 		</div>
 
+		{% if message_notif %}
+		<div class="row">
+          <div class="alert alert-dismissible {% if message_notif.type_notif %} alert-{{ message_notif.type_notif }}{% endif %}" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ message_notif.message }}  <span> {{ message_notif.item }}</span>
+        	</div>
+		</div>
+    {% endif %}
+
 		{% block content %}{% endblock %}
 
 	</div>	<!--/.main-->
