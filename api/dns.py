@@ -293,7 +293,7 @@ class DNSZone():
 
         record.rdata.serial_no = int(record.rdata.serial_no) + 1
 
-    def delete_record(self, rclass=None, rtype=None, rdata=None):
+    def delete_record(self, name, rclass=None, rtype=None, rdata=None):
         """Delete a record that has a certain name.
 
         Does nothing if record doesn't exist.
