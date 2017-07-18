@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from settings import FILE_LOCATION
 from dns import *
+import iscpy
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ZoneView(View):
@@ -53,11 +54,58 @@ class ZoneView(View):
         except:
             return HttpResponse("{ 'status' : 'fail' }")
 
-    def post(self, request, zone_origin):
-        """POST Method handler, used to create a new zone.
+    def post(self, request, named_file):
+        """POST Method handler, used to create a new zone record.
 
-        This endpoint recieve no JSON data, if there's any, it will be ignored.
+        This endpoint recieve the following JSON file:
+        {
+            "directives": {
+                "directive1": "value1",
+                ...
+            }
+            "soa_record": {
+                "authoritative_server": "",
+                "admin_email": "",
+                "serial_no": "",
+                "slv_refresh_period": "",
+                "slv_retry": "",
+                "slv_expire": "",
+                "max_time_cache": ""
+            }
+            "zone": {
+                "zone ZONENAME": {
+                    "file": "ZONE_FILE_PATH",
+                    "type": "TYPE"
+                    ...
+                }
+            }
+        }
+        Note that rclass and TTL are optional.
 
-        This endpoint will return the following JSON file:
-        
+        This endpoint will return { "status" : "ok" } if adding a new record is
+        successfull and {"status" : "fail"} otherwise
         """
+        try:
+            # Load input parameters
+            body = json.loads(request.body.decode('utf-8'))
+            body_directives = body['directives']
+            body_soa = body['soa_record']
+            body_zone = body['zone']
+
+            #Add zone to named config file
+            named_dict, named_keys = iscpy.ParseISCString(open(FILE_LOCATION[named_file]).read())
+            new_dict = iscpy.AddZone(body_zone, named_dict)
+            iscpy.WriteToFile(new_dict, named_keys, FILE_LOCATION[named_file])
+
+            #Make new zone file
+            zone = str(body_zone.keys()[0])
+            soa = SOARecordData()
+            soa.fromJSON(body_soa)
+            new_record = DNSResourceRecord("", "", "@", "SOA", soa)
+            resourcerecord = []
+            resourcerecord.append(new_record)
+            new_zone = DNSZone(body_directives, resourcerecord)
+            new_zone.write_to_file(body_zone[zone]['file'].split('"')[1])
+            return HttpResponse("{ 'status' : 'ok' }")
+        except:
+            return HttpResponse("{ 'status' : 'fail' }")
