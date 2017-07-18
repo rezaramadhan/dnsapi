@@ -224,6 +224,7 @@
 					</div>
 				</div>
 			</div><!--/.row-->
+		</div>
 
 {% endblock %}
 
@@ -267,7 +268,7 @@
     		// return result;
 			}
 
-			$.getJSON("http://{{ request.get_host }}/api/{{zones_id}}", function (jsonFromFile) {
+			$.getJSON("http://{{ request.get_host }}/api/zone/{{zones_id}}", function (jsonFromFile) {
 					$('#resourcerecord').bootstrapTable({
 						data: responFlatenedJson(jsonFromFile.resource_records)
 					})
@@ -279,10 +280,10 @@
 
 			function actionFormatter(value, row, index) {
 				return [
-						'<a class="edit btn-action action-edit" href="javascript:void(0)" title="Edit">',
+						'<a class="edit btn-action action-edit" href="{{ request.path }}'+row['name']+'" title="Edit">',
 						'<i class="glyphicon glyphicon-edit"></i>',
 						'</a>',
-						'<a class="remove btn-action action-del" href="javascript:void(0)" title="Remove">',
+						'<a class="remove btn-action action-del" href="{{ request.path }}'+row['name']+'/delete" title="Remove">',
 						'<i class="glyphicon glyphicon-remove"></i>',
 						'</a>'
 				].join('');
@@ -292,16 +293,6 @@
 			    return index+1;
 			}
 
-			window.actionEvents = {
-				'click .edit': function (e, value, row, index) {
-						alert('Edit, row: ' + JSON.stringify(row));
-						console.log(value, row, index);
-				},
-				'click .remove': function (e, value, row, index) {
-						alert('You click remove icon, row: ' + JSON.stringify(row));
-						console.log(value, row, index);
-				}
-			};
 	</script>
 	<script>
 		var ttl_tags = [

@@ -27,10 +27,10 @@ def get_message_notif(status, item_name='', message_custom=None):
         type_notif = 'danger'
     if status=='success_del':
         message = 'Success Delete Record  : '
-        type_notif = ' success'
+        type_notif = 'danger'
     if status=='failed_del':
         message = 'Failed Delete Record.'
-        type_notif = 'danger'
+        type_notif = 'warning'
     if message_custom:
         message = message_custom
         type_notif = 'info'

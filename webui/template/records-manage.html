@@ -1,0 +1,165 @@
+{% extends 'layout.html' %}
+
+{% block pathurl %}
+	<li> Network</li>
+	<li>Zones</li>
+	<li>{{zones_id}}</li>
+	<li>{{record_id}}</li>
+
+{% endblock %}
+
+{% block content %}
+{% load staticfiles%}
+
+
+		<!-- ## HEADER -->
+
+		<div class="row home-box">
+			<div class="col-md-12">
+				<div class="panel panel-primary">
+				</div>
+			</div>
+		</div>
+
+
+		<!-- ## PANEL TAB CREATE RECORD -->
+		<div class="row home-box">
+			<div class="col-lg-12">
+				<h2>Edit Record : {{record_id}}</h2>
+			</div>
+
+			<div class="col-md-11">
+				<div class="panel panel-info">
+					<div class="panel-body tabs">
+
+						<ul class="nav nav-pills tab-heading-info">
+							<li class="active">
+								<a href="#pilltab" data-toggle="tab">Record Type : {{ record_data.rtype }}</a>
+							</li>
+						</ul>
+
+						<div class="tab-content" >
+							<div class="tab-pane fade in active text-box" id="pilltab">
+								<!-- ## Add Record Form -->
+								<form action="{{ request.path }}edit/" method="post" role="form" class="form-in">
+									 {% csrf_token %}
+									 {% if record_data.rtype == 'A' or record_data.rtype == 'AAAA' %}
+	 									<div class="form-group-in">
+	 										<label for="f_hostname">Hostname</label>
+	 										<input id="f_hostname" name="f_hostname" class="form-control" value="{{record_data.name}}" placeholder="Enter Hostname" required>
+	 									</div>
+	 									<div class="form-group-in">
+	 										<label for="f_value">Will Direct To</label>
+	 										<input id="f_value" name="f_value" class="form-control" value="{{record_data.rdata.address}}" placeholder="Select Resource or custom IP" required>
+	 									</div>
+	 									<div class="form-group-in">
+	 										<label for="f_ttl">TTL (Seconds)</label>
+	 										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="{{record_data.ttl}}" placeholder="None">
+	 									</div>
+										{% endif %}
+
+										{% if record_data.rtype == 'CNAME' %}
+ 	 									<div class="form-group-in">
+ 	 										<label for="f_hostname">Hostname</label>
+ 	 										<input id="f_hostname" name="f_hostname" class="form-control" value="{{record_data.name}}" placeholder="Enter Hostname" required>
+ 	 									</div>
+ 	 									<div class="form-group-in">
+ 	 										<label for="f_value">Is An Alias Of</label>
+ 	 										<input id="f_value" name="f_value" class="form-control" value="{{record_data.rdata.address}}" placeholder="Enter Hostname" required>
+ 	 									</div>
+ 	 									<div class="form-group-in">
+ 	 										<label for="f_ttl">TTL (Seconds)</label>
+ 	 										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="{{record_data.ttl}}" placeholder="None">
+ 	 									</div>
+ 										{% endif %}
+
+										{% if record_data.rtype == 'MX' %}
+										<div class="form-group-in">
+											<label for="f_hostname">Hostname</label>
+											<input id="f_hostname" name="f_hostname" class="form-control" value="{{record_data.name}}" placeholder="Enter Hostname (optional)">
+										</div>
+										<div class="form-group-in">
+											<label for="f_value">Mail Providers Mail Servers</label>
+											<input id="f_value" name="f_value" class="form-control" value="{{record_data.rdata.address}}" placeholder="Enter Mail Providers Servers" required>
+										</div>
+										<div class="form-group-in">
+											<label for="f_priority">Priority</label>
+											<input id="f_priority" name="f_priority" class="form-control" placeholder="e.g. 10" value="{{record_data.rdata.priority}}">
+										</div>
+ 	 									<div class="form-group-in">
+ 	 										<label for="f_ttl">TTL (Seconds)</label>
+ 	 										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="{{record_data.ttl}}" placeholder="None">
+ 	 									</div>
+ 										{% endif %}
+
+										{% if record_data.rtype == 'TXT' %}
+										<div class="form-group-in">
+											<label for="f_hostname">Hostname</label>
+											<input id="f_hostname" name="f_hostname" class="form-control" value="{{record_data.name}}" placeholder="Enter Hostname" required>
+										</div>
+										<div class="form-group-in">
+											<label for="f_value">Value</label>
+											<input id="f_value" name="f_value" class="form-control" value="{{record_data.rdata.address}}" placeholder="Paste TXT string here" required>
+										</div>
+ 	 									<div class="form-group-in">
+ 	 										<label for="f_ttl">TTL (Seconds)</label>
+ 	 										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="{{record_data.ttl}}" placeholder="None">
+ 	 									</div>
+ 										{% endif %}
+
+										{% if record_data.rtype == 'NS' %}
+										<div class="form-group-in">
+											<label for="f_hostname">Hostname</label>
+											<input id="f_hostname" name="f_hostname" class="form-control" value="{{record_data.name}}" placeholder="Enter Hostname (optional)">
+										</div>
+										<div class="form-group-in">
+											<label for="f_value">Will Direct To</label>
+											<input id="f_value" name="f_value" class="form-control" value="{{record_data.rdata.address}}" placeholder="Enter Nameserver" required>
+										</div>
+ 	 									<div class="form-group-in">
+ 	 										<label for="f_ttl">TTL (Seconds)</label>
+ 	 										<input id="f_ttl" name="f_ttl" class="form-control f_ttl" value="{{record_data.ttl}}" placeholder="None">
+ 	 									</div>
+ 										{% endif %}
+
+										<input type="hidden" id="f_type" name="f_type" value="{{ record_data.rtype }}">
+
+
+									<button type="submit" class="btn btn-warning">EDIT RECORD</button>
+								</form>
+							</div>
+
+
+
+						</div>
+					</div>
+				</div><!--/.panel-->
+			</div><!-- /.col-->
+
+		</div><!-- /.row -->
+
+
+
+{% endblock %}
+
+{% block script %}
+{% load staticfiles%}
+
+	<script>
+		var ttl_tags = [
+			{"label": "1H", "code": "1H"},
+			{"label": "60", "code": "60"},
+			{"label": "120", "code": "120"},
+			{"label": "1200", "code": "1200"},
+			{"label": "2400", "code": "2400"},
+			{"label": "3600", "code": "3600"},
+			{"label": "7200", "code": "7200"},
+			{"label": "14400", "code": "14400"},
+			{"label": "28800", "code": "28800"},
+		];
+
+		$(".f_ttl" ).autocomplete({
+			source: ttl_tags
+		});
+	</script>
+{% endblock %}
