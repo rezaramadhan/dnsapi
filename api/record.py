@@ -18,7 +18,7 @@ class RecordView(View):
         DELETE to delete a NS record
     """
 
-    http_method_names = ['get', 'put', 'delete']
+    http_method_names = ['get', 'put', 'delete', 'post']
 
     def get(self, request, zone_origin, record_name):
         """GET Method handler, used to retrieve all information about a record.
@@ -62,7 +62,7 @@ class RecordView(View):
             return HttpResponse("{'status' : 'notfound'}")
 
     def delete(self, request, zone_origin, record_name):
-        """DELET Method handler, used to delete a record.
+        """DELETW Method handler, used to delete a record.
 
         This endpoint recieve no JSON data. If there's any, it will be ignored.
         {
@@ -127,3 +127,36 @@ class RecordView(View):
             return HttpResponse("{'status' : 'ok'}")
         except:
             return HttpResponse("{'status' : 'failed'}")
+
+    def post(self, request, zone_origin, record_name=""):
+        """POST Method handler, used to create a new resource record.
+
+        This endpoint recieve the following JSON file:
+        {
+            "name" : "new_record_name",
+            "rclass" : "new_record_rclass",
+            "ttl" : "new_record_ttl",
+            "rtype" : "new_record_rtype",
+            "rdata" : {
+                "rdata_name1" : "data",
+                ...
+            },
+        }
+        Note that rclass and TTL are optional.
+
+        This endpoint will return { "status" : "ok" } if adding a new record is
+        successfull and {"status" : "fail"} otherwise
+        """
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            zone = DNSZone()
+            zone.read_from_file(FILE_LOCATION[zone_origin])
+            # print zone.toJSON()
+            new_record = DNSResourceRecord()
+            new_record.fromJSON(body)
+            zone.add_record(new_record)
+            print new_record.toJSON()
+            zone.write_to_file(FILE_LOCATION[zone_origin])
+            return HttpResponse("{ 'status' : 'ok' }")
+        except:
+            return HttpResponse("{ 'status' : 'fail' }")
