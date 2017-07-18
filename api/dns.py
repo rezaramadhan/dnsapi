@@ -32,6 +32,10 @@ class RecordData():
         self.address = tokens[0]
         # file_lines.pop(0)
 
+    def is_equal_to(self, dict):
+        """Check if my data is equal to dict"""
+        return self.address == dict['address']
+
     def fromJSON(self, json_obj):
         """Public constructor to create class from a json string."""
         print json_obj
@@ -42,6 +46,7 @@ class RecordData():
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
 
+
 class MXRecordData(RecordData):
     """MXRecordData class.
 
@@ -51,6 +56,10 @@ class MXRecordData(RecordData):
     def __repr__(self):
         """Change class to string, each attribute is separated by a tab."""
         return self.priority + "\t" + self.address
+
+    def is_equal_to(self, dict):
+        """Check if my data is equal to dict"""
+        return self.address == dict['address'] and self.priority == dict['priority']
 
     def parse_rdata(self, tokens=None, file_lines=None):
         """Parse rdata from the given tokens.
@@ -153,6 +162,11 @@ class SOARecordData(RecordData):
         self.slv_expire = json_obj['slv_expire'] if 'slv_expire' in json_obj else self.slv_expire
         self.max_time_cache = json_obj['max_time_cache'] if 'max_time_cache' in json_obj else self.max_time_cache
 
+    def is_equal_to(self, dict):
+        """Check if my data is equal to dict"""
+        return (self.admin_email == dict['address'] and self.authoritative_server == dict['priority'] and
+                self.serial_no == dict['serial_no'] and self.slv_refresh_period == dict['slv_refresh_period'] and
+                self.slv_retry == dict['slv_retry'] and self.max_time_cache == dict['max_time_cache'])
 
 class DNSResourceRecord():
     """DNSResourceRecord class.
@@ -253,12 +267,19 @@ class DNSZone():
         """Change class to string."""
         return self.__repr__()
 
-    def find_record(self, name):
+    def find_record(self, name, rclass=None, rtype=None, rdata=None):
         """Find a record with the given name.
 
         return None if record not exist.
         """
         for record in self.resource_records:
+            # continue to next loop if X is not empty and X does not equal record.X
+            if rclass and rclass != record.rclass:
+                continue
+            if rtype and rtype != record.rtype:
+                continue
+            if rdata and rdata.is_equal_to(rdata):
+                continue
             if (record.name == name):
                 return record
         return None
@@ -271,13 +292,13 @@ class DNSZone():
 
         record.rdata.serial_no = int(record.rdata.serial_no) + 1
 
-    def delete_record(self, name):
+    def delete_record(self, rclass=None, rtype=None, rdata=None):
         """Delete a record that has a certain name.
 
         Does nothing if record doesn't exist.
         """
         try:
-            self.resource_records.remove(self.find_record(name))
+            self.resource_records.remove(self.find_record(name, rclass, rtype, rdata))
             self.increment_soa()
         except:
             pass
@@ -287,13 +308,13 @@ class DNSZone():
         self.resource_records.append(record)
         self.increment_soa()
 
-    def update_record(self, name, new_record):
+    def update_record(self, name, rclass=None, rtype=None, rdata=None, new_record):
         """Update a record that has a certain name.
 
         Does nothing if record doesn't exist.
         """
         try:
-            record_idx = self.resource_records.index(self.find_record(name))
+            record_idx = self.resource_records.index(self.find_record(name, rclass, rtype, rdata))
             self.resource_records[record_idx] = new_record
             self.increment_soa()
         except:
