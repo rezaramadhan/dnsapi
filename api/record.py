@@ -64,9 +64,9 @@ class RecordView(View):
             record = zone.find_record(record_name, rclass, rtype, rdata)
 
             return HttpResponse(record.toJSON() if record
-                                else "{'status' : 'notfound'}")
+                                else '{ "status" : "notfound" }')
         except:
-            return HttpResponse("{'status' : 'error'}")
+            return HttpResponse('{ "status" : "error" }')
 
     def delete(self, request, zone_origin, record_name):
         """DELETW Method handler, used to delete a record.
@@ -111,9 +111,9 @@ class RecordView(View):
 
             restart_bind(find_server(zone_origin))
             restart_bind(find_server(reverse_zone_origin))
-            return HttpResponse("{'status' : 'ok'}")
+            return HttpResponse('{ "status" : "ok" }')
         except:
-            return HttpResponse("{'status' : 'failed'}")
+            return HttpResponse('{ "status" : "failed" }')
 
     def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
@@ -147,9 +147,9 @@ class RecordView(View):
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
             restart_bind(find_server(zone_origin))
-            return HttpResponse("{'status' : 'ok'}")
+            return HttpResponse('{ "status" : "ok" }')
         except:
-            return HttpResponse("{'status' : 'failed'}")
+            return HttpResponse('{ "status" : "failed" }')
 
     def post(self, request, zone_origin, record_name=""):
         """POST Method handler, used to create a new resource record.
