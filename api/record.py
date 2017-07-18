@@ -23,8 +23,16 @@ class RecordView(View):
     def get(self, request, zone_origin, record_name):
         """GET Method handler, used to retrieve all information about a record.
 
-        This endpoint recieve no JSON data. If there's any, it will be ignored.
-
+        This endpoint recieve the following JSON data as an optional search
+        arguments
+        {
+            "rclass" : "record_rclass",
+            "rtype" : "record_rtype",
+            "rdata" : {
+                "rdata_name1" : "data",
+                ...
+            },
+        }
         This endpoint will return the following JSON file:
         {
             "name" : "record_name",
@@ -40,9 +48,14 @@ class RecordView(View):
         And return {"status" : "notfound"} if the record or zone file is not exist
         """
         try:
+            payload = json.loads(request.body.decode('utf-8'))
+            rclass = payload.get("rclass")
+            rtype = payload.get("rtype")
+            rdata = payload.get("rdata")
+
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
-            record = zone.find_record(record_name)
+            record = zone.find_record(record_name, rclass, rtype, rdata)
             return HttpResponse(record.toJSON() if record
                                 else "{'status' : 'notfound'}")
         except:
@@ -52,7 +65,14 @@ class RecordView(View):
         """DELET Method handler, used to delete a record.
 
         This endpoint recieve no JSON data. If there's any, it will be ignored.
-
+        {
+            "rclass" : "record_rclass",
+            "rtype" : "record_rtype",
+            "rdata" : {
+                "rdata_name1" : "data",
+                ...
+            },
+        }
         This endpoint will return { "status" : "ok" } if deleting a record is
         successfull and {"status" : "failed"} otherwise
 
@@ -60,9 +80,14 @@ class RecordView(View):
         """
         # handle the post request
         try:
+            payload = json.loads(request.body.decode('utf-8'))
+            rclass = payload.get("rclass")
+            rtype = payload.get("rtype")
+            rdata = payload.get("rdata")
+
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
-            zone.delete_record(record_name)
+            zone.delete_record(record_name, rclass, rtype, rdata)
             print zone
             zone.write_to_file(FILE_LOCATION[zone_origin])
             return HttpResponse("{'status' : 'ok'}")
