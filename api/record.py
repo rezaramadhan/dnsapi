@@ -5,8 +5,8 @@ from django.views.generic import View
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from dns import DNSZone
-from settings import FILE_LOCATION
+from dns import DNSZone, RecordData, MXRecordData, SOARecordData, DNSResourceRecord
+from settings import FILE_LOCATION, restart_bind, find_server
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RecordView(View):
@@ -48,18 +48,21 @@ class RecordView(View):
         And return {"status" : "notfound"} if the record or zone file is not exist
         """
         try:
-            payload = json.loads(request.body.decode('utf-8'))
-            rclass = payload.get("rclass")
-            rtype = payload.get("rtype")
-            rdata = payload.get("rdata")
-
+            if request.body.decode('utf-8'):
+                payload = json.loads(request.body.decode('utf-8'))
+                rclass = payload.get("rclass")
+                rtype = payload.get("rtype")
+                rdata = payload.get("rdata")
+            else:
+                rclass = rtype = rdata = None
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             record = zone.find_record(record_name, rclass, rtype, rdata)
+
             return HttpResponse(record.toJSON() if record
                                 else "{'status' : 'notfound'}")
         except:
-            return HttpResponse("{'status' : 'notfound'}")
+            return HttpResponse("{'status' : 'error'}")
 
     def delete(self, request, zone_origin, record_name):
         """DELETW Method handler, used to delete a record.
@@ -80,16 +83,21 @@ class RecordView(View):
         """
         # handle the post request
         try:
-            payload = json.loads(request.body.decode('utf-8'))
-            rclass = payload.get("rclass")
-            rtype = payload.get("rtype")
-            rdata = payload.get("rdata")
+            if request.body.decode('utf-8'):
+                payload = json.loads(request.body.decode('utf-8'))
+                rclass = payload.get("rclass")
+                rtype = payload.get("rtype")
+                rdata = payload.get("rdata")
+            else:
+                rclass = rtype = rdata = None
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             zone.delete_record(record_name, rclass, rtype, rdata)
             print zone
             zone.write_to_file(FILE_LOCATION[zone_origin])
+
+            restart_bind(find_server(zone_origin))
             return HttpResponse("{'status' : 'ok'}")
         except:
             return HttpResponse("{'status' : 'failed'}")
@@ -123,7 +131,9 @@ class RecordView(View):
             print record.toJSON()
             record.fromJSON(payload)
             print record.toJSON()
-            # zone.write_to_file(FILE_LOCATION[zone_origin])
+            zone.write_to_file(FILE_LOCATION[zone_origin])
+
+            restart_bind(find_server(zone_origin))
             return HttpResponse("{'status' : 'ok'}")
         except:
             return HttpResponse("{'status' : 'failed'}")
@@ -147,16 +157,24 @@ class RecordView(View):
         This endpoint will return { "status" : "ok" } if adding a new record is
         successfull and {"status" : "fail"} otherwise
         """
-        try:
-            body = json.loads(request.body.decode('utf-8'))
-            zone = DNSZone()
-            zone.read_from_file(FILE_LOCATION[zone_origin])
-            # print zone.toJSON()
-            new_record = DNSResourceRecord()
-            new_record.fromJSON(body)
-            zone.add_record(new_record)
-            print new_record.toJSON()
-            zone.write_to_file(FILE_LOCATION[zone_origin])
-            return HttpResponse("{ 'status' : 'ok' }")
-        except:
-            return HttpResponse("{ 'status' : 'fail' }")
+        # try:
+        payload = json.loads(request.body.decode('utf-8'))
+        zone = DNSZone()
+        zone.read_from_file(FILE_LOCATION[zone_origin])
+        # print zone.toJSON()
+        if (payload['rtype'] == "MX"):
+            record_data = MXRecordData()
+        elif (payload['rtype'] == "SOA"):
+            record_data = SOARecordData()
+        else:
+            record_data = RecordData()
+        new_record = DNSResourceRecord(rdata=record_data)
+        new_record.fromJSON(payload)
+        zone.add_record(new_record)
+        print zone
+        zone.write_to_file(FILE_LOCATION[zone_origin])
+
+        restart_bind(find_server(zone_origin))
+        return HttpResponse("{ 'status' : 'ok' }")
+        # except:
+        #     return HttpResponse("{ 'status' : 'fail' }")

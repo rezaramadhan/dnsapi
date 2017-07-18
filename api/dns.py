@@ -7,7 +7,6 @@ RCLASS_LIST = ['IN', 'CH']
 RTYPE_LIST = ['A', 'AAAA', 'MX', 'NS', 'PTR', 'CNAME', 'SOA', 'URI', 'TXT']
 
 
-
 class RecordData():
     """RecordData class.
 
@@ -272,6 +271,7 @@ class DNSZone():
 
         return None if record not exist.
         """
+        print "name"
         for record in self.resource_records:
             # continue to next loop if X is not empty and X does not equal record.X
             if rclass and rclass != record.rclass:
@@ -281,6 +281,7 @@ class DNSZone():
             if rdata and rdata.is_equal_to(rdata):
                 continue
             if (record.name == name):
+                print "found"
                 return record
         return None
 
@@ -308,7 +309,7 @@ class DNSZone():
         self.resource_records.append(record)
         self.increment_soa()
 
-    def update_record(self, name, rclass=None, rtype=None, rdata=None, new_record):
+    def update_record(self, name, new_record, rclass=None, rtype=None, rdata=None):
         """Update a record that has a certain name.
 
         Does nothing if record doesn't exist.
