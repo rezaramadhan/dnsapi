@@ -42,7 +42,7 @@ def get_all_zone():
 
 
 def restart_bind(serverhostname):
-    subprocess.call(["ssh", USER_DICT[serverhostname] + "@" + serverhostname, "systemctl restart named"])
+    #subprocess.call(["ssh", USER_DICT[serverhostname] + "@" + serverhostname, "systemctl restart named"])
     print serverhostname
 
 def find_server(zone_name):
@@ -52,7 +52,10 @@ def find_server(zone_name):
 
 
 # get_all_zone()
-FILE_LOCATION['gdn.lokal'] = '~/haha'
+FILE_LOCATION['gdn.lokal'] = 'D:/heronimus/dnsapi/zone_gdn.lokal'
+FILE_LOCATION['10.17.172.in-addr.arpa'] = 'D:/heronimus/dnsapi/ptr_gdn.lokal'
+ZONE_DICT['10.0.2.11'].append('gdn.lokal')
+ZONE_DICT['10.0.2.11'].append('10.17.172.in-addr.arpa')
 print FILE_LOCATION
 print ZONE_DICT
 # masukin dia dimana aja, ubah ke direktori absolut di server ini

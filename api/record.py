@@ -109,7 +109,7 @@ class RecordView(View):
             zone.read_from_file(FILE_LOCATION[zone_origin])
             record = zone.find_record(record_name, rclass, rtype, rdata)
             # logger.info("get item:" + record_name)
-            print logger
+            # print logger
             return HttpResponse(record.toJSON() if record
                                 else '{"status" : "notfound"}')
         except ValueError:
@@ -208,7 +208,7 @@ class RecordView(View):
 
             # create new reverse record
             if (record.rtype == "A" or record.rtype == "MX"):
-                reverse_record_add(record.name, record.address, zone_origin, record.ttl)
+                reverse_record_add(record.name, zone_origin, record.rdata.address, record.ttl)
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{"status" : "ok"}')
