@@ -1,5 +1,6 @@
 """Class-based view for record handling."""
 import json
+import logging
 
 from django.views.generic import View
 from django.http import HttpResponse
@@ -9,6 +10,7 @@ from dns import (DNSZone, RecordData, MXRecordData, SOARecordData,
                  DNSResourceRecord)
 from settings import FILE_LOCATION, restart_bind, find_server
 
+# logger = logging.getLogger("django")
 
 def find_reverse_zone(address):
     """Return the reverse zone origin given a certain address."""
@@ -90,6 +92,7 @@ class RecordView(View):
 
         And return {"status" : "notfound"} if the record file is not exist
         """
+        # logger.info("get item:" + record_name)
         try:
             if request.body.decode('utf-8'):
                 payload = json.loads(request.body.decode('utf-8'))
@@ -105,7 +108,8 @@ class RecordView(View):
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             record = zone.find_record(record_name, rclass, rtype, rdata)
-
+            # logger.info("get item:" + record_name)
+            print logger
             return HttpResponse(record.toJSON() if record
                                 else '{"status" : "notfound"}')
         except ValueError:
@@ -195,7 +199,7 @@ class RecordView(View):
 
             # delete old reverse record
             if (record.rtype == "A" or record.rtype == "MX"):
-                reverse_record_delete(record.name, record.address)
+                reverse_record_delete(record.name, record.rdata.address)
 
             print record.toJSON()
             record.fromJSON(payload)
