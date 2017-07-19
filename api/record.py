@@ -204,6 +204,6 @@ class RecordView(View):
 
         restart_bind(find_server(zone_origin))
         restart_bind(find_server(reverse_zone_origin))
-        return HttpResponse("{ 'status' : 'ok' }")
+        return HttpResponse('{ "status" : "ok" }')
         # except:
             # return HttpResponse("{ 'status' : 'fail' }")

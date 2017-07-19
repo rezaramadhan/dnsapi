@@ -52,7 +52,7 @@ class ZoneView(View):
             return HttpResponse(zone.toJSON())
         # handle the get request
         except:
-            return HttpResponse("{ 'status' : 'fail' }")
+            return HttpResponse('{ "status" : "fail" }')
 
     def post(self, request, named_file):
         """POST Method handler, used to create a new zone record.
@@ -106,6 +106,6 @@ class ZoneView(View):
             resourcerecord.append(new_record)
             new_zone = DNSZone(body_directives, resourcerecord)
             new_zone.write_to_file(body_zone[zone]['file'].split('"')[1])
-            return HttpResponse("{ 'status' : 'ok' }")
+            return HttpResponse('{ "status" : "ok" }')
         except:
-            return HttpResponse("{ 'status' : 'fail' }")
+            return HttpResponse('{ "status" : "fail" }')
