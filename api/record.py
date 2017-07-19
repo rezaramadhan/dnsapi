@@ -107,14 +107,14 @@ class RecordView(View):
             record = zone.find_record(record_name, rclass, rtype, rdata)
 
             return HttpResponse(record.toJSON() if record
-                                else "{'status' : 'notfound'}")
+                                else '{"status" : "notfound"}')
         except ValueError:
-            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+            return HttpResponse('{"status" : "Invalid JSON arguments"}')
         except KeyError as k_err:
-            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
+            return HttpResponse('{"status" : "'+k_err.args[0]+'"}')
         except LookupError as l_err:
-            return HttpResponse("{'status' : '"+l_err.args[0]+"'}")
-        
+            return HttpResponse('{"status" : "'+l_err.args[0]+'"}')
+
     def delete(self, request, zone_origin, record_name):
         """DELETW Method handler, used to delete a record.
 
@@ -156,13 +156,13 @@ class RecordView(View):
                 reverse_record_delete(deleted_record.name, deleted_record.rdata.address)
 
             restart_bind(find_server(zone_origin))
-            return HttpResponse("{'status' : 'ok'}")
+            return HttpResponse('{"status" : "ok"}')
         except ValueError:
-            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+            return HttpResponse('{"status" : "Invalid JSON arguments"}')
         except KeyError as k_err:
-            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
+            return HttpResponse('{"status" : "'+k_err.args[0]+'"}')
         except LookupError as l_err:
-            return HttpResponse("{'status' : '"+l_err.args[0]+"'}")
+            return HttpResponse('{"status" : "'+l_err.args[0]+'"}')
 
     def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
@@ -207,13 +207,13 @@ class RecordView(View):
                 reverse_record_add(record.name, record.address, zone_origin, record.ttl)
 
             restart_bind(find_server(zone_origin))
-            return HttpResponse("{'status' : 'ok'}")
+            return HttpResponse('{"status" : "ok"}')
         except ValueError:
-            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+            return HttpResponse('{"status" : "Invalid JSON arguments"}')
         except KeyError as k_err:
-            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
+            return HttpResponse('{"status" : "'+k_err.args[0]+'"}')
         except LookupError as l_err:
-            return HttpResponse("{'status' : '"+l_err.args[0]+"'}")
+            return HttpResponse('{"status" : "'+l_err.args[0]+'"}')
 
     def post(self, request, zone_origin, record_name=""):
         """POST Method handler, used to create a new resource record.
@@ -261,10 +261,10 @@ class RecordView(View):
                                    new_record.rdata.address, new_record.ttl)
 
             restart_bind(find_server(zone_origin))
-            return HttpResponse("{ 'status' : 'ok' }")
+            return HttpResponse('{"status" : "ok"}')
         except ValueError:
-            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+            return HttpResponse('{"status" : "Invalid JSON arguments"}')
         except KeyError as k_err:
-            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
+            return HttpResponse('{"status" : "'+k_err.args[0]+'"}')
         except LookupError as l_err:
-            return HttpResponse("{'status' : '"+l_err.args[0]+"'}")
+            return HttpResponse('{"status" : "'+l_err.args[0]+'"}')

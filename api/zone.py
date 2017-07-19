@@ -55,9 +55,8 @@ class ZoneView(View):
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             return HttpResponse(zone.toJSON())
-        # handle the get request
         except KeyError as k_err:
-            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
+            return HttpResponse('{ "status" : "'+k_err.args[0]+'" }')
 
     def post(self, request, named_file):
         """POST Method handler, used to create a new zone record.
@@ -111,6 +110,6 @@ class ZoneView(View):
             resourcerecord.append(new_record)
             new_zone = DNSZone(body_directives, resourcerecord)
             new_zone.write_to_file(body_zone[zone]['file'].split('"')[1])
-            return HttpResponse("{ 'status' : 'ok' }")
+            return HttpResponse('{ "status" : "ok" }')
         except ValueError:
-            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+            return HttpResponse('{"status" : "Invalid JSON arguments"}')

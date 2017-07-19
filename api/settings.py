@@ -51,7 +51,8 @@ def find_server(zone_name):
             return server
 
 
-get_all_zone()
+# get_all_zone()
+FILE_LOCATION['gdn.lokal'] = '~/haha'
 print FILE_LOCATION
 print ZONE_DICT
 # masukin dia dimana aja, ubah ke direktori absolut di server ini
