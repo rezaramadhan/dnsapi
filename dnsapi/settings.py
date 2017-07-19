@@ -131,3 +131,64 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "webui/static"),
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'access_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'log/access.log',
+            'formatter': 'simple',
+        },
+        'debug_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'log/debug.log',
+            'formatter': 'verbose',
+        },
+        'error_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'log/error.log',
+            'formatter': 'verbose',
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'verbose': {
+            'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['error_file'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+        'debug': {
+            'filters': ['require_debug_true'],
+            'handlers': ['debug_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.server': {
+            'handlers': ['access_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

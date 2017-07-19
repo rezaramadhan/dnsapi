@@ -5,6 +5,8 @@ import iscpy
 import json
 import re
 import subprocess
+import logging
+import sys
 
 DEFAULT_CONF_FILENAME = "named.conf.local"
 REMOTE_CONF_DIR = "/etc/named/"
@@ -15,7 +17,6 @@ ZONE_DICT = {"10.0.2.11": [], "10.0.2.6": []}
 
 # di-populate sama script nanti dibawah
 FILE_LOCATION = {}
-
 
 # jangan lupa mount dulu, either pake nfs atau pake sshfs
 # ngisi file_location, traversal di directory /mnt/nfs-dns-*, cari file
@@ -42,8 +43,9 @@ def get_all_zone():
 
 
 def restart_bind(serverhostname):
-    subprocess.call(["ssh", USER_DICT[serverhostname] + "@" + serverhostname, "systemctl restart named"])
-    print serverhostname
+    result = subprocess.call(["ssh", USER_DICT[serverhostname] + "@" + serverhostname, "systemctl restart named"])
+    if result != 0:
+        raise EnvironmentError('Unable to restart named')
 
 def find_server(zone_name):
     for server in ZONE_DICT:
@@ -51,9 +53,8 @@ def find_server(zone_name):
             return server
 
 
-# get_all_zone()
-FILE_LOCATION['gdn.lokal'] = '~/haha'
-print FILE_LOCATION
-print ZONE_DICT
-# masukin dia dimana aja, ubah ke direktori absolut di server ini
-# kasih format FILE_LOCATION['zone_name'] = "/path/to/file"
+logger = logging.getLogger('debug')
+get_all_zone()
+# FILE_LOCATION['gdn.lokal'] = '~/haha'
+logger.debug('file_location: ' + str(FILE_LOCATION))
+logger.debug('zone_dict: ' + str(ZONE_DICT))
