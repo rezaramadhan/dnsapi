@@ -1,11 +1,12 @@
 """Class-based view for record handling."""
 import json
-from django.shortcuts import render
+
 from django.views.generic import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from dns import DNSZone, RecordData, MXRecordData, SOARecordData, DNSResourceRecord
+from dns import (DNSZone, RecordData, MXRecordData, SOARecordData,
+                 DNSResourceRecord)
 from settings import FILE_LOCATION, restart_bind, find_server
 
 
@@ -87,7 +88,7 @@ class RecordView(View):
             },
         }
 
-        And return {"status" : "notfound"} if the record or zone file is not exist
+        And return {"status" : "notfound"} if the record file is not exist
         """
         try:
             if request.body.decode('utf-8'):
@@ -111,7 +112,9 @@ class RecordView(View):
             return HttpResponse("{'status' : 'Invalid JSON arguments'}")
         except KeyError as k_err:
             return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
-
+        except LookupError as l_err:
+            return HttpResponse("{'status' : '"+l_err.args[0]+"'}")
+        
     def delete(self, request, zone_origin, record_name):
         """DELETW Method handler, used to delete a record.
 
@@ -158,6 +161,8 @@ class RecordView(View):
             return HttpResponse("{'status' : 'Invalid JSON arguments'}")
         except KeyError as k_err:
             return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
+        except LookupError as l_err:
+            return HttpResponse("{'status' : '"+l_err.args[0]+"'}")
 
     def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
@@ -207,6 +212,8 @@ class RecordView(View):
             return HttpResponse("{'status' : 'Invalid JSON arguments'}")
         except KeyError as k_err:
             return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
+        except LookupError as l_err:
+            return HttpResponse("{'status' : '"+l_err.args[0]+"'}")
 
     def post(self, request, zone_origin, record_name=""):
         """POST Method handler, used to create a new resource record.
@@ -250,7 +257,8 @@ class RecordView(View):
 
             # add reverse if rtype is A:
             if new_record.rtype == "A" or new_record.rtype == "MX":
-                reverse_record_add(new_record.name, zone_origin, new_record.rdata.address, new_record.ttl)
+                reverse_record_add(new_record.name, zone_origin,
+                                   new_record.rdata.address, new_record.ttl)
 
             restart_bind(find_server(zone_origin))
             return HttpResponse("{ 'status' : 'ok' }")
@@ -258,3 +266,5 @@ class RecordView(View):
             return HttpResponse("{'status' : 'Invalid JSON arguments'}")
         except KeyError as k_err:
             return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
+        except LookupError as l_err:
+            return HttpResponse("{'status' : '"+l_err.args[0]+"'}")

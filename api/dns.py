@@ -269,7 +269,7 @@ class DNSZone():
     def find_record(self, name, rclass=None, rtype=None, rdata=None):
         """Find a record with the given name.
 
-        return None if record not exist.
+        raise LookupError when record is not found
         """
         print "name"
         for record in self.resource_records:
@@ -283,7 +283,7 @@ class DNSZone():
             if (record.name == name):
                 print "found"
                 return record
-        return None
+        raise LookupError("Record not found")
 
     def increment_soa(self):
         """Increment a SOA's serial number by 1."""
