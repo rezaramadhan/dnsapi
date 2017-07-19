@@ -714,7 +714,12 @@ h1.page-header {
 	font-size: 20px;
 }
 
+.btn-head-sub {
+	display: inline-block;
+	margin-top : 5px;
 
+	font-size: 18px;
+}
 
 .unlink :hover {
 	text-decoration: none !important;
@@ -730,16 +735,59 @@ h1.page-header {
 	vertical-align: middle;
 	margin: 10px 15px;
 	margin-left: 0;
-	width: 18em;
+	width: 20em;
+}
+
+.form-in .form-group-in-full {
+	display: block;
+	margin-bottom: 0;
+	vertical-align: middle;
+	margin: 10px 15px;
+	margin-left: 0;
+	width: 37em;
+}
+
+.form-in .form-group-in-short {
+	display: inline-block;
+	margin-bottom: 0;
+	vertical-align: middle;
+	margin: 10px 15px;
+	margin-left: 0;
+	width: 12em;
+}
+
+.form-in .form-group-in-zone {
+	display: inline-block;
+	margin-bottom: 0;
+	vertical-align: middle;
+	margin: 10px 15px;
+	margin-left: 0;
+	width: 25em;
 }
 
 .form-in .form-group-in input {
 	height: 50px;
 }
 
+.form-in .form-group-in-full input {
+	height: 50px;
+}
+
+.form-in .form-group-in-short input {
+	height: 50px;
+}
+
+.form-in .form-group-in-zone input {
+	height: 50px;
+}
+
 .form-in .form-group-in select {
 	height: 50px;
 	width: 15em;
+}
+
+.form-in h4 {
+	margin-top: 30px;
 }
 
 .form-in button {

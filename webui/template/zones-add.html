@@ -1,0 +1,111 @@
+{% extends 'layout.html' %}
+
+{% block pathurl %}
+	<li>Network</li>
+	<li>{{network_id}}</li>
+{% endblock %}
+
+{% block content %}
+		<!-- ## DIR-PATH -->
+
+		<!-- ## HEADER -->
+		<div class="row home-box">
+			<div class="col-lg-12 col-sm-12">
+				<h1 class="page-header">DNS Server : {{ network_id }}</h1>
+				<a href="{% url 'zones' network_id %}" class="btn btn-warning btn-head pull-right"> Back to Zones List </a>
+			</div>
+		</div>
+
+
+		<div class="row home-box">
+			<div class="col-md-7">
+				<div class="panel panel-primary">
+				</div>
+			</div>
+		</div>
+
+		<!-- ## ROW 2 -->
+		<div class="row home-box">
+			<div class="col-md-12">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						Add New Zone to {{ network_id }} Server.
+					</div>
+					<div class="panel-body">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut ante in sapien blandit luctus sed ut lacus. Phasellus urna est, faucibus nec ultrices placerat, feugiat et ligula. Donec vestibulum magna a dui pharetra molestie. Fusce et dui urna.</p>
+						<!-- Zone Panels -->
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<!-- Zone Items -->
+									<form action="{{ request.path }}" method="post" role="form" class="form-in">
+										 {% csrf_token %}
+										<div class="panel-heading">
+ 											DIRECTIVE
+ 										</div>
+										<div class="form-group-in-full">
+											<label for="f_directive">Directive</label>
+											<input id="f_directive" name="f_directive" class="form-control" placeholder="Enter Directive" required>
+										</div>
+
+
+										<div class="panel-heading">
+											SOA RECORD
+										</div>
+										<div class="form-group-in-zone">
+											<label for="f_authserv">Authoritative Server</label>
+											<input id="f_authserv" name="f_authserv" class="form-control" placeholder="Enter Authoritative Server" required>
+										</div>
+										<div class="form-group-in-zone">
+											<label for="f_serialno">Serial No.</label>
+											<input id="f_serialno" name="f_serialno" class="form-control" placeholder="Enter Serial Number (Initial)" required>
+										</div>
+										<br>
+										<div class="form-group-in-short">
+											<label for="f_slvrefresh">Slave Refresh Period</label>
+											<input id="f_slvrefresh" name="f_slvrefresh" class="form-control" placeholder="Enter Slave Refresh Period">
+										</div>
+										<div class="form-group-in-short">
+											<label for="f_slvretry">Slave Retry</label>
+											<input id="f_slvretry" name="f_slvretry" class="form-control" placeholder="Enter Slave Retry" >
+										</div>
+										<div class="form-group-in-short">
+											<label for="f_slvexpire">Slave Expire</label>
+											<input id="f_slvexpire" name="f_slvexpire" class="form-control" placeholder="Enter Slave Expire" >
+										</div>
+										<div class="form-group-in-short">
+											<label for="f_maxtimecache">Max Time Cache</label>
+											<input id="f_maxtimecache" name="f_maxtimecache" class="form-control" placeholder="Enter Max Time Cache" >
+										</div>
+										<div class="form-group-in-zone">
+											<label for="f_adminemail">Admin Email</label>
+											<input id="f_adminemail" name="f_adminemail" class="form-control f_ttl" value="Enter Admin Email" placeholder="None">
+										</div>
+
+										<div class="panel-heading">
+											ZONE DATA
+										</div>
+										<div class="form-group-in">
+											<label for="f_zonename">Zone File Name</label>
+											<input id="f_zonename" name="f_zonename" class="form-control" placeholder="Enter Zone File Name" required>
+										</div>
+										<div class="form-group-in">
+											<label for="f_zonetype">Zone Type</label>
+											<input id="f_zonetype" name="f_zonetype" class="form-control" placeholder="Enter Zone Type" required>
+										</div>
+
+										<button type="submit" class="btn btn-primary">CREATE ZONE</button>
+									</form>
+
+
+								</div>
+							</div>
+						</div>
+						<!-- End of Zones Panel -->
+					</div>
+
+				</div>
+			</div>
+		</div><!--/.row-->
+
+{% endblock %}

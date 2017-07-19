@@ -6,10 +6,10 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 
-from utils.zones_form import ZoneForm
+from utils.zones_form import ZoneForm,RecordForm
 from utils.message_notif import get_message_notif
 from utils.api_service import *
-from api.settings import ZONE_DICT
+from api.settings import ZONE_DICT,DEFAULT_CONF_FILENAME
 import json
 import requests
 
@@ -31,6 +31,31 @@ def zones(request, network_id):
                 'zones_list' : zones_list,
             })
 
+def zones_add(request, network_id):
+
+    base_url_api = 'http://'+request.get_host()+"/api/"
+    url_rvr = reverse('zones',args=[network_id])
+    message_notif = ''
+
+    if request.method == 'POST':
+        form = ZoneForm(request.POST)
+        if form.is_valid():
+            f_zonename = form.cleaned_data['f_zonename']
+            named_conf = DEFAULT_CONF_FILENAME
+            try:
+                result = json.loads(post_zones(base_url_api,named_conf,form,f_zonename))
+            except:
+                return redirect(url_rvr+'?status=failed_add')
+
+            if result["status"] == 'ok' :
+                return redirect(url_rvr+'?status=success_add&hostname='+f_zonename)
+            else :
+                return redirect(url_rvr+'?status=failed_add')
+
+    return render(request, 'zones-add.html',{
+                'network_id' : network_id,
+            })
+
 def zones_manage(request, network_id, zones_id):
 
     base_url_api = 'http://'+request.get_host()+"/api/"
@@ -39,7 +64,7 @@ def zones_manage(request, network_id, zones_id):
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        form = ZoneForm(request.POST)
+        form = RecordForm(request.POST)
         if form.is_valid():
             f_hostname = form.cleaned_data['f_hostname']
             result = json.loads(post_record(base_url_api,form,zones_id,f_hostname))
@@ -91,7 +116,7 @@ def records_action(request, network_id, zones_id, record_id, action):
     print 'Action : '+action
 
     if action == 'edit':
-        form = ZoneForm(request.POST)
+        form = RecordForm(request.POST)
         if form.is_valid():
             f_hostname = form.cleaned_data['f_hostname']
             result = json.loads(update_record(base_url_api,form,zones_id,record_id,f_hostname))
