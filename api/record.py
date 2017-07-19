@@ -184,45 +184,6 @@ class RecordView(View):
         This endpoint will return { "status" : "ok" } if adding a new record is
         successfull and {"status" : "fail"} otherwise
         """
-<<<<<<< HEAD
-        # try:
-        payload = json.loads(request.body.decode('utf-8'))
-        zone = DNSZone()
-        zone.read_from_file(FILE_LOCATION[zone_origin])
-        # print zone.toJSON()
-        if (payload['rtype'] == "MX"):
-            record_data = MXRecordData()
-        elif (payload['rtype'] == "SOA"):
-            record_data = SOARecordData()
-        else:
-            record_data = RecordData()
-        new_record = DNSResourceRecord(rdata=record_data)
-        new_record.fromJSON(payload)
-        zone.add_record(new_record)
-        print zone
-        zone.write_to_file(FILE_LOCATION[zone_origin])
-
-        # add reverse if rtype is A:
-        if payload['rtype'] == "A" or payload['rtype'] == "MX":
-            reverse_zone_origin = find_reverse_zone(payload['rdata']['address'])
-
-        reverse_zone = DNSZone()
-        reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
-        reverse_record = DNSResourceRecord()
-        reverse_record.name = payload['rdata']['address'].split('.')[3]
-        reverse_record.ttl = payload.get('ttl')
-        reverse_record.rclass = payload.get('rclass')
-        reverse_record.rtype = "PTR"
-        reverse_record.rdata.address = payload['name'] + '.' + zone_origin + '.'
-        reverse_zone.add_record(reverse_record)
-        reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
-
-        restart_bind(find_server(zone_origin))
-        restart_bind(find_server(reverse_zone_origin))
-        return HttpResponse('{ "status" : "ok" }')
-        # except:
-            # return HttpResponse("{ 'status' : 'fail' }")
-=======
         try:
             payload = json.loads(request.body.decode('utf-8'))
             zone = DNSZone()
@@ -257,7 +218,6 @@ class RecordView(View):
 
             restart_bind(find_server(zone_origin))
             restart_bind(find_server(reverse_zone_origin))
-            return HttpResponse("{ 'status' : 'ok' }")
+            return HttpResponse('{ "status" : "ok" }')
         except:
-            return HttpResponse("{ 'status' : 'fail' }")
->>>>>>> 42ac6544aacd1bc4afc74e2d837efbfc8dcbac74
+            return HttpResponse('{ "status" : "fail" }')
