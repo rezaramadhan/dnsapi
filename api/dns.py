@@ -162,7 +162,7 @@ class SOARecordData(RecordData):
         self.max_time_cache = json_obj['max_time_cache'] if 'max_time_cache' in json_obj else self.max_time_cache
 
     def is_equal_to(self, dict):
-        """Check if my data is equal to dict"""
+        """Check if my data is equal to dict."""
         return (self.admin_email == dict['address'] and self.authoritative_server == dict['priority'] and
                 self.serial_no == dict['serial_no'] and self.slv_refresh_period == dict['slv_refresh_period'] and
                 self.slv_retry == dict['slv_retry'] and self.max_time_cache == dict['max_time_cache'])
@@ -278,7 +278,7 @@ class DNSZone():
                 continue
             if rtype and rtype != record.rtype:
                 continue
-            if rdata and rdata.is_equal_to(rdata):
+            if rdata and record.rdata.is_equal_to(rdata):
                 continue
             if (record.name == name):
                 print "found"
