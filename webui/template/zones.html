@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+
+{% block pathurl %}
+	<li>Network</li>
+	<li>{{network_id}}</li>
+{% endblock %}
+
+{% block content %}
+		<!-- ## DIR-PATH -->
+
+		<!-- ## HEADER -->
+		<div class="row home-box">
+			<div class="col-lg-12 col-sm-12">
+				<h1 class="page-header">DNS Server : {{ network_id }}</h1>
+				<a href="{% url 'network' %}" class="btn btn-warning btn-head pull-right"> Back to Network List </a>
+			</div>
+		</div>
+
+
+		<div class="row home-box">
+			<div class="col-md-7">
+				<div class="panel panel-primary">
+				</div>
+			</div>
+		</div>
+
+		<!-- ## ROW 2 -->
+		<div class="row home-box">
+			<div class="col-md-12">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						Manage DNS Zone of {{ network_id }} Server.
+					</div>
+					<div class="panel-body">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut ante in sapien blandit luctus sed ut lacus. Phasellus urna est, faucibus nec ultrices placerat, feugiat et ligula. Donec vestibulum magna a dui pharetra molestie. Fusce et dui urna.</p>
+						<!-- Zone Panels -->
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									Select Zone :
+								</div>
+								<div class="panel-body">
+									<!-- Zone Items -->
+									{% for zones_id in zones_list %}
+									<div class="panel panel-teal panel-widget border-rounded">
+										<div class="row no-padding">
+											<div class="col-sm-3 col-lg-2 widget-left">
+												<svg class="glyph stroked app-window"><use xlink:href="#stroked-app-window"></use></svg>
+											</div>
+											<div class="col-sm-6 col-lg-7 widget-right">
+												<div class="large">{{zones_id}}</div>
+												<div class="text-muted">Zones</div>
+											</div>
+											<div class="col-sm-3 col-lg-3 widget-button">
+												<a href="{% url 'zones_manage' network_id zones_id %}" class="btn btn-success">MANAGE ZONE </a>
+											</div>
+										</div>
+									</div>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+						<!-- End of Zones Panel -->
+					</div>
+
+
+
+				</div>
+			</div>
+		</div><!--/.row-->
+
+{% endblock %}

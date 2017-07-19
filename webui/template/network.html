@@ -71,7 +71,7 @@
 			<div class="col-md-12">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						Manage DNS Zone
+						Manage DNS Server
 					</div>
 					<div class="panel-body">
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut ante in sapien blandit luctus sed ut lacus. Phasellus urna est, faucibus nec ultrices placerat, feugiat et ligula. Donec vestibulum magna a dui pharetra molestie. Fusce et dui urna.</p>
@@ -79,38 +79,26 @@
 						<div class="col-md-12">
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									Select Zone :
+									Select DNS Server :
 								</div>
 								<div class="panel-body">
 									<!-- Zone Items -->
+									{% for key, values in network_dict.items %}
 									<div class="panel panel-blue panel-widget border-rounded">
 										<div class="row no-padding">
 											<div class="col-sm-3 col-lg-2 widget-left">
-												<svg class="glyph stroked app-window"><use xlink:href="#stroked-app-window"></use></svg>
+												<svg class="glyph stroked external hard drive"><use xlink:href="#stroked-external-hard-drive"/></svg>
 											</div>
 											<div class="col-sm-6 col-lg-7 widget-right">
-												<div class="large">zone_gdn.lokal</div>
-												<div class="text-muted">Zones</div>
+												<div class="large">{{key}}</div>
+												<div class="text-muted">DNS Server</div>
 											</div>
 											<div class="col-sm-3 col-lg-3 widget-button">
-												<a href="{% url 'zones' 'gdn.lokal' %}" class="btn btn-success">MANAGE ZONE </a>
+												<a href="{% url 'zones' key %}" class="btn btn-success">MANAGE SERVER </a>
 											</div>
 										</div>
 									</div>
-									<div class="panel panel-blue panel-widget border-rounded">
-										<div class="row no-padding">
-											<div class="col-sm-3 col-lg-2 widget-left">
-												<svg class="glyph stroked app-window"><use xlink:href="#stroked-app-window"></use></svg>
-											</div>
-											<div class="col-sm-6 col-lg-7 widget-right">
-												<div class="large">ptr_gdn.lokal</div>
-												<div class="text-muted">Zones</div>
-											</div>
-											<div class="col-sm-3 col-lg-3 widget-button">
-												<a href="{% url 'zones' '172.16.64' %}" class="btn btn-success">MANAGE ZONE </a>
-											</div>
-										</div>
-									</div>
+									{% endfor %}
 								</div>
 							</div>
 						</div>

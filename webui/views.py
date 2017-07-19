@@ -9,19 +9,32 @@ from django.core.urlresolvers import reverse
 from utils.zones_form import ZoneForm
 from utils.message_notif import get_message_notif
 from utils.api_service import *
+from api.settings import ZONE_DICT
 import json
 import requests
+
+
 
 
 def index(request):
     return render(request, 'index.html')
 
 def network(request):
-    return render(request, 'network.html')
+    return render(request, 'network.html',{
+                'network_dict' : ZONE_DICT,
+            })
 
-def zones(request, zones_id):
+def zones(request, network_id):
+    zones_list = ZONE_DICT[network_id];
+    return render(request, 'zones.html',{
+                'network_id' : network_id,
+                'zones_list' : zones_list,
+            })
+
+def zones_manage(request, network_id, zones_id):
+
     base_url_api = 'http://'+request.get_host()+"/api/"
-    url_rvr = reverse('zones',args=[zones_id])
+    url_rvr = reverse('zones_manage',args=[network_id,zones_id])
     message_notif = ''
 
     # if this is a POST request we need to process the form data
@@ -45,11 +58,12 @@ def zones(request, zones_id):
         message_notif=get_message_notif(request.GET['status'], request.GET['hostname'])
 
     return render(request, 'zones-manage.html', {
+                'network_id' : network_id,
                 'zones_id': zones_id,
                 'message_notif': message_notif,
             })
 
-def records(request, zones_id, record_id):
+def records_manage(request, network_id, zones_id, record_id):
     base_url_api = 'http://'+request.get_host()+"/api/"
     message_notif = ''
 
@@ -63,6 +77,7 @@ def records(request, zones_id, record_id):
         message_notif=get_message_notif(request.GET['status'], request.GET['hostname'])
 
     return render(request, 'records-manage.html', {
+                'network_id' : network_id,
                 'zones_id': zones_id,
                 'record_id': record_id,
                 'record_data': record_data,
@@ -70,9 +85,9 @@ def records(request, zones_id, record_id):
             })
 
 
-def records_action(request, zones_id, record_id, action):
+def records_action(request, network_id, zones_id, record_id, action):
     base_url_api = 'http://'+request.get_host()+"/api/"
-    url_rvr = reverse('records',args=[zones_id,record_id])
+    url_rvr = reverse('records_manage',args=[network_id,zones_id,record_id])
     print 'Action : '+action
 
     if action == 'edit':
@@ -80,7 +95,7 @@ def records_action(request, zones_id, record_id, action):
         if form.is_valid():
             f_hostname = form.cleaned_data['f_hostname']
             result = json.loads(update_record(base_url_api,form,zones_id,record_id,f_hostname))
-            url_rvr = reverse('records',args=[zones_id,f_hostname])
+            url_rvr = reverse('records_manage',args=[network_id,zones_id,f_hostname])
 
             if result["status"] == 'ok' :
                 return redirect(url_rvr+'?status=success_edit&hostname='+f_hostname)
