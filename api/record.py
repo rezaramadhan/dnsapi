@@ -2,15 +2,18 @@
 import json
 from django.shortcuts import render
 from django.views.generic import View
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from dns import DNSZone, RecordData, MXRecordData, SOARecordData, DNSResourceRecord
 from settings import FILE_LOCATION, restart_bind, find_server
 
+
 def find_reverse_zone(address):
+    """This method will return the reverse zone origin given a certain address"""
     reverse_addr = address.split('.')[:3][::-1]
     return '.'.join(reverse_addr) + ".in-addr.arpa"
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RecordView(View):
@@ -106,6 +109,7 @@ class RecordView(View):
                 reverse_zone_origin = find_reverse_zone(payload['rdata']['address'])
 
             reverse_zone = DNSZone()
+            reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
             reverse_zone.delete_record(record.rdata.address.split('.')[3])
             reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
 
@@ -141,10 +145,20 @@ class RecordView(View):
 
             zone.read_from_file(FILE_LOCATION[zone_origin])
             record = zone.find_record(record_name)
+            old_addr = record.rdata.address
+
             print record.toJSON()
             record.fromJSON(payload)
             print record.toJSON()
             zone.write_to_file(FILE_LOCATION[zone_origin])
+
+            # reverse zone handling
+            if record.rtype == "A" or record.rtype == "MX":
+                reverse_zone_origin = find_reverse_zone(payload['rdata']['address'])
+
+            reverse_zone = DNSZone()
+            reverse_zone.delete_record(record.rdata.address.split('.')[3])
+            reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{ "status" : "ok" }')
@@ -170,6 +184,7 @@ class RecordView(View):
         This endpoint will return { "status" : "ok" } if adding a new record is
         successfull and {"status" : "fail"} otherwise
         """
+<<<<<<< HEAD
         # try:
         payload = json.loads(request.body.decode('utf-8'))
         zone = DNSZone()
@@ -207,3 +222,42 @@ class RecordView(View):
         return HttpResponse('{ "status" : "ok" }')
         # except:
             # return HttpResponse("{ 'status' : 'fail' }")
+=======
+        try:
+            payload = json.loads(request.body.decode('utf-8'))
+            zone = DNSZone()
+            zone.read_from_file(FILE_LOCATION[zone_origin])
+            # print zone.toJSON()
+            if (payload['rtype'] == "MX"):
+                record_data = MXRecordData()
+            elif (payload['rtype'] == "SOA"):
+                record_data = SOARecordData()
+            else:
+                record_data = RecordData()
+            new_record = DNSResourceRecord(rdata=record_data)
+            new_record.fromJSON(payload)
+            zone.add_record(new_record)
+            print zone
+            zone.write_to_file(FILE_LOCATION[zone_origin])
+
+            # add reverse if rtype is A:
+            if payload['rtype'] == "A" or payload['rtype'] == "MX":
+                reverse_zone_origin = find_reverse_zone(payload['rdata']['address'])
+
+            reverse_zone = DNSZone()
+            reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
+            reverse_record = DNSResourceRecord()
+            reverse_record.name = payload['rdata']['address'].split('.')[3]
+            reverse_record.ttl = payload.get('ttl')
+            reverse_record.rclass = payload.get('rclass')
+            reverse_record.rtype = "PTR"
+            reverse_record.rdata.address = payload['name'] + '.' + zone_origin + '.'
+            reverse_zone.add_record(reverse_record)
+            reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
+
+            restart_bind(find_server(zone_origin))
+            restart_bind(find_server(reverse_zone_origin))
+            return HttpResponse("{ 'status' : 'ok' }")
+        except:
+            return HttpResponse("{ 'status' : 'fail' }")
+>>>>>>> 42ac6544aacd1bc4afc74e2d837efbfc8dcbac74
