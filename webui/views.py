@@ -106,7 +106,7 @@ def records_action(request, network_id, zones_id, record_id, action):
 
     if action == 'delete':
         result = json.loads(delete_record(base_url_api, zones_id, record_id))
-        url_rvr = reverse('zones',args=[zones_id])
+        url_rvr = reverse('zones_manage',args=[network_id,zones_id])
         if result["status"] == 'ok' :
             return redirect(url_rvr+'?status=success_del&hostname='+record_id)
         else :

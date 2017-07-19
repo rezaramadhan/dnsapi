@@ -37,16 +37,7 @@
 					<span class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="#"><span>DNS</span> Management</a>
-				<ul class="user-menu">
-					<li class="dropdown pull-right">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> User <span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Profile</a></li>
-							<li><a href="#"><svg class="glyph stroked gear"><use xlink:href="#stroked-gear"></use></svg> Settings</a></li>
-							<li><a href="#"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li>
-						</ul>
-					</li>
-				</ul>
+				
 			</div>
 
 		</div><!-- /.container-fluid -->
@@ -56,14 +47,12 @@
 
 
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
-		<form role="search">
-			<div class="form-group">
-				<input type="text" class="form-control" placeholder="Search">
-			</div>
-		</form>
+
+
 
 		<!-- ## Menu Sidebar -->
 		<ul class="nav menu">
+			<li role="presentation" class="divider"></li>
 			{% url 'index' as urlpath %}
 			<li {% if request.path == urlpath %}class="active"{% endif %}>
 				<a href="{% url 'index' %}">
@@ -78,45 +67,20 @@
 					Networking
 				</a>
 			</li>
-			<li>
-				<a href="{% url 'index' %}">
-					<svg class="glyph stroked line-graph"><use xlink:href="#stroked-line-graph"></use></svg>
-					Report
-				</a>
-			</li>
-			<li class="parent " >
-				<a href="#" data-toggle="collapse" >
-					<span data-toggle="collapse" href="#sub-item-1">
-						<svg class="glyph stroked chevron-down"><use xlink:href="#stroked-chevron-down"></use></svg>
-					</span>
-					Other
-				</a>
-				<ul class="children collapse" id="sub-item-1">
-					<li>
-						<a class="" href="#">
-							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 1
-						</a>
-					</li>
-					<li>
-						<a class="" href="#">
-							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 2
-						</a>
-					</li>
-					<li>
-						<a class="" href="#">
-							<svg class="glyph stroked chevron-right"><use xlink:href="#stroked-chevron-right"></use></svg> Sub Item 3
-						</a>
-					</li>
-				</ul>
-			</li>
 
 			<li role="presentation" class="divider"></li>
-			<li><a href="login.html"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Login Page</a></li>
+			<li>
+				<a href="#"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg>
+					Help
+				</a>
+			</li>
 		</ul>
 		<div class="attribution">Spacewalk Team, DevOps Intern
 			<br/>
-			<a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/" target="_blank" style="color: #333;">Medialoot</a>
-			<a href="http://www.glyphs.co" target="_blank" style="color: #333;">Glyphs</a>
+			<div style="display: none;">
+				<a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/" target="_blank" style="color: #333;">Medialoot</a>
+				<a href="http://www.glyphs.co" target="_blank" style="color: #333;">Glyphs</a>
+			</div>
 		</div>
 	</div><!--/.sidebar-->
 

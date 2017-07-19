@@ -52,7 +52,6 @@ def find_server(zone_name):
         if zone_name in ZONE_DICT[server]:
             return server
 
-
 logger = logging.getLogger('debug')
 get_all_zone()
 # FILE_LOCATION['gdn.lokal'] = '~/haha'
