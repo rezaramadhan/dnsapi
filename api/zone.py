@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from settings import FILE_LOCATION
 from dns import *
 import iscpy
+import json
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ZoneView(View):
@@ -47,12 +48,16 @@ class ZoneView(View):
         """
         # handle the get request
         try:
+
+            if not (zone_origin in FILE_LOCATION):
+                raise KeyError('Invalid Zone: ' + zone_origin)
+
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             return HttpResponse(zone.toJSON())
         # handle the get request
-        except:
-            return HttpResponse("{ 'status' : 'fail' }")
+        except KeyError as k_err:
+            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
 
     def post(self, request, named_file):
         """POST Method handler, used to create a new zone record.
@@ -92,12 +97,12 @@ class ZoneView(View):
             body_soa = body['soa_record']
             body_zone = body['zone']
 
-            #Add zone to named config file
+            # Add zone to named config file
             named_dict, named_keys = iscpy.ParseISCString(open(FILE_LOCATION[named_file]).read())
             new_dict = iscpy.AddZone(body_zone, named_dict)
             iscpy.WriteToFile(new_dict, named_keys, FILE_LOCATION[named_file])
 
-            #Make new zone file
+            # Make new zone file
             zone = str(body_zone.keys()[0])
             soa = SOARecordData()
             soa.fromJSON(body_soa)
@@ -107,5 +112,5 @@ class ZoneView(View):
             new_zone = DNSZone(body_directives, resourcerecord)
             new_zone.write_to_file(body_zone[zone]['file'].split('"')[1])
             return HttpResponse("{ 'status' : 'ok' }")
-        except:
-            return HttpResponse("{ 'status' : 'fail' }")
+        except ValueError:
+            return HttpResponse("{'status' : 'Invalid JSON arguments'}")

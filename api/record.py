@@ -10,9 +10,44 @@ from settings import FILE_LOCATION, restart_bind, find_server
 
 
 def find_reverse_zone(address):
-    """This method will return the reverse zone origin given a certain address"""
+    """Return the reverse zone origin given a certain address."""
     reverse_addr = address.split('.')[:3][::-1]
     return '.'.join(reverse_addr) + ".in-addr.arpa"
+
+
+def reverse_record_add(name, origin_zone, address, ttl=""):
+    """Add the associated reverse zone according to the address given."""
+    reverse_zone_origin = find_reverse_zone(address)
+
+    if not (reverse_zone_origin in FILE_LOCATION):
+        raise KeyError("Invalid Reverse Zone: " + reverse_zone_origin)
+
+    reverse_zone = DNSZone()
+    reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
+    reverse_record = DNSResourceRecord()
+    reverse_record.name = address.split('.')[3]
+    reverse_record.ttl = ttl
+    reverse_record.rclass = "IN"
+    reverse_record.rtype = "PTR"
+    reverse_record.rdata.address = name + '.' + origin_zone + '.'
+    reverse_zone.add_record(reverse_record)
+    reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
+    restart_bind(find_server(reverse_zone_origin))
+
+
+def reverse_record_delete(name, address):
+    """Delete the associated reverse zone according to the address given."""
+    reverse_zone_origin = find_reverse_zone(address)
+
+    if not (reverse_zone_origin in FILE_LOCATION):
+        raise KeyError("Invalid Reverse Zone: " + reverse_zone_origin)
+
+    reverse_zone = DNSZone()
+    reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
+    reverse_zone.delete_record(address.split('.')[3])
+    reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
+
+    restart_bind(find_server(reverse_zone_origin))
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -62,14 +97,20 @@ class RecordView(View):
                 rdata = payload.get("rdata")
             else:
                 rclass = rtype = rdata = None
+
+            if not (zone_origin in FILE_LOCATION):
+                raise KeyError('Invalid Zone: ' + zone_origin)
+
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             record = zone.find_record(record_name, rclass, rtype, rdata)
 
             return HttpResponse(record.toJSON() if record
-                                else '{ "status" : "notfound" }')
-        except:
-            return HttpResponse('{ "status" : "error" }')
+                                else "{'status' : 'notfound'}")
+        except ValueError:
+            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+        except KeyError as k_err:
+            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
 
     def delete(self, request, zone_origin, record_name):
         """DELETW Method handler, used to delete a record.
@@ -98,26 +139,25 @@ class RecordView(View):
             else:
                 rclass = rtype = rdata = None
 
+            if not (zone_origin in FILE_LOCATION):
+                raise KeyError('Invalid Zone: ' + zone_origin)
+
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
-            record = zone.find_record(record_name, rclass, rtype, rdata)
+            deleted_record = zone.find_record(record_name, rclass, rtype, rdata)
             zone.delete_record(record_name, rclass, rtype, rdata)
             print zone
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
-            if record.rtype == "A" or record.rtype == "MX":
-                reverse_zone_origin = find_reverse_zone(payload['rdata']['address'])
-
-            reverse_zone = DNSZone()
-            reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
-            reverse_zone.delete_record(record.rdata.address.split('.')[3])
-            reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
+            if deleted_record.rtype == "A" or deleted_record.rtype == "MX":
+                reverse_record_delete(deleted_record.name, deleted_record.rdata.address)
 
             restart_bind(find_server(zone_origin))
-            restart_bind(find_server(reverse_zone_origin))
-            return HttpResponse('{ "status" : "ok" }')
-        except:
-            return HttpResponse('{ "status" : "failed" }')
+            return HttpResponse("{'status' : 'ok'}")
+        except ValueError:
+            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+        except KeyError as k_err:
+            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
 
     def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
@@ -140,30 +180,33 @@ class RecordView(View):
         """
         try:
             payload = json.loads(request.body.decode('utf-8'))
-            # print body
-            zone = DNSZone()
 
+            if not (zone_origin in FILE_LOCATION):
+                raise KeyError('Invalid Zone: ' + zone_origin)
+
+            zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             record = zone.find_record(record_name)
-            old_addr = record.rdata.address
+
+            # delete old reverse record
+            if (record.rtype == "A" or record.rtype == "MX"):
+                reverse_record_delete(record.name, record.address)
 
             print record.toJSON()
             record.fromJSON(payload)
             print record.toJSON()
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
-            # reverse zone handling
-            if record.rtype == "A" or record.rtype == "MX":
-                reverse_zone_origin = find_reverse_zone(payload['rdata']['address'])
-
-            reverse_zone = DNSZone()
-            reverse_zone.delete_record(record.rdata.address.split('.')[3])
-            reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
+            # create new reverse record
+            if (record.rtype == "A" or record.rtype == "MX"):
+                reverse_record_add(record.name, record.address, zone_origin, record.ttl)
 
             restart_bind(find_server(zone_origin))
-            return HttpResponse('{ "status" : "ok" }')
-        except:
-            return HttpResponse('{ "status" : "failed" }')
+            return HttpResponse("{'status' : 'ok'}")
+        except ValueError:
+            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+        except KeyError as k_err:
+            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
 
     def post(self, request, zone_origin, record_name=""):
         """POST Method handler, used to create a new resource record.
@@ -186,6 +229,10 @@ class RecordView(View):
         """
         try:
             payload = json.loads(request.body.decode('utf-8'))
+
+            if not (zone_origin in FILE_LOCATION):
+                raise KeyError('Invalid Zone: ' + zone_origin)
+
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             # print zone.toJSON()
@@ -202,22 +249,12 @@ class RecordView(View):
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
             # add reverse if rtype is A:
-            if payload['rtype'] == "A" or payload['rtype'] == "MX":
-                reverse_zone_origin = find_reverse_zone(payload['rdata']['address'])
-
-            reverse_zone = DNSZone()
-            reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
-            reverse_record = DNSResourceRecord()
-            reverse_record.name = payload['rdata']['address'].split('.')[3]
-            reverse_record.ttl = payload.get('ttl')
-            reverse_record.rclass = payload.get('rclass')
-            reverse_record.rtype = "PTR"
-            reverse_record.rdata.address = payload['name'] + '.' + zone_origin + '.'
-            reverse_zone.add_record(reverse_record)
-            reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
+            if new_record.rtype == "A" or new_record.rtype == "MX":
+                reverse_record_add(new_record.name, zone_origin, new_record.rdata.address, new_record.ttl)
 
             restart_bind(find_server(zone_origin))
-            restart_bind(find_server(reverse_zone_origin))
             return HttpResponse("{ 'status' : 'ok' }")
-        except:
-            return HttpResponse("{ 'status' : 'fail' }")
+        except ValueError:
+            return HttpResponse("{'status' : 'Invalid JSON arguments'}")
+        except KeyError as k_err:
+            return HttpResponse("{'status' : '"+k_err.args[0]+"'}")
