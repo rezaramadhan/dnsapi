@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from utils.zones_form import ZoneForm,RecordForm
 from utils.message_notif import get_message_notif
 from utils.api_service import *
-from api.settings import ZONE_DICT,DEFAULT_CONF_FILENAME
+from api.settings import FILE_LOCATION,ZONE_DICT,DEFAULT_CONF_FILENAME
 import json
 import requests
 
@@ -17,7 +17,21 @@ import requests
 
 
 def index(request):
-    return render(request, 'index.html')
+    base_url_api = 'http://'+request.get_host()+"/api/"
+
+    record_total = 0
+    server_total = len(ZONE_DICT)
+    zones_total = len(FILE_LOCATION)
+
+    for record in FILE_LOCATION:
+        result = json.loads(get_allrecord(base_url_api, record))
+        record_total = record_total+len(result['resource_records'])
+
+    return render(request, 'index.html',{
+                'server_total' : server_total,
+                'zones_total' : zones_total,
+                'record_total' : record_total,
+            })
 
 def network(request):
     return render(request, 'network.html',{
@@ -25,10 +39,20 @@ def network(request):
             })
 
 def zones(request, network_id):
-    zones_list = ZONE_DICT[network_id];
+    message_notif = ''
+    zones_list = ZONE_DICT[network_id]
+
+    # Set Message Notification
+    if  request.method == 'GET' and 'status' in request.GET:
+        message_notif=get_message_notif(request.GET['status'])
+    if  request.method == 'GET' and 'hostname' in request.GET:
+        message_notif=get_message_notif(request.GET['status'], request.GET['hostname'])
+
+
     return render(request, 'zones.html',{
                 'network_id' : network_id,
                 'zones_list' : zones_list,
+                'message_notif': message_notif,
             })
 
 def zones_add(request, network_id):
@@ -52,8 +76,16 @@ def zones_add(request, network_id):
             else :
                 return redirect(url_rvr+'?status=failed_add')
 
+    # Set Message Notification
+    if  request.method == 'GET' and 'status' in request.GET:
+        message_notif=get_message_notif(request.GET['status'])
+    if  request.method == 'GET' and 'hostname' in request.GET:
+        message_notif=get_message_notif(request.GET['status'], request.GET['hostname'])
+
+
     return render(request, 'zones-add.html',{
                 'network_id' : network_id,
+                'message_notif': message_notif,
             })
 
 def zones_manage(request, network_id, zones_id):

@@ -3,6 +3,10 @@ import json
 import ast
 
 
+def get_allrecord(base_url_api, zone_id):
+    response = requests.get(base_url_api+'zone/'+zone_id)
+    return response.content
+
 def get_record(base_url_api, zone_id, record):
     response = requests.get(base_url_api+'record/'+zone_id+'/'+record)
     return response.content

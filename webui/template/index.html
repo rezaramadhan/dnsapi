@@ -20,11 +20,24 @@
 				<div class="panel panel-blue panel-widget ">
 					<div class="row no-padding">
 						<div class="col-sm-3 col-lg-5 widget-left">
+							<svg class="glyph stroked external hard drive"><use xlink:href="#stroked-external-hard-drive"/></svg>
+						</div>
+						<div class="col-sm-9 col-lg-7 widget-right">
+							<div class="large">{{server_total}}</div>
+							<div class="text-muted">Server Total</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-3">
+				<div class="panel panel-teal panel-widget ">
+					<div class="row no-padding">
+						<div class="col-sm-3 col-lg-5 widget-left">
 							<svg class="glyph stroked table"><use xlink:href="#stroked-table"/></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">4</div>
-							<div class="text-muted">Zones</div>
+							<div class="large">{{zones_total}}</div>
+							<div class="text-muted">Zones Totals</div>
 						</div>
 					</div>
 				</div>
@@ -36,13 +49,13 @@
 							<svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">187</div>
-							<div class="text-muted">Records</div>
+							<div class="large">{{record_total}}</div>
+							<div class="text-muted">Records Total</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-12 col-md-6 col-lg-3">
+			<!-- <div class="col-xs-12 col-md-6 col-lg-3">
 				<div class="panel panel-teal panel-widget">
 					<div class="row no-padding">
 						<div class="col-sm-3 col-lg-5 widget-left">
@@ -54,7 +67,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 
 		</div><!--/.row-->
 
@@ -75,7 +88,7 @@
 					<div class="panel-heading">Last Updated Record</div>
 					<div class="panel-body">
 						<table  data-toggle="table" id="table-style"
-										data-url="{% static 'assets/tables/datarecord.json' %}"
+										data-url="{% static 'assets/tables/datarecordX.json' %}"
 										data-page-size="5"
 										data-page-list="[10,5]"
 										data-only-info-pagination="true"
@@ -134,7 +147,7 @@
 					<div class="panel-heading dark-overlay"><svg class="glyph stroked clipboard-with-paper"><use xlink:href="#stroked-clipboard-with-paper"></use></svg>To-do List</div>
 					<div class="panel-body">
 						<ul class="todo-list">
-						<li class="todo-list-item">
+						<!-- <li class="todo-list-item">
 								<div class="checkbox">
 									<input type="checkbox" id="checkbox" />
 									<label for="checkbox">Make a plan for today</label>
@@ -199,7 +212,7 @@
 									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
 									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
 								</div>
-							</li>
+							</li> -->
 						</ul>
 					</div>
 					<div class="panel-footer">
