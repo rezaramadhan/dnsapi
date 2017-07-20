@@ -1,14 +1,14 @@
-#dnsapi
+# dnsapi
 
-##Description
+## Description
 dnsapi provides API to retrieve and modify BIND files. Return formats of all endpoints is in JSON.
 
-##Requirements
+## Requirements
 * iscpy python library
 
-##Endpoints
+## Endpoints
 
-###Zone
+### Zone
 * `GET` zone/zone_origin
   * Description
 
@@ -88,7 +88,7 @@ dnsapi provides API to retrieve and modify BIND files. Return formats of all end
 
     Will return `status` key with value `OK` if succeed, or `Invalid JSON arguments` if failed.
 
-###Record
+### Record
 * `GET` record/zone_origin/record_name
   * Description
 
