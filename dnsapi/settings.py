@@ -139,19 +139,19 @@ LOGGING = {
         'access_file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'log/access.log',
+            'filename': os.path.join(BASE_DIR, 'log/access.log'),
             'formatter': 'simple',
         },
         'debug_file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'log/debug.log',
+            'filename': os.path.join(BASE_DIR, 'log/debug.log'),
             'formatter': 'verbose',
         },
         'error_file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'log/error.log',
+            'filename': os.path.join(BASE_DIR, 'log/error.log'),
             'formatter': 'verbose',
         },
     },

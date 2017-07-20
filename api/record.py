@@ -10,8 +10,7 @@ from dns import (DNSZone, RecordData, MXRecordData, SOARecordData,
                  DNSResourceRecord)
 from settings import FILE_LOCATION, restart_bind, find_server
 
-logger = logging.getLogger("debug")
-
+logger_debug = logging.getLogger("debug")
 
 def find_reverse_zone(address):
     """Return the reverse zone origin given a certain address."""
@@ -39,7 +38,7 @@ def reverse_record_add(name, origin_zone, address, ttl=""):
     restart_bind(find_server(reverse_zone_origin))
 
 
-def reverse_record_delete(name, address):
+def reverse_record_delete(name, address, origin_zone):
     """Delete the associated reverse zone according to the address given."""
     reverse_zone_origin = find_reverse_zone(address)
 
@@ -48,9 +47,9 @@ def reverse_record_delete(name, address):
 
     reverse_zone = DNSZone()
     reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
-    reverse_zone.delete_record(address.split('.')[3])
+    logger_debug.debug('\n\n     Deleting: ' + name + " " + address)
+    reverse_zone.delete_record(address.split('.')[3], rdata={'address': name + '.' + origin_zone + '.'})
     reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
-
     restart_bind(find_server(reverse_zone_origin))
 
 
@@ -93,7 +92,6 @@ class RecordView(View):
 
         And return {"status" : "notfound"} if the record file is not exist
         """
-        # logger.info("get item:" + record_name)
         try:
             if request.body.decode('utf-8'):
                 payload = json.loads(request.body.decode('utf-8'))
@@ -152,11 +150,10 @@ class RecordView(View):
             zone.read_from_file(FILE_LOCATION[zone_origin])
             deleted_record = zone.find_record(record_name, rclass, rtype, rdata)
             zone.delete_record(record_name, rclass, rtype, rdata)
-            print zone
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
             if deleted_record.rtype == "A" or deleted_record.rtype == "MX":
-                reverse_record_delete(deleted_record.name, deleted_record.rdata.address)
+                reverse_record_delete(deleted_record.name, deleted_record.rdata.address, zone_origin)
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{"status" : "ok"}')
@@ -198,11 +195,9 @@ class RecordView(View):
 
             # delete old reverse record
             if (record.rtype == "A" or record.rtype == "MX"):
-                reverse_record_delete(record.name, record.rdata.address)
+                reverse_record_delete(record.name, record.rdata.address, zone_origin)
 
-            print record.toJSON()
             record.fromJSON(payload)
-            print record.toJSON()
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
             # create new reverse record
@@ -245,7 +240,6 @@ class RecordView(View):
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
-            # print zone.toJSON()
             if (payload['rtype'] == "MX"):
                 record_data = MXRecordData()
             elif (payload['rtype'] == "SOA"):
@@ -255,7 +249,6 @@ class RecordView(View):
             new_record = DNSResourceRecord(rdata=record_data)
             new_record.fromJSON(payload)
             zone.add_record(new_record)
-            print zone
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
             # add reverse if rtype is A:
