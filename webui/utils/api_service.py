@@ -60,8 +60,8 @@ def update_record(base_url_api,form_record,zones_id,record,f_hostname):
     print response.content
     return response.content
 
-def delete_record(base_url_api, zone_id, record):
-    response = requests.delete(base_url_api+'record/'+zone_id+'/'+record)
+def delete_record(base_url_api, zone_id, record_id):
+    response = requests.delete(base_url_api+'record/'+zone_id+'/'+record_id)
     return response.content
 
 def post_zones(base_url_api,named_conf,form_zone,f_zonename):
@@ -156,7 +156,7 @@ def apiServiceNotif(call_type, base_url_api, data_state, form_data=None) :
 
         # DELETE Record
         elif call_type == 'delete_record' :
-            result = json.loads(delete_record(base_url_api, zones_id, record_id))
+            result = json.loads(delete_record(base_url_api, data_state['zones_id'], data_state['record_id']))
             if result["status"] == 'ok' :
                 message_notif = get_message_notif('success_delete',data_state['record_id'])
             else :

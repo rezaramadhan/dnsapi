@@ -134,14 +134,18 @@ def records_action(request, network_id, zones_id, record_id, action):
         form = RecordForm(request.POST)
         try :
             message_notif = apiServiceNotif('update_record',base_url_api,data_state,form)
+            url_rvr = reverse('records_manage',args=[network_id,zones_id,message_notif['message_item']])
+            request.session['message_notif'] = message_notif
+            return redirect(url_rvr)
         except BaseException as b_error :
             message_notif = get_message_notif('error','records_action edit : '+str(b_error))
         except :
             message_notif = get_message_notif('error','records_action Edit Errors')
 
+
     elif action == 'delete':
         try :
-            message_notif = apiServiceNotif('delete_record',base_url_api,data_state,form)
+            message_notif = apiServiceNotif('delete_record',base_url_api,data_state)
         except BaseException as b_error :
             message_notif = get_message_notif('error','records_action delete : '+str(b_error))
         except :
