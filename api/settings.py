@@ -52,13 +52,14 @@ def find_server(zone_name):
         if zone_name in ZONE_DICT[server]:
             return server
 
+
 logger = logging.getLogger('debug')
-# get_all_zone()
+get_all_zone()
 # FILE_LOCATION['gdn.lokal'] = '~/haha'
-logger.debug('file_location: ' + str(FILE_LOCATION))
-logger.debug('zone_dict: ' + str(ZONE_DICT))
 
 # FILE_LOCATION['gdn.lokal'] = '/home/linux1-user/dnsapi/zone_gdn.lokal'
 # FILE_LOCATION['10.17.172.in-addr.arpa'] = '/home/linux1-user/dnsapi/ptr_gdn.lokal'
 # ZONE_DICT['10.0.2.11'].append('gdn.lokal')
 # ZONE_DICT['10.0.2.11'].append('10.17.172.in-addr.arpa')
+logger.debug('file_location: ' + str(FILE_LOCATION))
+logger.debug('zone_dict: ' + str(ZONE_DICT))

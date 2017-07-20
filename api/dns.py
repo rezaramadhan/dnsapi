@@ -2,7 +2,9 @@
 
 import re
 import json
+import logging
 
+log_debug = logging.getLogger('debug')
 RCLASS_LIST = ['IN', 'CH']
 RTYPE_LIST = ['A', 'AAAA', 'MX', 'NS', 'PTR', 'CNAME', 'SOA', 'URI', 'TXT']
 
@@ -33,11 +35,11 @@ class RecordData():
 
     def is_equal_to(self, dict):
         """Check if my data is equal to dict"""
+        log_debug.debug(self.address + ' ' + dict['address'])
         return self.address == dict['address']
 
     def fromJSON(self, json_obj):
         """Public constructor to create class from a json string."""
-        print json_obj
         self.address = json_obj['address'] if 'address' in json_obj else self.address
 
     def toJSON(self):
@@ -271,17 +273,17 @@ class DNSZone():
 
         raise LookupError when record is not found
         """
-        print "name"
+        log_debug.debug('Finding:' + name + " " + str(rdata))
         for record in self.resource_records:
             # continue to next loop if X is not empty and X does not equal record.X
             if rclass and rclass != record.rclass:
                 continue
             if rtype and rtype != record.rtype:
                 continue
-            if rdata and record.rdata.is_equal_to(rdata):
+            if rdata and not record.rdata.is_equal_to(rdata):
                 continue
             if (record.name == name):
-                print "found"
+                log_debug.debug('Found: ' + str(record))
                 return record
         raise LookupError("Record not found")
 
@@ -300,6 +302,8 @@ class DNSZone():
         """
         try:
             self.resource_records.remove(self.find_record(name, rclass, rtype, rdata))
+            log_debug.debug('Deleted ' + name + " " + str(rdata))
+
             self.increment_soa()
         except:
             pass
@@ -391,7 +395,6 @@ class DNSZone():
                 zonefile_lines[i] = re.sub('\r?\n', '', zonefile_lines[i])
                 zonefile_lines[i] = re.sub(';.*', '', zonefile_lines[i])
 
-        # print zonefile_lines
         self.directives = self.parse_directives(zonefile_lines)
         self.resource_records = self.parse_records(zonefile_lines)
 
