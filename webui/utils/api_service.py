@@ -98,7 +98,7 @@ def post_zones(base_url_api,named_conf,form_zone,f_zonename):
     }
 
     headers = {'content-type': 'application/json'}
-    response = requests.post(base_url_api+'zone/'+named_conf+'/', data=json.dumps(post_data), headers=headers)
+    response = requests.post(base_url_api+'zone/'+named_conf, data=json.dumps(post_data), headers=headers)
 
     return response.content
 

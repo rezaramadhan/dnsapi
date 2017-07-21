@@ -113,3 +113,7 @@ class ZoneView(View):
             return HttpResponse('{ "status" : "ok" }')
         except ValueError:
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
+        except BaseException as b_error :
+            return HttpResponse('{"status" : "'+str(b_error)+'"}')
+        except :
+            return HttpResponse('{"status" : "API unexpected error"}')

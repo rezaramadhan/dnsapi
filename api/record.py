@@ -112,9 +112,13 @@ class RecordView(View):
         except ValueError:
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
         except KeyError as k_err:
-            return HttpResponse('{"status" : "'+k_err.args[0]+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
         except LookupError as l_err:
-            return HttpResponse('{"status" : "'+l_err.args[0]+'"}')
+            return HttpResponse('{"status" : "'+str(l_err.args[0])+'"}')
+        except BaseException as b_error :
+            return HttpResponse('{"status" : "'+str(b_error)+'"}')
+        except :
+            return HttpResponse('{"status" : "API unexpected error"}')
 
     def delete(self, request, zone_origin, record_name):
         """DELETW Method handler, used to delete a record.
@@ -160,9 +164,13 @@ class RecordView(View):
         except ValueError:
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
         except KeyError as k_err:
-            return HttpResponse('{"status" : "'+k_err.args[0]+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
         except LookupError as l_err:
-            return HttpResponse('{"status" : "'+l_err.args[0]+'"}')
+            return HttpResponse('{"status" : "'+str(l_err.args[0])+'"}')
+        except BaseException as b_error :
+            return HttpResponse('{"status" : "'+str(b_error)+'"}')
+        except :
+            return HttpResponse('{"status" : "API unexpected error"}')
 
     def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
@@ -209,9 +217,13 @@ class RecordView(View):
         except ValueError:
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
         except KeyError as k_err:
-            return HttpResponse('{"status" : "'+k_err.args[0]+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
         except LookupError as l_err:
-            return HttpResponse('{"status" : "'+l_err.args[0]+'"}')
+            return HttpResponse('{"status" : "'+str(l_err.args[0])+'"}')
+        except BaseException as b_error :
+            return HttpResponse('{"status" : "'+str(b_error)+'"}')
+        except :
+            return HttpResponse('{"status" : "API unexpected error"}')
 
     def post(self, request, zone_origin, record_name=""):
         """POST Method handler, used to create a new resource record.
@@ -261,6 +273,10 @@ class RecordView(View):
         except ValueError:
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
         except KeyError as k_err:
-            return HttpResponse('{"status" : "'+k_err.args[0]+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
         except LookupError as l_err:
-            return HttpResponse('{"status" : "'+l_err.args[0]+'"}')
+            return HttpResponse('{"status" : "'+str(l_err.args[0])+'"}')
+        except BaseException as b_error :
+            return HttpResponse('{"status" : "'+str(b_error)+'"}')
+        except :
+            return HttpResponse('{"status" : "API unexpected error"}')
