@@ -134,7 +134,11 @@ def records_action(request, network_id, zones_id, record_id, action):
         form = RecordForm(request.POST)
         try :
             message_notif = apiServiceNotif('update_record',base_url_api,data_state,form)
-            url_rvr = reverse('records_manage',args=[network_id,zones_id,message_notif['message_item']])
+            if message_notif['type_notif'] == 'success' :
+                url_rvr = reverse('records_manage',args=[network_id,zones_id,message_notif['message_item']])
+            else :
+                url_rvr = reverse('records_manage',args=[network_id,zones_id,record_id])
+
             request.session['message_notif'] = message_notif
             return redirect(url_rvr)
         except BaseException as b_error :
