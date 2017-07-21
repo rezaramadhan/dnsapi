@@ -43,6 +43,9 @@ def network(request):
                 'network_dict' : ZONE_DICT,
             })
 
+def help(request):
+    return render(request, 'help.html')
+    
 def zones(request, network_id):
     data_state = DataState(network_id)
     message_notif = ''
