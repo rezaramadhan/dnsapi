@@ -4,6 +4,8 @@ from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from settings import FILE_LOCATION
+from settings import LOCAL_DIR_DICT
+from settings import DEFAULT_CONF_FILENAME
 from dns import *
 import iscpy
 import json
@@ -58,7 +60,7 @@ class ZoneView(View):
         except KeyError as k_err:
             return HttpResponse('{ "status" : "'+k_err.args[0]+'" }')
 
-    def post(self, request, named_file):
+    def post(self, request, dns_server):
         """POST Method handler, used to create a new zone record.
 
         This endpoint recieve the following JSON file:
@@ -95,11 +97,11 @@ class ZoneView(View):
             body_directives = body['directives']
             body_soa = body['soa_record']
             body_zone = body['zone']
-
+            named_file = str(LOCAL_DIR_DICT[dns_server]) + DEFAULT_CONF_FILENAME
             # Add zone to named config file
-            named_dict, named_keys = iscpy.ParseISCString(open(FILE_LOCATION[named_file]).read())
+            named_dict, named_keys = iscpy.ParseISCString(open(named_file).read())
             new_dict = iscpy.AddZone(body_zone, named_dict)
-            iscpy.WriteToFile(new_dict, named_keys, FILE_LOCATION[named_file])
+            iscpy.WriteToFile(new_dict, named_keys, named_file)
 
             # Make new zone file
             zone = str(body_zone.keys()[0])
@@ -109,7 +111,9 @@ class ZoneView(View):
             resourcerecord = []
             resourcerecord.append(new_record)
             new_zone = DNSZone(body_directives, resourcerecord)
-            new_zone.write_to_file(body_zone[zone]['file'].split('"')[1])
+            zone_file = str(LOCAL_DIR_DICT[dns_server]) + body_zone[zone]['file'].split('"')[1]
+            print zone_file
+            new_zone.write_to_file(zone_file)
             return HttpResponse('{ "status" : "ok" }')
         except ValueError:
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
