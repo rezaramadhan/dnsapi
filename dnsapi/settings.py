@@ -147,6 +147,18 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'log/debug.log'),
             'formatter': 'verbose',
         },
+        'api_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/api.log'),
+            'formatter': 'verbose',
+        },
+        'webui_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/webui.log'),
+            'formatter': 'verbose',
+        },
         'error_file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
@@ -180,6 +192,16 @@ LOGGING = {
         },
         'debug': {
             'filters': ['require_debug_true'],
+            'handlers': ['debug_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'api': {
+            'handlers': ['debug_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'webui': {
             'handlers': ['debug_file'],
             'level': 'DEBUG',
             'propagate': True,

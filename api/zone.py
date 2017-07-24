@@ -1,23 +1,31 @@
+"""Class-based view for zone handling."""
 from django.views.generic import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from settings import (FILE_LOCATION, LOCAL_DIR_DICT, DEFAULT_CONF_FILENAME,
                       REMOTE_CONF_DIR, restart_bind)
-from dns import *
+from dns import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
 import iscpy
 import json
 import re
+import logging
+import traceback
+
+logger = logging.getLogger(__name__)
+
 
 def add_absolute_path(zone_body):
+    """Add the absolute path to zone file path if necessary."""
     filename = zone_body[zone_body.keys()[0]]['file']
     filename = re.search('"(.*)"', filename).group(1)
-    if filename[0] != '/': # relative path
+    if filename[0] != '/':  # relative path
         filename = REMOTE_CONF_DIR + filename
     elif not (REMOTE_CONF_DIR in filename):
         raise EnvironmentError("Cannot access the provided path")
     zone_body[zone_body.keys()[0]]['file'] = '"' + filename + '"'
-    print zone_body
+    logger.debug("Final zone_body: " + str(zone_body))
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ZoneView(View):
@@ -59,15 +67,24 @@ class ZoneView(View):
         """
         # handle the get request
         try:
-
             if not (zone_origin in FILE_LOCATION):
                 raise KeyError('Invalid Zone: ' + zone_origin)
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             return HttpResponse(zone.toJSON())
-        except KeyError as k_err:
-            return HttpResponse('{ "status" : "'+k_err.args[0]+'" }')
+        except ValueError as v_err:
+            logger.warning(v_err.args)
+            logger.warning(traceback.format_exc(2) + "\n\n\n")
+            return HttpResponse('{"status" : "Invalid JSON arguments"}')
+        except (KeyError, LookupError) as k_err:
+            logger.error(k_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
+        except Exception as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            return HttpResponse('{"status" : "'+str(b_err)+'"}')
 
     def post(self, request, dns_server):
         """POST Method handler, used to create a new zone record.
@@ -122,19 +139,28 @@ class ZoneView(View):
             soa_record = DNSResourceRecord("@", "", "", "SOA", soa)
             resourcerecord = []
             resourcerecord.append(soa_record)
-            ns_record = DNSResourceRecord("@", "", "", "NS", RecordData(body_soa['authoritative_server'] + "."))
+            ns_record = DNSResourceRecord("@", "", "", "NS",
+                                          RecordData(body_soa['authoritative_server'] + "."))
             resourcerecord.append(ns_record)
             new_zone = DNSZone(body_directives, resourcerecord)
             zone_file = body_zone[zone]['file'].split('"')[1]
-            zone_file = zone_file.replace(REMOTE_CONF_DIR, LOCAL_DIR_DICT[dns_server])
+            zone_file = zone_file.replace(REMOTE_CONF_DIR,
+                                          LOCAL_DIR_DICT[dns_server])
+
             print new_zone.toJSON()
             new_zone.write_to_file(zone_file)
 
             restart_bind(dns_server)
             return HttpResponse('{ "status" : "ok" }')
-        except ValueError:
+        except ValueError as v_err:
+            logger.warning(v_err.args)
+            logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
-        except BaseException as b_error:
-            return HttpResponse('{"status" : "'+str(b_error)+'"}')
-        except:
-            return HttpResponse('{"status" : "API unexpected error"}')
+        except (KeyError, LookupError) as k_err:
+            logger.error(k_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
+        except Exception as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            return HttpResponse('{"status" : "'+str(b_err)+'"}')

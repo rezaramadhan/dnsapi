@@ -1,7 +1,7 @@
 """Class-based view for record handling."""
 import json
 import logging
-import sys
+import traceback
 from django.views.generic import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -10,7 +10,8 @@ from dns import (DNSZone, RecordData, MXRecordData, SOARecordData,
                  DNSResourceRecord)
 from settings import FILE_LOCATION, restart_bind, find_server
 
-logger_debug = logging.getLogger("debug")
+logger = logging.getLogger(__name__)
+
 
 def find_reverse_zone(address):
     """Return the reverse zone origin given a certain address."""
@@ -35,6 +36,8 @@ def reverse_record_add(name, origin_zone, address, ttl=""):
     reverse_record.rdata.address = name + '.' + origin_zone + '.'
     reverse_zone.add_record(reverse_record)
     reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
+    logger.info("Created reverse record: " + str(reverse_record) +
+                "\nOn zone: " + origin_zone)
     restart_bind(find_server(reverse_zone_origin))
 
 
@@ -47,9 +50,14 @@ def reverse_record_delete(name, address, origin_zone):
 
     reverse_zone = DNSZone()
     reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
-    logger_debug.debug('\n\n     Deleting: ' + name + " " + address)
-    reverse_zone.delete_record(address.split('.')[3], rdata={'address': name + '.' + origin_zone + '.'})
+    record = reverse_zone.find_record(address.split('.')[3],
+                                      rdata={'address': name + '.' +
+                                             origin_zone + '.'})
+    reverse_zone.delete_record(address.split('.')[3],
+                               rdata={'address': name + '.' + origin_zone + '.'})
     reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
+    logger.info("Deleted reverse record: " + str(record) +
+                "\nOn zone: " + origin_zone)
     restart_bind(find_server(reverse_zone_origin))
 
 
@@ -107,18 +115,23 @@ class RecordView(View):
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             record = zone.find_record(record_name, rclass, rtype, rdata)
+
+            logger.info("Get record: " + str(record) +
+                        "\nOn zone: " + zone_origin)
             return HttpResponse(record.toJSON() if record
                                 else '{"status" : "notfound"}')
-        except ValueError:
+        except ValueError as v_err:
+            logger.warning(v_err.args)
+            logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
-        except KeyError as k_err:
+        except (KeyError, LookupError) as k_err:
+            logger.error(k_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
             return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
-        except LookupError as l_err:
-            return HttpResponse('{"status" : "'+str(l_err.args[0])+'"}')
-        except BaseException as b_error :
-            return HttpResponse('{"status" : "'+str(b_error)+'"}')
-        except :
-            return HttpResponse('{"status" : "API unexpected error"}')
+        except Exception as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            return HttpResponse('{"status" : "'+str(b_err)+'"}')
 
     def delete(self, request, zone_origin, record_name):
         """DELETW Method handler, used to delete a record.
@@ -156,21 +169,27 @@ class RecordView(View):
             zone.delete_record(record_name, rclass, rtype, rdata)
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
+            logger.info("Deleted record: " + str(deleted_record) +
+                        "\nOn zone: " + zone_origin)
+
             if deleted_record.rtype == "A" or deleted_record.rtype == "MX":
-                reverse_record_delete(deleted_record.name, deleted_record.rdata.address, zone_origin)
+                reverse_record_delete(deleted_record.name,
+                                      deleted_record.rdata.address, zone_origin)
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{"status" : "ok"}')
-        except ValueError:
+        except ValueError as v_err:
+            logger.warning(v_err.args)
+            logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
-        except KeyError as k_err:
+        except (KeyError, LookupError) as k_err:
+            logger.error(k_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
             return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
-        except LookupError as l_err:
-            return HttpResponse('{"status" : "'+str(l_err.args[0])+'"}')
-        except BaseException as b_error :
-            return HttpResponse('{"status" : "'+str(b_error)+'"}')
-        except :
-            return HttpResponse('{"status" : "API unexpected error"}')
+        except Exception as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            return HttpResponse('{"status" : "'+str(b_err)+'"}')
 
     def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
@@ -203,27 +222,33 @@ class RecordView(View):
 
             # delete old reverse record
             if (record.rtype == "A" or record.rtype == "MX"):
-                reverse_record_delete(record.name, record.rdata.address, zone_origin)
+                reverse_record_delete(record.name, record.rdata.address,
+                                      zone_origin)
 
             record.fromJSON(payload)
             zone.write_to_file(FILE_LOCATION[zone_origin])
+            logger.info("Updated record: " + str(record) +
+                        "\nOn zone: " + zone_origin)
 
             # create new reverse record
             if (record.rtype == "A" or record.rtype == "MX"):
-                reverse_record_add(record.name, zone_origin, record.rdata.address, record.ttl)
+                reverse_record_add(record.name, zone_origin,
+                                   record.rdata.address, record.ttl)
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{"status" : "ok"}')
-        except ValueError:
+        except ValueError as v_err:
+            logger.warning(v_err.args)
+            logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
-        except KeyError as k_err:
+        except (KeyError, LookupError) as k_err:
+            logger.error(k_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
             return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
-        except LookupError as l_err:
-            return HttpResponse('{"status" : "'+str(l_err.args[0])+'"}')
-        except BaseException as b_error :
-            return HttpResponse('{"status" : "'+str(b_error)+'"}')
-        except :
-            return HttpResponse('{"status" : "API unexpected error"}')
+        except Exception as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            return HttpResponse('{"status" : "'+str(b_err)+'"}')
 
     def post(self, request, zone_origin, record_name=""):
         """POST Method handler, used to create a new resource record.
@@ -262,7 +287,8 @@ class RecordView(View):
             new_record.fromJSON(payload)
             zone.add_record(new_record)
             zone.write_to_file(FILE_LOCATION[zone_origin])
-
+            logger.info("Created record: " + str(new_record) +
+                        "\nOn zone: " + zone_origin)
             # add reverse if rtype is A:
             if new_record.rtype == "A" or new_record.rtype == "MX":
                 reverse_record_add(new_record.name, zone_origin,
@@ -270,13 +296,15 @@ class RecordView(View):
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{"status" : "ok"}')
-        except ValueError:
+        except ValueError as v_err:
+            logger.warning(v_err.args)
+            logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
-        except KeyError as k_err:
+        except (KeyError, LookupError) as k_err:
+            logger.error(k_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
             return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
-        except LookupError as l_err:
-            return HttpResponse('{"status" : "'+str(l_err.args[0])+'"}')
-        except BaseException as b_error :
-            return HttpResponse('{"status" : "'+str(b_error)+'"}')
-        except :
-            return HttpResponse('{"status" : "API unexpected error"}')
+        except Exception as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            return HttpResponse('{"status" : "'+str(b_err)+'"}')
