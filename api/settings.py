@@ -11,8 +11,8 @@ import sys
 DEFAULT_CONF_FILENAME = "named.conf.local"
 REMOTE_CONF_DIR = "/etc/named/"
 USER_DICT = {"10.0.2.11": "root", "10.0.2.6": "root"}
-LOCAL_DIR_DICT = {"10.0.2.11": "/mnt/nfs-dns-coba1/",
-                  "10.0.2.6": "/mnt/nfs-dns-coba2/"}
+LOCAL_DIR_DICT = {"10.0.2.11": "/tmp/test1/",
+                  "10.0.2.6": "/tmp/test2/"}
 ZONE_DICT = {"10.0.2.11": [], "10.0.2.6": []}
 
 # di-populate sama script nanti dibawah

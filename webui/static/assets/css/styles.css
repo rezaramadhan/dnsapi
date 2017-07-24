@@ -660,8 +660,8 @@ a.bg-danger:hover {
 }
 
 h1.page-header {
-	display: inline-block;
 	margin-top: 30px;
+	margin-left: 20px;
 	border-bottom: 0;
 }
 
@@ -699,35 +699,9 @@ h1.page-header {
   border: 2px solid #d2d2d2;
 }
 
-.alert {
-	margin: 10px;
-}
-
-.alert span {
-	font-weight: 600;
-	font-size: 16px;
-}
-
-.btn-head {
-	display: inline-block;
-	margin-top: 40px;
-	font-size: 20px;
-}
-
-.btn-head-sub {
-	display: inline-block;
-	margin-top : 5px;
-
-	font-size: 18px;
-}
-
-.unlink :hover {
-	text-decoration: none !important;
-}
-
 /*Form Custom*/
 .form-in {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 .form-in .form-group-in {
 	display: inline-block;
@@ -735,59 +709,16 @@ h1.page-header {
 	vertical-align: middle;
 	margin: 10px 15px;
 	margin-left: 0;
-	width: 20em;
-}
-
-.form-in .form-group-in-full {
-	display: block;
-	margin-bottom: 0;
-	vertical-align: middle;
-	margin: 10px 15px;
-	margin-left: 0;
-	width: 37em;
-}
-
-.form-in .form-group-in-short {
-	display: inline-block;
-	margin-bottom: 0;
-	vertical-align: middle;
-	margin: 10px 15px;
-	margin-left: 0;
-	width: 12em;
-}
-
-.form-in .form-group-in-zone {
-	display: inline-block;
-	margin-bottom: 0;
-	vertical-align: middle;
-	margin: 10px 15px;
-	margin-left: 0;
-	width: 25em;
+	width: 18em;
 }
 
 .form-in .form-group-in input {
 	height: 50px;
 }
 
-.form-in .form-group-in-full input {
-	height: 50px;
-}
-
-.form-in .form-group-in-short input {
-	height: 50px;
-}
-
-.form-in .form-group-in-zone input {
-	height: 50px;
-}
-
 .form-in .form-group-in select {
 	height: 50px;
 	width: 15em;
-}
-
-.form-in h4 {
-	margin-top: 30px;
 }
 
 .form-in button {

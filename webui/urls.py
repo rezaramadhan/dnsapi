@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^network/([\w\-.]*)/([\w\-.]*)/([\w\-.@]*)/$$', views.records_manage, name='records_manage'),
     url(r'^network/([\w\-.]*)/([\w\-.]*)/([\w\-.@]*)/([\w\-.@]*)/$$', views.records_action, name='records_action'),
     url(r'^debug$', views.debug, name='debug'),
+    url(r'^help/$', views.help, name='help'),
 ]

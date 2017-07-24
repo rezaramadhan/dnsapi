@@ -11,8 +11,11 @@
 <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
 <link href="{% static 'assets/css/jquery-ui.css' %}" rel="stylesheet">
 <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/font-awesome.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/datepicker3.css' %}" rel="stylesheet">
 <!--Icons-->
 <script src="{% static 'assets/js/lumino.glyphs.js' %}"></script>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
 <!-- Stylesheet Block -->
 {% block stylesheet %}{% endblock %}
@@ -69,8 +72,10 @@
 			</li>
 
 			<li role="presentation" class="divider"></li>
-			<li>
-				<a href="#"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg>
+      {% url 'help' as urlpath %}
+			<li {% if request.path == urlpath %}class="active"{% endif %}>
+				<a href="{% url 'help' %}">
+					<svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg>
 					Help
 				</a>
 			</li>
@@ -110,10 +115,16 @@
 	</div>	<!--/.main-->
 	<!-- #### END OF MAIN DIV -->
 
-	<script src="{% static 'assets/js/jquery-1.12.4.min.js' %}"></script>
+  <script src="{% static 'assets/js/jquery-1.12.4.min.js' %}"></script>
 	<script src="{% static 'assets/js/jquery-ui.js' %}"></script>
 	<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
 	<script src="{% static 'assets/js/bootstrap-table.js' %}"></script>
+  <script src="{% static 'assets/js/chart.min.js' %}"></script>
+  <script src="{% static 'assets/js/chart-data.js' %}"></script>
+  <script src="{% static 'assets/js/easypiechart.js' %}"></script>
+  <script src="{% static 'assets/js/easypiechart-data.js' %}"></script>
+  <script src="{% static 'assets/js/bootstrap-datepicker.js' %}"></script>
+  <script src="{% static 'assets/js/custom.js' %}"></script>
 
 	{% block script %}{% endblock %}
 

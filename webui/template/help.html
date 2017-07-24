@@ -1,0 +1,208 @@
+{% extends 'layout.html' %}
+
+{% block pathurl %}
+	<li>Help</li>
+{% endblock %}
+
+{% block content %}
+		<!-- ## DIR-PATH -->
+
+		<!-- ## HEADER -->
+
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">About API</h1>
+			</div>
+		</div>
+
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Description</div>
+        <div class="panel-body">
+          <p>dnsapi provides API to retrieve and modify BIND files. Return formats of all endpoints is in JSON.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Requirements</div>
+        <div class="panel-body">
+          <p>iscpy python library</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Endpoints</div>
+        </div>
+    </div>
+
+    <!-- <div class="row"> -->
+
+      <div class="col-md-12">
+        <br><h3>Zones</h3><br>
+
+        <div class="panel panel-danger">
+				  <div class="panel-heading"><code>GET</code> zone/zone_origin<span class="pull-right clickable panel-toggle"><em class="fa fa-toggle-up"></em></span></div>
+          <div class="panel-body">
+            <h4>Description</h4>
+            <br><p>Retrieve information for specified zone file.</p><br>
+            <h4>Parameters</h4>
+            <br><p><strong>zone_origin</strong> (<em>required</em>) - The zone domain name</p><br>
+            <h4>Return Formats</h4>
+            <br><p>A JSON object of directives and records contained in the zone file with the following format:</p><br>
+            <pre><code>{
+              &quot;origin&quot; : &quot;zone_origin&quot;,
+              &quot;directives&quot; : {
+                &quot;directive1&quot;: &quot;value1&quot;,
+                ...
+              }
+              &quot;records&quot; : [
+                {
+                  &quot;name&quot; : &quot;record_name&quot;,
+                  &quot;rclass&quot; : &quot;record_rclass&quot;,
+                  &quot;ttl&quot; : &quot;record_ttl&quot;,
+                  &quot;rtype&quot; : &quot;record_rtype&quot;,
+                  &quot;rdata&quot; : {
+                    &quot;rdata_name1&quot; : &quot;data&quot;,
+                    ...
+                  },
+                },
+                ...
+              ]
+            }</code></pre><br>
+            <h4>Errors</h4>
+            <br><p>Will return <code>status</code> key with error description.</p><br>
+		      </div>
+    		</div>
+
+        <div class="panel panel-danger">
+				  <div class="panel-heading"><code>POST</code> zone/named_file<span class="pull-right clickable panel-toggle"><em class="fa fa-toggle-up"></em></span></div>
+          <div class="panel-body">
+            <h4>Description</h4>
+            <br><p>Add a zone to named configuration file. Also creates the corresponding zone file with SOA record inside. This endpoint receives zone definition in JSON format.</p><br>
+            <h4>Parameters</h4>
+            <br><p><strong>named_file</strong> (<em>required</em>) - The named configuration file name</p></p><br>
+            <h4>Body</h4>
+            <pre><code>{
+                &quot;directives&quot;: {
+                    &quot;directive1&quot;: &quot;value1&quot;,
+                    ...
+                }
+                &quot;soa_record&quot;: {
+                    &quot;authoritative_server&quot;: &quot;&quot;,
+                    &quot;admin_email&quot;: &quot;&quot;,
+                    &quot;serial_no&quot;: &quot;&quot;,
+                    &quot;slv_refresh_period&quot;: &quot;&quot;,
+                    &quot;slv_retry&quot;: &quot;&quot;,
+                    &quot;slv_expire&quot;: &quot;&quot;,
+                    &quot;max_time_cache&quot;: &quot;&quot;
+                }
+                &quot;zone&quot;: {
+                    &quot;zone ZONENAME&quot;: {
+                        &quot;file&quot;: &quot;ZONE_FILE_PATH&quot;,
+                        &quot;type&quot;: &quot;TYPE&quot;
+                        ...
+                    }
+                }
+            }</code></pre><br>
+            <h4>Return Formats</h4>
+            <br><p>Will return <code>status</code> key with value <code>OK</code> if succeed, or <code>Invalid JSON arguments</code> if failed.</p><br>
+		      </div>
+    		</div>
+
+				<br><h3>Records</h3><br>
+
+        <div class="panel panel-danger">
+          <div class="panel-heading"><code>GET</code> record/zone_origin/record_name<span class="pull-right clickable panel-toggle"><em class="fa fa-toggle-up"></em></span></div>
+          <div class="panel-body">
+            <h4>Description</h4>
+            <br><p>Retrieve record details.</p><br>
+            <h4>Parameters</h4>
+            <br><p><strong>zone_origin</strong> (<em>required</em>) - The zone domain name <br> <strong>record_name</strong> (<em>required</em>) - The record name in the zone file<br><br>
+            <h4>Body</h4>
+            <p>Receive the following JSON object (<em>optional</em>)</p>
+            <pre><code>{
+                &quot;rclass&quot; : &quot;record_rclass&quot;,
+                &quot;rtype&quot; : &quot;record_rtype&quot;,
+                &quot;rdata&quot; : {
+                    &quot;rdata_name1&quot; : &quot;data&quot;,
+                    ...
+                },
+            }</code></pre><br>
+            <h4>Return Formats</h4>
+            <br><p>A JSON object containing information of specified record with the following format:</p>
+            <pre><code>{
+                &quot;name&quot; : &quot;record_name&quot;,
+                &quot;rclass&quot; : &quot;record_rclass&quot;,
+                &quot;ttl&quot; : &quot;record_ttl&quot;,
+                &quot;rtype&quot; : &quot;record_rtype&quot;,
+                &quot;rdata&quot; : {
+                    &quot;rdata_name1&quot; : &quot;data&quot;,
+                    ...
+                },
+            }</code></pre><br>
+            <h4>Errors</h4>
+            <br>Returns <code>Invalid Zone</code> if zone_origin is not found in named config file. <br> Returns <code>status</code> key with value <code>notfound</code> if the record name is not found. <br> Returns <code>status</code> key with value <code>Invalid JSON arguments</code> if the information in optional search arguments is not valid Returns <code>status</code> key with other error description for <em>KeyError</em> or <em>LookupError</em></p><br>
+          </div>
+        </div>
+
+        <div class="panel panel-danger">
+          <div class="panel-heading"><code>POST</code> record/zone_origin/record_name<span class="pull-right clickable panel-toggle"><em class="fa fa-toggle-up"></em></span></div>
+          <div class="panel-body">
+            <h4>Description</h4>
+            <br><p>Add a record to a specified zone file.</p><br>
+            <h4>Parameters</h4>
+            <br><p><strong>zone_origin</strong> (<em>required</em>) - The zone domain name <br> <strong>record_name=&quot;&quot;</strong> (<em>default</em>) - The record name in the zone file</p><br>
+            <h4>Body</h4>
+            <pre><code>{
+              &quot;name&quot; : &quot;new_record_name&quot;,
+              &quot;rclass&quot; : &quot;new_record_rclass&quot;,
+              &quot;ttl&quot; : &quot;new_record_ttl&quot;,
+              &quot;rtype&quot; : &quot;new_record_rtype&quot;,
+              &quot;rdata&quot; : {
+                &quot;rdata_name1&quot; : &quot;data&quot;,
+                ...
+              },
+            }</code></pre><br>
+            <h4>Return Formats</h4>
+            <br><p>Returns <code>status</code> key with <code>value</code> OK if succeed</p><br>
+            <h4>Errors</h4>
+            <br><p>Returns <code>Invalid Zone</code> if zone_origin is not found in named config file. <br> Returns <code>status</code> key with value <code>invalid JSON arguments</code> if the input arguments not valid.<br> Returns <code>status</code> key with value error description if <em>KeyError</em> or <em>LookupError</em> is raised.</p><br>
+          </div>
+        </div>
+
+        <div class="panel panel-danger">
+          <div class="panel-heading"><code>PUT</code> record/zone_origin/record_name<span class="pull-right clickable panel-toggle"><em class="fa fa-toggle-up"></em></span></div>
+          <div class="panel-body">
+            <h4>Description</h4>
+            <br><p>Updates information of a record in zone file.</p><br>
+            <h4>Parameters</h4>
+            <br><p><strong>zone_origin</strong> (<em>required</em>) - The zone domain name <br> <strong>record_name</strong> (<em>required</em>) - The record name in the zone file</p><br>
+            <h4>Return Formats</h4>
+            <br><p>Returns <code>status</code> key with <code>value</code> OK if succeed</p><br>
+            <h4>Errors</h4>
+            <br><p>Returns <code>Invalid Zone</code> if zone_origin is not found in named config file. <br> Returns <code>status</code> key with value <code>invalid JSON arguments</code> if the input arguments not valid.<br> Returns <code>status</code> key with value error description if <em>KeyError</em> or <em>LookupError</em> is raised.</p><br>
+          </div>
+        </div>
+
+        <div class="panel panel-danger">
+          <div class="panel-heading"><code>DELETE</code> record/zone_origin/record_name<span class="pull-right clickable panel-toggle"><em class="fa fa-toggle-up"></em></span></div>
+          <div class="panel-body">
+            <h4>Description</h4>
+            <br><p>Delete <code>record_name</code> from corresponding zone file.</p><br>
+            <h4>Parameters</h4>
+            <br><p><strong>zone_origin</strong> (<em>required</em>) - The zone domain name <br> <strong>record_name</strong> (<em>required</em>) - The record name in the zone file</p><br>
+            <h4>Return Formats</h4>
+            <br><p>Returns <code>status</code> key with <code>value</code> OK if succeed</p><br>
+            <h4>Errors</h4>
+            <br><p>Returns <code>Invalid Zone</code> if zone_origin is not found in named config file. <br> Returns <code>status</code> key with value <code>invalid JSON arguments</code> if the input arguments not valid.<br> Returns <code>status</code> key with value error description if <em>KeyError</em> or <em>LookupError</em> is raised.</p><br>
+          </div>
+        </div>
+  		</div>
+    <!-- </div> -->
+
+
+{% endblock %}
