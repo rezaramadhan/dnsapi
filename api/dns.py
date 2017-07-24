@@ -260,8 +260,14 @@ class DNSZone():
         str_repr = ""
         for key in self.directives:
             str_repr += "$" + key + " " + self.directives[key] + "\n"
+
+        prev_record = DNSResourceRecord()
         for record in self.resource_records:
-            str_repr += str(record) + "\n"
+            if (record.name == prev_record.name):
+                str_repr += re.sub('^\S*', '', str(record)) + "\n"
+            else:
+                str_repr += str(record) + "\n"
+            prev_record = record
         return str_repr
 
     def __str__(self):
@@ -380,6 +386,9 @@ class DNSZone():
                     raise Exception('Unknown token', tokens[i])
 
             record.rdata.parse_rdata(tokens[i+1:], zonefile_lines)
+            if (record.name == ""):
+                record.name = records[-1].name
+
             zonefile_lines.pop(0)
             records.append(record)
 
