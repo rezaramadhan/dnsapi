@@ -82,11 +82,8 @@ def post_zones(base_url_api,network_id,form_zone,f_zonename):
         if (d != ''):
             d_key = d.split(' ')[0]
             d_value = d.split(' ')[1]
-            print d_key
-            print d_value
             post_data['directives'][d_key] = d_value
-            print json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
-
+    
     post_data['soa_record']['authoritative_server'] = form_zone.cleaned_data['f_authserv']
     post_data['soa_record']['admin_email'] = form_zone.cleaned_data['f_adminemail']
     post_data['soa_record']['serial_no'] = form_zone.cleaned_data['f_serialno']
@@ -94,12 +91,9 @@ def post_zones(base_url_api,network_id,form_zone,f_zonename):
     post_data['soa_record']['slv_retry'] = form_zone.cleaned_data['f_slvretry']
     post_data['soa_record']['slv_expire'] = form_zone.cleaned_data['f_slvexpire']
     post_data['soa_record']['max_time_cache'] = form_zone.cleaned_data['f_maxtimecache']
-    print json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
 
     post_data['zone'][zone_name]['file'] = '"' + f_zonename + '"'
     post_data['zone'][zone_name]['type'] = form_zone.cleaned_data['f_zonetype']
-    print json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
-    print json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
     headers = {'content-type': 'application/json'}
     response = requests.post(base_url_api+'zone/'+network_id, data=json.dumps(post_data), headers=headers)
 

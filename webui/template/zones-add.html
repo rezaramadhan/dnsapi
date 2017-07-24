@@ -39,18 +39,14 @@
 									<!-- Zone Items -->
 									<form action="{{ request.path }}" method="post" role="form" class="form-in">
 										 {% csrf_token %}
-										<div class="panel-heading">
- 										DIRECTIVES
- 										</div>
+										<h3><strong>DIRECTIVES</strong></h3><br>
 										<div class="form-group-in-full">
 											<label for="f_directive">Directives</label>
 											<input id="f_directive" name="f_directive" class="form-control" placeholder="Enter Directives. Split each directive with ';' e.g. TTL 1H;ORIGIN example.com;" required>
 										</div>
 
 
-										<div class="panel-heading">
-										SOA RECORD
-										</div>
+										<br><h3><strong>SOA RECORD</strong></h3><br>
 										<div class="form-group-in-zone">
 											<label for="f_authserv">Authoritative Server</label>
 											<input id="f_authserv" name="f_authserv" class="form-control" placeholder="Enter Authoritative Server" required>
@@ -82,9 +78,7 @@
 										</div>
 
 
-										<div class="panel-heading">
-										ZONE DATA
-										</div>
+										<br><h3><strong>ZONE DATA</strong></h3><br>
 										<div class="form-group-in">
 											<label for="f_zonename">Zone File Name</label>
 											<input id="f_zonename" name="f_zonename" class="form-control" placeholder="Enter Zone File Name" required>
