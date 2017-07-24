@@ -9,23 +9,40 @@ import logging
 
 DEFAULT_CONF_FILENAME = "named.conf.local"
 REMOTE_CONF_DIR = "/etc/named/"
-USER_DICT = {"10.0.2.11": "root", "10.0.2.6": "root"}
-LOCAL_DIR_DICT = {"10.0.2.11": "/mnt/nfs-dns-coba1/",
-                  "10.0.2.6": "/mnt/nfs-dns-coba2/"}
-ZONE_DICT = {"10.0.2.11": [], "10.0.2.6": []}
+SERVER_LIST = ["10.0.2.11", "10.0.2.6"]
 
-# di-populate sama script nanti dibawah
+USER_DICT = {
+    SERVER_LIST[0]: "root",
+    SERVER_LIST[1]: "root"
+}
+
+LOCAL_DIR_DICT = {
+    SERVER_LIST[0]: "/mnt/nfs-dns-coba1/",
+    SERVER_LIST[1]: "/mnt/nfs-dns-coba2/"
+}
+
+ZONE_DICT = {}
 FILE_LOCATION = {}
 
 logger = logging.getLogger(__name__)
 
 
-# jangan lupa mount dulu, either pake nfs atau pake sshfs
+def init_data():
+    """Initialize all data required in a server."""
+    global ZONE_DICT, FILE_LOCATION
+
+    for server in SERVER_LIST:
+        ZONE_DICT[server] = []
+    FILE_LOCATION = {}
+
+    get_all_zone()
+
+
 def get_all_zone():
     """Read DEFAULT_CONF_FILENAME and parse the config file.
 
-        This method will read all zonefile to get every zonefile available and
-        also assign ZONE_DICT which server has a certain zonefile.
+    This method will read all zonefile to get every zonefile available and
+    also assign ZONE_DICT which server has a certain zonefile.
     """
     for server in LOCAL_DIR_DICT:
         with open(LOCAL_DIR_DICT[server] + DEFAULT_CONF_FILENAME, "r") as fin:
@@ -56,7 +73,7 @@ def restart_bind(serverhostname):
     result = subprocess.call(["ssh", USER_DICT[serverhostname] + "@" +
                               serverhostname, "systemctl restart named"])
     if result != 0:
-        logger.error("Failed to restart named: " + result)
+        logger.error("Failed to restart named: " + str(result))
         raise EnvironmentError('Unable to restart named')
 
 
@@ -67,7 +84,7 @@ def find_server(zone_name):
             return server
 
 
-get_all_zone()
+init_data()
 # FILE_LOCATION['gdn.lokal'] = '~/haha'
 
 # FILE_LOCATION['gdn.lokal'] = '/home/linux1-user/dnsapi/zone_gdn.lokal'

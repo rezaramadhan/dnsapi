@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from settings import (FILE_LOCATION, LOCAL_DIR_DICT, DEFAULT_CONF_FILENAME,
-                      REMOTE_CONF_DIR, restart_bind)
+                      REMOTE_CONF_DIR, restart_bind, init_data)
 from dns import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
 import iscpy
 import json
@@ -151,6 +151,8 @@ class ZoneView(View):
             new_zone.write_to_file(zone_file)
 
             restart_bind(dns_server)
+
+            init_data()
             return HttpResponse('{ "status" : "ok" }')
         except ValueError as v_err:
             logger.warning(v_err.args)
