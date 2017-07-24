@@ -1,14 +1,23 @@
-from django.shortcuts import render
 from django.views.generic import View
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from settings import FILE_LOCATION
-from settings import LOCAL_DIR_DICT
-from settings import DEFAULT_CONF_FILENAME
+from settings import (FILE_LOCATION, LOCAL_DIR_DICT, DEFAULT_CONF_FILENAME,
+                      REMOTE_CONF_DIR, restart_bind)
 from dns import *
 import iscpy
 import json
+import re
+
+def add_absolute_path(zone_body):
+    filename = zone_body[zone_body.keys()[0]]['file']
+    filename = re.search('"(.*)"', filename).group(1)
+    if filename[0] != '/': # relative path
+        filename = REMOTE_CONF_DIR + filename
+    elif not (REMOTE_CONF_DIR in filename):
+        raise EnvironmentError("Cannot access the provided path")
+    zone_body[zone_body.keys()[0]]['file'] = '"' + filename + '"'
+    print zone_body
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ZoneView(View):
@@ -97,7 +106,10 @@ class ZoneView(View):
             body_directives = body['directives']
             body_soa = body['soa_record']
             body_zone = body['zone']
+            add_absolute_path(body_zone)
+
             named_file = str(LOCAL_DIR_DICT[dns_server]) + DEFAULT_CONF_FILENAME
+
             # Add zone to named config file
             named_dict, named_keys = iscpy.ParseISCString(open(named_file).read())
             new_dict = iscpy.AddZone(body_zone, named_dict)
@@ -107,17 +119,22 @@ class ZoneView(View):
             zone = str(body_zone.keys()[0])
             soa = SOARecordData()
             soa.fromJSON(body_soa)
-            new_record = DNSResourceRecord("", "", "@", "SOA", soa)
+            soa_record = DNSResourceRecord("@", "", "", "SOA", soa)
             resourcerecord = []
-            resourcerecord.append(new_record)
+            resourcerecord.append(soa_record)
+            ns_record = DNSResourceRecord("@", "", "", "NS", RecordData(body_soa['authoritative_server'] + "."))
+            resourcerecord.append(ns_record)
             new_zone = DNSZone(body_directives, resourcerecord)
-            zone_file = str(LOCAL_DIR_DICT[dns_server]) + body_zone[zone]['file'].split('"')[1]
-            print zone_file
+            zone_file = body_zone[zone]['file'].split('"')[1]
+            zone_file = zone_file.replace(REMOTE_CONF_DIR, LOCAL_DIR_DICT[dns_server])
+            print new_zone.toJSON()
             new_zone.write_to_file(zone_file)
+
+            restart_bind(dns_server)
             return HttpResponse('{ "status" : "ok" }')
         except ValueError:
             return HttpResponse('{"status" : "Invalid JSON arguments"}')
-        except BaseException as b_error :
+        except BaseException as b_error:
             return HttpResponse('{"status" : "'+str(b_error)+'"}')
-        except :
+        except:
             return HttpResponse('{"status" : "API unexpected error"}')
