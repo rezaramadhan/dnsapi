@@ -185,6 +185,16 @@ LOGGING = {
         },
     },
     'loggers': {
+        'api': {
+            'handlers': ['api_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'webui': {
+            'handlers': ['webui_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
         'django.request': {
             'handlers': ['error_file'],
             'level': 'WARNING',
@@ -192,16 +202,6 @@ LOGGING = {
         },
         'debug': {
             'filters': ['require_debug_true'],
-            'handlers': ['debug_file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'api': {
-            'handlers': ['debug_file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'webui': {
             'handlers': ['debug_file'],
             'level': 'DEBUG',
             'propagate': True,
