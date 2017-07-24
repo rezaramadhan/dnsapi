@@ -24,7 +24,7 @@ def get_all_zone():
     for server in LOCAL_DIR_DICT:
         with open(LOCAL_DIR_DICT[server] + DEFAULT_CONF_FILENAME, "r") as fin:
             conf_string = fin.read()
-        double, conf_dict = iscpy.ParseISCString(conf_string)
+        conf_dict, abcd = iscpy.ParseISCString(conf_string)
 
         print json.dumps(conf_dict, default=lambda o: o.__dict_, indent=4)
 
