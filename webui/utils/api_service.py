@@ -64,41 +64,44 @@ def delete_record(base_url_api, zone_id, record_id):
     response = requests.delete(base_url_api+'record/'+zone_id+'/'+record_id)
     return response.content
 
-def post_zones(base_url_api,named_conf,form_zone,f_zonename):
+def post_zones(base_url_api,network_id,form_zone,f_zonename):
 
-    f_directive = form_zone.cleaned_data['f_directive']
-    f_authserv = form_zone.cleaned_data['f_authserv']
-    f_serialno = form_zone.cleaned_data['f_serialno']
-    f_slvrefresh = form_zone.cleaned_data['f_slvrefresh']
-    f_slvretry = form_zone.cleaned_data['f_slvretry']
-    f_slvexpire = form_zone.cleaned_data['f_slvexpire']
-    f_maxtimecache = form_zone.cleaned_data['f_maxtimecache']
-    f_adminemail = form_zone.cleaned_data['f_adminemail']
-    f_zonetype = form_zone.cleaned_data['f_zonetype']
-    # redirect to a new URL:
+    f_zonename = form_zone.cleaned_data['f_zonename']
+    zone_name = "zone " + '"' + f_zonename + '"'
     post_data = {
-        "directives": {
-            "directive1": f_directive
-        },
-        "soa_record": {
-            "authoritative_server": f_authserv,
-            "admin_email": f_adminemail,
-            "serial_no": f_serialno,
-            "slv_refresh_period": f_slvrefresh,
-            "slv_retry": f_slvretry,
-            "slv_expire": f_slvexpire,
-            "max_time_cache": f_maxtimecache
-        },
+        "directives": {},
+        "soa_record": {},
         "zone": {
-            "zone ZONENAME": {
-                "file": f_zonename,
-                "type": f_zonetype
-            }
+            zone_name: {}
         }
     }
 
+    # redirect to a new URL:
+    f_directive = (form_zone.cleaned_data['f_directive']).split(';')
+    for d in f_directive:
+        if (d != ''):
+            d_key = d.split(' ')[0]
+            d_value = d.split(' ')[1]
+            print d_key
+            print d_value
+            post_data['directives'][d_key] = d_value
+            print json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
+
+    post_data['soa_record']['authoritative_server'] = form_zone.cleaned_data['f_authserv']
+    post_data['soa_record']['admin_email'] = form_zone.cleaned_data['f_adminemail']
+    post_data['soa_record']['serial_no'] = form_zone.cleaned_data['f_serialno']
+    post_data['soa_record']['slv_refresh_period'] = form_zone.cleaned_data['f_slvrefresh']
+    post_data['soa_record']['slv_retry'] = form_zone.cleaned_data['f_slvretry']
+    post_data['soa_record']['slv_expire'] = form_zone.cleaned_data['f_slvexpire']
+    post_data['soa_record']['max_time_cache'] = form_zone.cleaned_data['f_maxtimecache']
+    print json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
+
+    post_data['zone'][zone_name]['file'] = '"' + f_zonename + '"'
+    post_data['zone'][zone_name]['type'] = form_zone.cleaned_data['f_zonetype']
+    print json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
+    print json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
     headers = {'content-type': 'application/json'}
-    response = requests.post(base_url_api+'zone/'+named_conf, data=json.dumps(post_data), headers=headers)
+    response = requests.post(base_url_api+'zone/'+network_id, data=json.dumps(post_data), headers=headers)
 
     return response.content
 
@@ -166,8 +169,8 @@ def apiServiceNotif(call_type, base_url_api, data_state, form_data=None) :
         elif call_type == 'post_zones' :
             if form_data.is_valid():
                 f_hostname = form_data.cleaned_data['f_zonename']
-                named_conf = DEFAULT_CONF_FILENAME
-                result = json.loads(post_zones(base_url_api,named_conf,form_data,f_hostname))
+                network_id = data_state['network_id']
+                result = json.loads(post_zones(base_url_api,network_id,form_data,f_hostname))
 
                 if result["status"] == 'ok' :
                     message_notif = get_message_notif('success_addzone',f_hostname)
