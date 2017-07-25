@@ -8,8 +8,8 @@ Version 1.0
 
 body {
 	background: #f1f4f7;
-	padding-top: 50px;
-	color: #5f6468;
+	padding-top: 55px;
+	color: #444444;
 }
 
 p {
@@ -87,12 +87,12 @@ h3, h4 {
 }
 
 .navbar-header .navbar-brand {
-	color: #fff;
-	font-size: 16px;
-	text-transform: uppercase;
-	font-weight: 500;
-	letter-spacing: 2px;
-}
+  color: #fff;
+  font-size: 20px;
+  text-transform: uppercase;
+  font-weight: 500;
+  height: 55px;
+  padding-top: 18px; }
 
 .navbar-header .navbar-brand span {
 	color: #30a5ff;
@@ -988,10 +988,8 @@ a.bg-danger:hover {
 h1.page-header {
 	display: inline-block;
 	margin-top: 30px;
-	margin-left: 20px;
 	border-bottom: 0;
 }
-
 
 .home-box {
 	margin-left: 20px;
@@ -1017,8 +1015,16 @@ h1.page-header {
 	color : #cf0505;
 }
 
+.action-del:hover {
+	color : #960202;
+}
+
 .action-edit {
 	color : #ebb700;
+}
+
+.action-edit:hover{
+	color : #b89005;
 }
 
 .border-rounded {
