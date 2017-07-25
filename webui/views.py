@@ -45,7 +45,7 @@ def network(request):
 
 def help(request):
     return render(request, 'help.html')
-    
+
 def zones(request, network_id):
     data_state = DataState(network_id)
     message_notif = ''
@@ -131,7 +131,6 @@ def records_action(request, network_id, zones_id, record_id, action):
     data_state = DataState(network_id,zones_id,record_id)
     message_notif = {}
     url_rvr = reverse('records_manage',args=[network_id,zones_id,record_id])
-    print 'Action : '+action
 
     if action == 'edit':
         form = RecordForm(request.POST)

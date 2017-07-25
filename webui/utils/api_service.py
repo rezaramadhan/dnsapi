@@ -54,10 +54,8 @@ def update_record(base_url_api,form_record,zones_id,record,f_hostname):
     }
 
     headers = {'content-type': 'application/json'}
-    print base_url_api+'record/'+zones_id+'/'+record+'/'
     response = requests.put(base_url_api+'record/'+zones_id+'/'+record, data=json.dumps(put_data), headers=headers)
-    print "EDIT DATA :"
-    print response.content
+
     return response.content
 
 def delete_record(base_url_api, zone_id, record_id):
@@ -83,7 +81,7 @@ def post_zones(base_url_api,network_id,form_zone,f_zonename):
             d_key = d.split(' ')[0]
             d_value = d.split(' ')[1]
             post_data['directives'][d_key] = d_value
-    
+
     post_data['soa_record']['authoritative_server'] = form_zone.cleaned_data['f_authserv']
     post_data['soa_record']['admin_email'] = form_zone.cleaned_data['f_adminemail']
     post_data['soa_record']['serial_no'] = form_zone.cleaned_data['f_serialno']

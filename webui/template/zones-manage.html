@@ -40,6 +40,9 @@
 						</ul>
 
 						<div class="tab-content" >
+							<!-- Reverse Zone cant add record -->
+							{% if zones_id|regexmatch:'arpa' == False %}
+
 							<div class="tab-pane fade in active text-box" id="pilltabA">
 								<p>A records are for IPv4 addresses only and tell a request where your domain should direct to. </p>
 								<!-- ## Add Record Form -->
@@ -177,7 +180,13 @@
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
 								</form>
 							</div>
+							{% else %}
+								<div class="panel-heading">
+									Add, edit, and delete on Reverse Zone are disabled.
+								</div>
+							{% endif %}
 
+							<!-- End of regex if -->
 						</div>
 					</div>
 				</div><!--/.panel-->

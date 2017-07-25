@@ -16,8 +16,6 @@ def startswith(text, starts):
 def regexmatch(text, regex):
 
     match = re.search(regex, text)
-    print 'debug : '+text+' - '+regex
-    print 'debug : '+str(match)
     if match:
         return True
     else :
