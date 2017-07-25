@@ -39,9 +39,15 @@
 								<div class="panel-heading">
 									<a href="{% url 'zones_add' network_id %}" class="btn btn-primary btn-head-sub ">Add New Zone</a>
 								</div>
+								{% if zones_list %}
 								<div class="panel-heading">
 									Select Zone :
 								</div>
+								{% else %}
+								<div class="panel-heading text-center">
+									<span> No Zone available. </span>
+								</div>
+								{% endif %}
 								<div class="panel-body">
 									<!-- Zone Items -->
 									{% for zones_id in zones_list %}

@@ -1092,3 +1092,9 @@ h1.page-header {
 	font-weight: 600;
 	font-size: 16px;
 }
+
+.panel-heading span {
+  color: #868585;
+	padding: 0 30px;
+	font-size: 18px;
+}
