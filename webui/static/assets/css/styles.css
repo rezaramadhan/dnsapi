@@ -1083,3 +1083,12 @@ h1.page-header {
 .form-in .form-group-in-zone input {
 	height: 50px;
 }
+
+.alert {
+	margin: 10px;
+}
+
+.alert span {
+	font-weight: 600;
+	font-size: 16px;
+}
