@@ -17,8 +17,8 @@ USER_DICT = {
 }
 
 LOCAL_DIR_DICT = {
-    SERVER_LIST[0]: "/mnt/nfs-dns-coba1/",
-    SERVER_LIST[1]: "/mnt/nfs-dns-coba2/"
+    SERVER_LIST[0]: "/tmp/test1/",
+    SERVER_LIST[1]: "/tmp/test2/"
 }
 
 ZONE_DICT = {}
@@ -55,15 +55,15 @@ def get_all_zone():
         for key in conf_dict:
             if "zone" in key:
                 zone_name = re.search(r'"(.*)"', key).group(1)
-                local_file_name = conf_dict[key]['file']
+                local_file_name = conf_dict[key]['file'].replace('"', '')
 
                 if REMOTE_CONF_DIR in local_file_name:
                     local_file_name = local_file_name.replace(REMOTE_CONF_DIR,
                                                               LOCAL_DIR_DICT[server])
 
-                if local_file_name[0] == '/':
+                if local_file_name[0] != '/':
                     local_file_name = LOCAL_DIR_DICT[server] + local_file_name
-                FILE_LOCATION[zone_name] = local_file_name.replace('"', '')
+                FILE_LOCATION[zone_name] = local_file_name
 
                 ZONE_DICT[server].append(zone_name)
 

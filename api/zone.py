@@ -140,7 +140,7 @@ class ZoneView(View):
             resourcerecord = []
             resourcerecord.append(soa_record)
             ns_record = DNSResourceRecord("@", "", "", "NS",
-                                          RecordData(body_soa['authoritative_server'] + "."))
+                                          RecordData(body_soa['authoritative_server']))
             resourcerecord.append(ns_record)
             new_zone = DNSZone(body_directives, resourcerecord)
             zone_file = body_zone[zone]['file'].split('"')[1]

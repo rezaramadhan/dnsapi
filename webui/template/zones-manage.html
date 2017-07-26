@@ -8,7 +8,7 @@
 
 {% block content %}
 {% load staticfiles%}
-
+{% load custom_filtertag  %}
 
 		<!-- ## HEADER -->
 		<div class="row home-box">
@@ -40,6 +40,9 @@
 						</ul>
 
 						<div class="tab-content" >
+							<!-- Reverse Zone cant add record -->
+							{% if zones_id|regexmatch:'arpa' == False %}
+
 							<div class="tab-pane fade in active text-box" id="pilltabA">
 								<p>A records are for IPv4 addresses only and tell a request where your domain should direct to. </p>
 								<!-- ## Add Record Form -->
@@ -177,7 +180,15 @@
 									<button type="submit" class="btn btn-primary">CREATE RECORD</button>
 								</form>
 							</div>
+							{% else %}
+								<div class="panel-heading text-center">
+									<span>
+										Add, edit, and delete on Reverse Zone are disabled.
+									</span>
+								</div>
+							{% endif %}
 
+							<!-- End of regex if -->
 						</div>
 					</div>
 				</div><!--/.panel-->
@@ -214,7 +225,7 @@
 							        <th data-field="name" data-sortable="true">Hostname</th>
 							        <th data-field="rdata.address"  data-sortable="true">Value</th>
 							        <th data-field="ttl" data-sortable="true">TTL</th>
-											{% if zones_id != '10.17.172.in-addr.arpa' %}
+											{% if zones_id|regexmatch:'arpa' == False %}
 											<th  data-align="center"
 													data-formatter="actionFormatter" data-events="actionEvents">Action</th>
 											{% endif %}

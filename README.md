@@ -48,14 +48,14 @@ dnsapi provides API to retrieve and modify BIND files. Return formats of all end
 
     Will return `status` key with error description.
 
-* `POST` zone/named_file
+* `POST` zone/server
   * Description
 
     Add a zone to named configuration file. Also creates the corresponding zone file with SOA record inside. This endpoint receives zone definition in JSON format.
 
   * Parameters
 
-    __named_file__ (_required_) - The named configuration file name
+    __server__ (_automatically retrieved_) - The server hostname or IP
 
   * Body
 

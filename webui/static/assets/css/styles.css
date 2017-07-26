@@ -8,8 +8,8 @@ Version 1.0
 
 body {
 	background: #f1f4f7;
-	padding-top: 50px;
-	color: #5f6468;
+	padding-top: 55px;
+	color: #444444;
 }
 
 p {
@@ -87,12 +87,12 @@ h3, h4 {
 }
 
 .navbar-header .navbar-brand {
-	color: #fff;
-	font-size: 16px;
-	text-transform: uppercase;
-	font-weight: 500;
-	letter-spacing: 2px;
-}
+  color: #fff;
+  font-size: 20px;
+  text-transform: uppercase;
+  font-weight: 500;
+  height: 55px;
+  padding-top: 18px; }
 
 .navbar-header .navbar-brand span {
 	color: #30a5ff;
@@ -659,45 +659,6 @@ a.bg-danger:hover {
 	margin: 0 ;
 }
 
-h1.page-header {
-	margin-top: 30px;
-	margin-left: 20px;
-	border-bottom: 0;
-}
-
-
-.home-box {
-	margin-left: 20px;
-	margin-right: 60px;
-}
-
-.text-box {
-	margin-left: 20px;
-	margin-right: 40px;
-}
-
-.table-box {
-	margin-left: 0px;
-	margin-right: 0px;
-}
-
-.btn-action {
-	font-size: 14px;
-}
-
-.action-del {
-	margin-left: 20px;
-	color : #cf0505;
-}
-
-.action-edit {
-	color : #ebb700;
-}
-
-.border-rounded {
-	border-radius: 6px;
-  border: 2px solid #d2d2d2;
-}
 
 /*Form Custom*/
 .form-in {
@@ -1018,4 +979,122 @@ h1.page-header {
 	border-color: #ddd;
 	height: 65px;
 	overflow: scroll;
+}
+
+
+
+/* --- CUSTOM Adjustment --- */
+
+h1.page-header {
+	display: inline-block;
+	margin-top: 30px;
+	border-bottom: 0;
+}
+
+.home-box {
+	margin-left: 20px;
+	margin-right: 60px;
+}
+
+.text-box {
+	margin-left: 20px;
+	margin-right: 40px;
+}
+
+.table-box {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.btn-action {
+	font-size: 14px;
+}
+
+.action-del {
+	margin-left: 20px;
+	color : #cf0505;
+}
+
+.action-del:hover {
+	color : #960202;
+}
+
+.action-edit {
+	color : #ebb700;
+}
+
+.action-edit:hover{
+	color : #b89005;
+}
+
+.border-rounded {
+	border-radius: 6px;
+  border: 2px solid #d2d2d2;
+}
+
+.btn-head {
+	display: inline-block;
+	margin-top: 40px;
+	font-size: 20px;
+}
+
+.btn-head-sub {
+	display: inline-block;
+	margin-top : 5px;
+
+	font-size: 18px;
+}
+
+.form-in .form-group-in-full {
+	display: block;
+	margin-bottom: 0;
+	vertical-align: middle;
+	margin: 10px 15px;
+	margin-left: 0;
+	width: 37em;
+}
+
+.form-in .form-group-in-short {
+	display: inline-block;
+	margin-bottom: 0;
+	vertical-align: middle;
+	margin: 10px 15px;
+	margin-left: 0;
+	width: 12em;
+}
+
+.form-in .form-group-in-zone {
+	display: inline-block;
+	margin-bottom: 0;
+	vertical-align: middle;
+	margin: 10px 15px;
+	margin-left: 0;
+	width: 25em;
+}
+
+.form-in .form-group-in-full input {
+	height: 50px;
+}
+
+.form-in .form-group-in-short input {
+	height: 50px;
+}
+
+.form-in .form-group-in-zone input {
+	height: 50px;
+}
+
+.alert {
+	margin: 10px;
+}
+
+.alert span {
+	font-weight: 600;
+	font-size: 16px;
+}
+
+.panel-heading span {
+  color: #868585;
+	padding: 0 30px;
+	font-size: 18px;
 }

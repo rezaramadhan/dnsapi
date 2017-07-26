@@ -33,16 +33,21 @@
 
 					</div>
 					<div class="panel-body">
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut ante in sapien blandit luctus sed ut lacus. Phasellus urna est, faucibus nec ultrices placerat, feugiat et ligula. Donec vestibulum magna a dui pharetra molestie. Fusce et dui urna.</p>
 						<!-- Zone Panels -->
 						<div class="col-md-12">
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<a href="{% url 'zones_add' network_id %}" class="btn btn-primary btn-head-sub ">Add New Zone</a>
 								</div>
+								{% if zones_list %}
 								<div class="panel-heading">
 									Select Zone :
 								</div>
+								{% else %}
+								<div class="panel-heading text-center">
+									<span> No Zone available. </span>
+								</div>
+								{% endif %}
 								<div class="panel-body">
 									<!-- Zone Items -->
 									{% for zones_id in zones_list %}

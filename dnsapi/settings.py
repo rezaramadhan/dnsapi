@@ -69,7 +69,7 @@ TEMPLATES = [
             ],
 
             'libraries':{
-                'webui_templatetags': 'webui.webui_templatetags',
+                'custom_filtertag': 'webui.utils.custom_filtertag',
                 }
         },
     },
