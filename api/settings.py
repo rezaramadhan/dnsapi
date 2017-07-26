@@ -17,8 +17,8 @@ USER_DICT = {
 }
 
 LOCAL_DIR_DICT = {
-    SERVER_LIST[0]: "/tmp/test1/",
-    SERVER_LIST[1]: "/tmp/test2/"
+    SERVER_LIST[0]: "/mnt/nfs-dns-coba1/",
+    SERVER_LIST[1]: "/mnt/nfs-dns-coba2/"
 }
 
 ZONE_DICT = {}
@@ -76,7 +76,7 @@ def restart_bind(serverhostname):
     stdout_str, stderr_str = p.communicate()
     if stderr_str != '':
         # logger.error("Failed to restart named: " + str(stderr_str))
-        raise EnvironmentError('Unable to restart named: ' + str(stderr_str))
+        raise EnvironmentError('Unable to restart named: ' + str(stderr_str.strip('\n').strip('\r')))
 
 
 def find_server(zone_name):
