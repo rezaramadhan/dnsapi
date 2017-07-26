@@ -9,7 +9,7 @@ import logging
 
 DEFAULT_CONF_FILENAME = "named.conf.local"
 REMOTE_CONF_DIR = "/etc/named/"
-SERVER_LIST = ["10.0.2.11", "10.0.2.6"]
+SERVER_LIST = ["10.0.2.11", "10.0.2.16"]
 
 USER_DICT = {
     SERVER_LIST[0]: "root",
@@ -70,11 +70,13 @@ def get_all_zone():
 
 def restart_bind(serverhostname):
     """Restart bind on a certain server."""
-    result = subprocess.call(["ssh", USER_DICT[serverhostname] + "@" +
-                              serverhostname, "systemctl restart named"])
-    if result != 0:
-        logger.error("Failed to restart named: " + str(result))
-        raise EnvironmentError('Unable to restart named')
+    p = subprocess.Popen(["ssh", USER_DICT[serverhostname] + "@" + serverhostname,
+                          "systemctl restart named"], stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
+    stdout_str, stderr_str = p.communicate()
+    if stderr_str != '':
+        # logger.error("Failed to restart named: " + str(stderr_str))
+        raise EnvironmentError('Unable to restart named: ' + str(stderr_str))
 
 
 def find_server(zone_name):
