@@ -53,7 +53,7 @@ def get_all_zone():
                      json.dumps(conf_dict, default=lambda o: o.__dict_, indent=4))
 
         for key in conf_dict:
-            if "zone" in key:
+            if ("zone" in key) and ("master" in conf_dict[key]['type']):
                 zone_name = re.search(r'"(.*)"', key).group(1)
                 local_file_name = conf_dict[key]['file'].replace('"', '')
 
