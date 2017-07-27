@@ -7,8 +7,8 @@ import re
 import subprocess
 import logging
 
-DEFAULT_CONF_FILENAME = "named.conf.local"
-REMOTE_CONF_DIR = "/etc/named/"
+DEFAULT_CONF_FILENAME = "etc/named.conf"
+REMOTE_MNT_DIR = "/"
 SERVER_LIST = ["10.0.2.11", "10.0.2.16"]
 
 USER_DICT = {
@@ -16,7 +16,7 @@ USER_DICT = {
     SERVER_LIST[1]: "root"
 }
 
-LOCAL_DIR_DICT = {
+LOCAL_MNT_DIR = {
     SERVER_LIST[0]: "/mnt/nfs-dns-coba1/",
     SERVER_LIST[1]: "/mnt/nfs-dns-coba2/"
 }
@@ -44,28 +44,43 @@ def get_all_zone():
     This method will read all zonefile to get every zonefile available and
     also assign ZONE_DICT which server has a certain zonefile.
     """
-    for server in LOCAL_DIR_DICT:
-        with open(LOCAL_DIR_DICT[server] + DEFAULT_CONF_FILENAME, "r") as fin:
-            conf_string = fin.read()
-        conf_dict, abcd = iscpy.ParseISCString(conf_string)
+    for server in LOCAL_MNT_DIR:
+        with open(LOCAL_MNT_DIR[server] + DEFAULT_CONF_FILENAME, "r") as fin:
+            conf_dict, abcd = iscpy.ParseISCString(fin.read())
 
         logger.debug("CONF_DICT: " +
                      json.dumps(conf_dict, default=lambda o: o.__dict_, indent=4))
 
+        try:
+            relative_remote_dir = conf_dict['options']['directory'].strip('"') + '/'
+        except KeyError:
+            relative_remote_dir = '/etc/'
+
         for key in conf_dict:
             if ("zone" in key) and ("master" in conf_dict[key]['type']):
+
                 zone_name = re.search(r'"(.*)"', key).group(1)
-                local_file_name = conf_dict[key]['file'].replace('"', '')
 
-                if REMOTE_CONF_DIR in local_file_name:
-                    local_file_name = local_file_name.replace(REMOTE_CONF_DIR,
-                                                              LOCAL_DIR_DICT[server])
+                # local_file_name = conf_dict[key]['file'].replace('"', '')
+                # if REMOTE_MNT_DIR in local_file_name:
+                #     local_file_name = local_file_name.replace(REMOTE_MNT_DIR,
+                #                                               LOCAL_MNT_DIR[server])
+                #
+                # if local_file_name[0] != '/':
+                #     local_file_name = LOCAL_MNT_DIR[server] + local_file_name
+                remote_filename = conf_dict[key]['file'].replace('"', '')
+                if (remote_filename[0] != '/'):
+                    remote_filename = relative_remote_dir + remote_filename
 
-                if local_file_name[0] != '/':
-                    local_file_name = LOCAL_DIR_DICT[server] + local_file_name
-                FILE_LOCATION[zone_name] = local_file_name
+                logger.debug('remote file for ' + zone_name + ':' + remote_filename)
 
+                local_filename = remote_filename.replace(REMOTE_MNT_DIR,
+                                                         LOCAL_MNT_DIR[server],
+                                                         1)
+                FILE_LOCATION[zone_name] = local_filename
                 ZONE_DICT[server].append(zone_name)
+
+        
 
 
 def restart_bind(serverhostname):
@@ -74,7 +89,7 @@ def restart_bind(serverhostname):
                           "systemctl restart named"], stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
     stdout_str, stderr_str = p.communicate()
-    if stderr_str != '':
+    if p.returncode != 0:
         # logger.error("Failed to restart named: " + str(stderr_str))
         raise EnvironmentError('Unable to restart named: ' + str(stderr_str.strip('\n').strip('\r')))
 

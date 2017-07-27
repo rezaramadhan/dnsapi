@@ -3,8 +3,8 @@ from django.views.generic import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from settings import (FILE_LOCATION, LOCAL_DIR_DICT, DEFAULT_CONF_FILENAME,
-                      REMOTE_CONF_DIR, restart_bind, init_data)
+from settings import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME,
+                      REMOTE_MNT_DIR, restart_bind, init_data)
 from dns import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
 import iscpy
 import json
@@ -20,8 +20,8 @@ def add_absolute_path(zone_body):
     filename = zone_body[zone_body.keys()[0]]['file']
     filename = re.search('"(.*)"', filename).group(1)
     if filename[0] != '/':  # relative path
-        filename = REMOTE_CONF_DIR + filename
-    elif not (REMOTE_CONF_DIR in filename):
+        filename = REMOTE_MNT_DIR + filename
+    elif not (REMOTE_MNT_DIR in filename):
         raise EnvironmentError("Cannot access the provided path")
     zone_body[zone_body.keys()[0]]['file'] = '"' + filename + '"'
     logger.debug("Final zone_body: " + str(zone_body))
@@ -125,7 +125,7 @@ class ZoneView(View):
             body_zone = body['zone']
             add_absolute_path(body_zone)
 
-            named_file = str(LOCAL_DIR_DICT[dns_server]) + DEFAULT_CONF_FILENAME
+            named_file = str(LOCAL_MNT_DIR[dns_server]) + DEFAULT_CONF_FILENAME
 
             # Add zone to named config file
             named_dict, named_keys = iscpy.ParseISCString(open(named_file).read())
@@ -144,8 +144,8 @@ class ZoneView(View):
             resourcerecord.append(ns_record)
             new_zone = DNSZone(body_directives, resourcerecord)
             zone_file = body_zone[zone]['file'].split('"')[1]
-            zone_file = zone_file.replace(REMOTE_CONF_DIR,
-                                          LOCAL_DIR_DICT[dns_server])
+            zone_file = zone_file.replace(REMOTE_MNT_DIR,
+                                          LOCAL_MNT_DIR[dns_server])
 
             print new_zone.toJSON()
             new_zone.write_to_file(zone_file)

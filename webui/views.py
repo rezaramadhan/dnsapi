@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from utils.zones_form import ZoneForm,RecordForm
 from utils.message_notif import get_message_notif
 from utils.api_service import *
-from api.settings import FILE_LOCATION,ZONE_DICT,DEFAULT_CONF_FILENAME
+from api.settings import FILE_LOCATION,ZONE_DICT
 import json
 import requests
 
