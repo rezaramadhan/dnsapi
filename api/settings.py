@@ -7,9 +7,10 @@ import re
 import subprocess
 import logging
 
-DEFAULT_CONF_FILENAME = "etc/named.conf"
+DEFAULT_CONF_DIR = 'etc/'
+DEFAULT_CONF_FILENAME = DEFAULT_CONF_DIR + "named.conf"
 REMOTE_MNT_DIR = "/"
-SERVER_LIST = ["10.0.2.11", "10.0.2.16"]
+SERVER_LIST = ["10.0.2.11", "10.0.2.6"]
 
 USER_DICT = {
     SERVER_LIST[0]: "root",
@@ -80,11 +81,13 @@ def get_all_zone():
                 FILE_LOCATION[zone_name] = local_filename
                 ZONE_DICT[server].append(zone_name)
 
-        
-
 
 def restart_bind(serverhostname):
     """Restart bind on a certain server."""
+    check_conf(serverhostname)
+    for zone in ZONE_DICT[serverhostname]:
+        check_zone(zone)
+
     p = subprocess.Popen(["ssh", USER_DICT[serverhostname] + "@" + serverhostname,
                           "systemctl restart named"], stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
@@ -99,6 +102,34 @@ def find_server(zone_name):
     for server in ZONE_DICT:
         if zone_name in ZONE_DICT[server]:
             return server
+
+
+def check_conf(serverhostname):
+    """Check whether the named configuration is valid, raise EnvironmentError otherwise."""
+    remote_cmd = "named-checkconf " + REMOTE_MNT_DIR + DEFAULT_CONF_FILENAME
+    logger.debug('check_conf, cmd: ' + remote_cmd)
+
+    p = subprocess.Popen(["ssh", USER_DICT[serverhostname] + "@" + serverhostname,
+                          remote_cmd], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout_str, stderr_str = p.communicate()
+    if p.returncode != 0:
+        # logger.error("Failed to restart named: " + str(stderr_str))
+        raise EnvironmentError('Check-conf failed: ' + str(stderr_str.strip('\n').strip('\r')))
+
+
+def check_zone(zone_name):
+    """Check whether a zonefile is valid, raise EnvironmentError otherwise."""
+    server = find_server(zone_name)
+    remote_cmd = ("named-checkzone " + zone_name + " " +
+                  FILE_LOCATION[zone_name].replace(LOCAL_MNT_DIR[server], REMOTE_MNT_DIR))
+    logger.debug('check_zone, cmd: ' + remote_cmd)
+
+    p = subprocess.Popen(["ssh", USER_DICT[server] + "@" + server, remote_cmd],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout_str, stderr_str = p.communicate()
+    if p.returncode != 0:
+        # logger.error("Failed to restart named: " + str(stderr_str))
+        raise EnvironmentError('Check-zone failed: ' + str(stderr_str.strip('\n').strip('\r')))
 
 
 init_data()
