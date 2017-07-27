@@ -65,33 +65,49 @@ def delete_record(base_url_api, zone_id, record_id):
 def post_zones(base_url_api,network_id,form_zone,f_zonename):
 
     f_zonename = form_zone.cleaned_data['f_zonename']
-    zone_name = "zone " + '"' + f_zonename + '"'
+    f_zoneclass = form_zone.cleaned_data['f_zoneclass']
+    zone_name = "zone " + '"' + f_zonename + '" ' + f_zoneclass
     post_data = {
-        "directives": {},
-        "soa_record": {},
         "zone": {
             zone_name: {}
         }
     }
 
+    zonetype = form_zone.cleaned_data['f_zonetype']
+    print "ZONE_TYPE " + zonetype
+    post_data['zone'][zone_name]['type'] = zonetype
+
+    if (zonetype == "master"):
+        post_data['soa_record'] = {}
+        post_data['soa_record']['authoritative_server'] = form_zone.cleaned_data['f_authserv']
+        post_data['soa_record']['admin_email'] = form_zone.cleaned_data['f_adminemail']
+        post_data['soa_record']['serial_no'] = form_zone.cleaned_data['f_serialno']
+        post_data['soa_record']['slv_refresh_period'] = form_zone.cleaned_data['f_slvrefresh']
+        post_data['soa_record']['slv_retry'] = form_zone.cleaned_data['f_slvretry']
+        post_data['soa_record']['slv_expire'] = form_zone.cleaned_data['f_slvexpire']
+        post_data['soa_record']['max_time_cache'] = form_zone.cleaned_data['f_maxtimecache']
+        post_data['zone'][zone_name]['file'] = '"' + form_zone.cleaned_data['f_zonefilename'] + '"'
+        post_data['directives'] = {}
+        f_directive = (form_zone.cleaned_data['f_directive']).split(';')
+        for d in f_directive:
+            if (d != ''):
+                d_key = d.split(' ')[0]
+                d_value = d.split(' ')[1]
+                post_data['directives'][d_key] = d_value
+    elif (zonetype == "forward"):
+        post_data['zone'][zone_name]['forwarders'] = '{' + form_zone.cleaned_data['f_forwarders'] + '}'
+    elif (zonetype == "slave"):
+        post_data['zone'][zone_name]['masters'] = form_zone.cleaned_data['f_masters']
+
+    #Add statements to zone
+    f_statement = form_zone.cleaned_data['f_statement'].split('#')
+    for statement in f_statement:
+        key = statement.split(' ')[0]
+        val = statement.split(' ')[1:]
+        if key != '':
+            post_data['zone'][zone_name][key] = val
+    print "POST DATA" + json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
     # redirect to a new URL:
-    f_directive = (form_zone.cleaned_data['f_directive']).split(';')
-    for d in f_directive:
-        if (d != ''):
-            d_key = d.split(' ')[0]
-            d_value = d.split(' ')[1]
-            post_data['directives'][d_key] = d_value
-
-    post_data['soa_record']['authoritative_server'] = form_zone.cleaned_data['f_authserv']
-    post_data['soa_record']['admin_email'] = form_zone.cleaned_data['f_adminemail']
-    post_data['soa_record']['serial_no'] = form_zone.cleaned_data['f_serialno']
-    post_data['soa_record']['slv_refresh_period'] = form_zone.cleaned_data['f_slvrefresh']
-    post_data['soa_record']['slv_retry'] = form_zone.cleaned_data['f_slvretry']
-    post_data['soa_record']['slv_expire'] = form_zone.cleaned_data['f_slvexpire']
-    post_data['soa_record']['max_time_cache'] = form_zone.cleaned_data['f_maxtimecache']
-
-    post_data['zone'][zone_name]['file'] = '"' + f_zonename + '"'
-    post_data['zone'][zone_name]['type'] = form_zone.cleaned_data['f_zonetype']
     headers = {'content-type': 'application/json'}
     response = requests.post(base_url_api+'zone/'+network_id, data=json.dumps(post_data), headers=headers)
 

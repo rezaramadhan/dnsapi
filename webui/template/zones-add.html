@@ -39,55 +39,96 @@
 									<!-- Zone Items -->
 									<form action="{{ request.path }}" method="post" role="form" class="form-in">
 										 {% csrf_token %}
-										<h3><strong>DIRECTIVES</strong></h3><br>
-										<div class="form-group-in-full">
-											<label for="f_directive">Directives</label>
-											<input id="f_directive" name="f_directive" class="form-control" placeholder="Enter Directives. Split each directive with ';' e.g. TTL 1H;ORIGIN example.com;" required>
-										</div>
+
+                    <h3><strong>ZONE DATA</strong></h3><br>
+ 										<div class="form-group-in">
+ 											<label for="f_zonename">Zone Name</label>
+ 											<input id="f_zonename" name="f_zonename" class="form-control" placeholder="Enter Zone Name" required>
+ 										</div>
+ 										<div class="form-group-in">
+ 											<label for="f_zonetype">Zone Type</label>
+                      <select id="f_zonetype" name="f_zonetype" class="form-control" onchange="showoptions()" required>
+                        <option value="master">Master</option>
+                        <option value="slave">Slave</option>
+                        <option value="forward">Forward</option>
+                      </select>
+                    </div>
+                    <div class="form-group-in">
+ 											<label for="f_zoneclass">Zone Class</label>
+ 											<input id="f_zoneclass" name="f_zoneclass" class="form-control" placeholder="Enter Zone Class (IN/HS/CH/CS)" required>
+ 										</div>
+                    <div class="form-group-in" id="zonefilefield">
+ 											<label for="f_zonefilename">Zone File Name</label>
+ 											<input id="f_zonefilename" name="f_zonefilename" class="form-control" placeholder="Enter Zone File Name" >
+ 										</div>
+
+ 											<!-- <input id="f_zonetype" name="f_zonetype" class="form-control" placeholder="Enter Zone Type" required> -->
+
+                    <!-- Slave Zone Statements -->
+                    <div id="slave_options" style="display:none;">
+                      <h3><strong>MASTERS</strong></h3><br>
+                      <div class="form-group">
+                        <label for="f_masters">Masters</label>
+                        <input id="f_masters" name="f_masters" class="form-control" placeholder="[port pg-num] [dscp dscp-num] { (masters-list | IP-address )[port p-num] [dscp dscp-num] [key key-name] ; [... ;] }">
+                      </div>
+                    </div>
+
+                    <!-- Forward Zone Statements -->
+                    <div id="forward_options" style="display:none;">
+                      <h3><strong>FORWARDERS</strong></h3><br>
+                      <div class="form-group">
+                        <label for="f_forwarders">Forwarders</label>
+                        <input id="f_forwarders" name="f_forwarders" class="form-control" placeholder="Enter Forwarders. Split each with ';' e.g. 0.0.0.0; 1.1.1.1;">
+                      </div>
+                    </div>
+
+                    <!-- Master Zone Statements -->
+                    <div id="master_options">
+  										<h3><strong>DIRECTIVES</strong></h3><br>
+  										<div class="form-group-in-full">
+  											<label for="f_directive">Directives</label>
+  											<input id="f_directive" name="f_directive" class="form-control" placeholder="Enter Directives. Split each directive with ';' e.g. TTL 1H;ORIGIN example.com;">
+  										</div>
 
 
-										<br><h3><strong>SOA RECORD</strong></h3><br>
-										<div class="form-group-in-zone">
-											<label for="f_authserv">Authoritative Server</label>
-											<input id="f_authserv" name="f_authserv" class="form-control" placeholder="Enter Authoritative Server" required>
-										</div>
-                    <div class="form-group-in-zone">
-											<label for="f_adminemail">Admin Email</label>
-											<input id="f_adminemail" name="f_adminemail" class="form-control f_ttl" placeholder="Enter Admin Email" required>
-										</div>
-										<div class="form-group-in-zone">
-											<label for="f_serialno">Serial No.</label>
-											<input id="f_serialno" name="f_serialno" class="form-control" placeholder="Enter Serial Number (Initial)" required>
-										</div>
-										<br>
-										<div class="form-group-in-short">
-											<label for="f_slvrefresh">Slave Refresh Period</label>
-											<input id="f_slvrefresh" name="f_slvrefresh" class="form-control" placeholder="Enter Slave Refresh Period">
-										</div>
-										<div class="form-group-in-short">
-											<label for="f_slvretry">Slave Retry</label>
-											<input id="f_slvretry" name="f_slvretry" class="form-control" placeholder="Enter Slave Retry" >
-										</div>
-										<div class="form-group-in-short">
-											<label for="f_slvexpire">Slave Expire</label>
-											<input id="f_slvexpire" name="f_slvexpire" class="form-control" placeholder="Enter Slave Expire" >
-										</div>
-										<div class="form-group-in-short">
-											<label for="f_maxtimecache">Max Time Cache</label>
-											<input id="f_maxtimecache" name="f_maxtimecache" class="form-control" placeholder="Enter Max Time Cache" >
-										</div>
+  										<br><h3><strong>SOA RECORD</strong></h3><br>
+  										<div class="form-group-in-zone">
+  											<label for="f_authserv">Authoritative Server</label>
+  											<input id="f_authserv" name="f_authserv" class="form-control" placeholder="Enter Authoritative Server">
+  										</div>
+                      <div class="form-group-in-zone">
+  											<label for="f_adminemail">Admin Email</label>
+  											<input id="f_adminemail" name="f_adminemail" class="form-control f_ttl" placeholder="Enter Admin Email">
+  										</div>
+  										<div class="form-group-in-zone">
+  											<label for="f_serialno">Serial No.</label>
+  											<input id="f_serialno" name="f_serialno" class="form-control" placeholder="Enter Serial Number (Initial)">
+  										</div>
+  										<br>
+  										<div class="form-group-in-short">
+  											<label for="f_slvrefresh">Slave Refresh Period</label>
+  											<input id="f_slvrefresh" name="f_slvrefresh" class="form-control" placeholder="Enter Slave Refresh Period">
+  										</div>
+  										<div class="form-group-in-short">
+  											<label for="f_slvretry">Slave Retry</label>
+  											<input id="f_slvretry" name="f_slvretry" class="form-control" placeholder="Enter Slave Retry" >
+  										</div>
+  										<div class="form-group-in-short">
+  											<label for="f_slvexpire">Slave Expire</label>
+  											<input id="f_slvexpire" name="f_slvexpire" class="form-control" placeholder="Enter Slave Expire" >
+  										</div>
+  										<div class="form-group-in-short">
+  											<label for="f_maxtimecache">Max Time Cache</label>
+  											<input id="f_maxtimecache" name="f_maxtimecache" class="form-control" placeholder="Enter Max Time Cache" >
+  										</div>
+                    </div>
 
-
-										<br><h3><strong>ZONE DATA</strong></h3><br>
-										<div class="form-group-in">
-											<label for="f_zonename">Zone File Name</label>
-											<input id="f_zonename" name="f_zonename" class="form-control" placeholder="Enter Zone File Name" required>
-										</div>
-										<div class="form-group-in">
-											<label for="f_zonetype">Zone Type</label>
-											<input id="f_zonetype" name="f_zonetype" class="form-control" placeholder="Enter Zone Type" required>
-										</div>
-
+                    <h3><strong>OTHER STATEMENTS</strong></h3><br>
+                    <div class="form-group">
+                      <label for="f_statement">Statements</label>
+                      <input id="f_statement" name="f_statement" class="form-control" placeholder="Enter Statements. Split each directive with '#' e.g. allow-update { key dhcpupdate; }#">
+                    </div>
+                    <br>
 										<button type="submit" class="btn btn-primary">CREATE ZONE</button>
 									</form>
 
@@ -102,4 +143,36 @@
 			</div>
 		</div><!--/.row-->
 
+{% endblock %}
+
+{% block script %}
+  <script language="javascript">
+    function showoptions() {
+      var e = document.getElementById("f_zonetype");
+      var zonetype = e.options[e.selectedIndex].value;
+
+      // document.getElementById("master_options").style.display="block";
+      // document.getElementById("zonefilefield").style.display="block";
+      // document.getElementById("forward_options").style.display="block";
+      // document.getElementById("slave_options").style.display="block";
+      if(zonetype == "master") {
+          document.getElementById("master_options").style.display="block";
+          document.getElementById("zonefilefield").style.display="block";
+          document.getElementById("forward_options").style.display="none";
+          document.getElementById("slave_options").style.display="none";
+      }
+      else if (zonetype == "slave"){
+          document.getElementById("master_options").style.display="none";
+          document.getElementById("zonefilefield").style.display="block";
+          document.getElementById("forward_options").style.display="none";
+          document.getElementById("slave_options").style.display="block";
+      }
+      else if (zonetype == "forward"){
+          document.getElementById("master_options").style.display="none";
+          document.getElementById("zonefilefield").style.display="none";
+          document.getElementById("forward_options").style.display="block";
+          document.getElementById("slave_options").style.display="none";
+      }
+    }
+  </script>
 {% endblock %}
