@@ -1,6 +1,7 @@
 """Setting for file and server locations."""
 # server DICT, tuple hostname, username, sama nama zone.
 # login ssh via public keys
+from shutil import copyfile
 import iscpy
 import json
 import re
