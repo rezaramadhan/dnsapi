@@ -7,9 +7,11 @@ import re
 import subprocess
 import logging
 
+
+# You may need to change these variables
+REMOTE_MNT_DIR = "/"
 DEFAULT_CONF_DIR = 'etc/'
 DEFAULT_CONF_FILENAME = DEFAULT_CONF_DIR + "named.conf"
-REMOTE_MNT_DIR = "/"
 SERVER_LIST = ["10.0.2.11", "10.0.2.6"]
 
 USER_DICT = {
@@ -22,6 +24,7 @@ LOCAL_MNT_DIR = {
     SERVER_LIST[1]: "/mnt/nfs-dns-coba2/"
 }
 
+# You must not change this variable
 ZONE_DICT = {}
 FILE_LOCATION = {}
 
