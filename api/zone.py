@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from settings import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME,
-                      REMOTE_MNT_DIR, restart_bind, init_data)
+                      REMOTE_MNT_DIR, restart_bind, init_data, backup_restore_file)
 from dns import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
 import iscpy
 import json
@@ -126,6 +126,9 @@ class ZoneView(View):
             add_absolute_path(body_zone)
 
             named_file = str(LOCAL_MNT_DIR[dns_server]) + DEFAULT_CONF_FILENAME
+
+            # Backup named (Post Zone)
+            backup_restore_file('backup','named',dns_server,'.bak')
 
             # Add zone to named config file
             named_dict, named_keys = iscpy.ParseISCString(open(named_file).read())

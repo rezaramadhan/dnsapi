@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from dns import (DNSZone, RecordData, MXRecordData, SOARecordData,
                  DNSResourceRecord)
-from settings import FILE_LOCATION, restart_bind, find_server
+from settings import FILE_LOCATION, restart_bind, find_server, backup_restore_file
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,9 @@ def reverse_record_add(name, origin_zone, address, ttl=""):
 
     if not (reverse_zone_origin in FILE_LOCATION):
         raise KeyError("Invalid Reverse Zone: " + reverse_zone_origin)
+
+    # Backup Zone (Post - Reverse Zone)
+    backup_restore_file('backup','zone',reverse_zone_origin,'.bak')
 
     reverse_zone = DNSZone()
     reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
@@ -163,6 +166,9 @@ class RecordView(View):
             if not (zone_origin in FILE_LOCATION):
                 raise KeyError('Invalid Zone: ' + zone_origin)
 
+            # Backup Zone (Delete)
+            backup_restore_file('backup','zone',zone_origin,'.bak')
+
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             deleted_record = zone.find_record(record_name, rclass, rtype, rdata)
@@ -215,6 +221,9 @@ class RecordView(View):
 
             if not (zone_origin in FILE_LOCATION):
                 raise KeyError('Invalid Zone: ' + zone_origin)
+
+            # Backup Zone (Put)
+            backup_restore_file('backup','zone',zone_origin,'.bak')
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
@@ -274,6 +283,9 @@ class RecordView(View):
 
             if not (zone_origin in FILE_LOCATION):
                 raise KeyError('Invalid Zone: ' + zone_origin)
+
+            # Backup Zone (Post - Zone Origin)
+            backup_restore_file('backup','zone',zone_origin,'.bak')
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
