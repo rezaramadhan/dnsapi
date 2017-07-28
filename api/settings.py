@@ -22,6 +22,7 @@ LOCAL_MNT_DIR = {
     SERVER_LIST[1]: "/mnt/nfs-dns-coba2/"
 }
 
+ZONE_MNT_DIR = {}
 ZONE_DICT = {}
 FILE_LOCATION = {}
 
@@ -56,7 +57,8 @@ def get_all_zone():
             relative_remote_dir = conf_dict['options']['directory'].strip('"') + '/'
         except KeyError:
             relative_remote_dir = '/etc/'
-
+        ZONE_MNT_DIR[server] = relative_remote_dir
+        
         for key in conf_dict:
             if ("zone" in key) and ("master" in conf_dict[key]['type']):
 

@@ -98,14 +98,19 @@ def post_zones(base_url_api,network_id,form_zone,f_zonename):
         post_data['zone'][zone_name]['forwarders'] = '{' + form_zone.cleaned_data['f_forwarders'] + '}'
     elif (zonetype == "slave"):
         post_data['zone'][zone_name]['masters'] = form_zone.cleaned_data['f_masters']
+        post_data['zone'][zone_name]['file'] = '"' + form_zone.cleaned_data['f_zonefilename'] + '"'
 
     #Add statements to zone
     f_statement = form_zone.cleaned_data['f_statement'].split('#')
     for statement in f_statement:
-        key = statement.split(' ')[0]
-        val = statement.split(' ')[1:]
-        if key != '':
-            post_data['zone'][zone_name][key] = val
+        statement = str(statement)
+        if statement != '':
+            print "STATEMENT" + statement
+            key = statement.split(':')[0]
+            val = '{ ' + statement.split(':')[1] + ' }'
+            print val
+            if key != '':
+                post_data['zone'][zone_name][key] = val
     print "POST DATA" + json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
     # redirect to a new URL:
     headers = {'content-type': 'application/json'}

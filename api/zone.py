@@ -3,7 +3,7 @@ from django.views.generic import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from settings import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME,
+from settings import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME, ZONE_MNT_DIR,
                       REMOTE_MNT_DIR, restart_bind, init_data)
 from dns import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
 import iscpy
@@ -120,35 +120,38 @@ class ZoneView(View):
         try:
             # Load input parameters
             body = json.loads(request.body.decode('utf-8'))
-            body_directives = body['directives']
-            body_soa = body['soa_record']
             body_zone = body['zone']
-            add_absolute_path(body_zone)
+            zone = str(body_zone.keys()[0])
+            if "master" in body_zone[zone]['type']:
+                body_directives = body['directives']
+                body_soa = body['soa_record']
 
+
+            # add_absolute_path(body_zone)
             named_file = str(LOCAL_MNT_DIR[dns_server]) + DEFAULT_CONF_FILENAME
-
+            logger.debug("Write named file to directory " + named_file)
             # Add zone to named config file
             named_dict, named_keys = iscpy.ParseISCString(open(named_file).read())
             new_dict = iscpy.AddZone(body_zone, named_dict)
             iscpy.WriteToFile(new_dict, named_keys, named_file)
 
             # Make new zone file
-            zone = str(body_zone.keys()[0])
-            soa = SOARecordData()
-            soa.fromJSON(body_soa)
-            soa_record = DNSResourceRecord("@", "", "", "SOA", soa)
-            resourcerecord = []
-            resourcerecord.append(soa_record)
-            ns_record = DNSResourceRecord("@", "", "", "NS",
-                                          RecordData(body_soa['authoritative_server']))
-            resourcerecord.append(ns_record)
-            new_zone = DNSZone(body_directives, resourcerecord)
-            zone_file = body_zone[zone]['file'].split('"')[1]
-            zone_file = zone_file.replace(REMOTE_MNT_DIR,
-                                          LOCAL_MNT_DIR[dns_server])
-
-            print new_zone.toJSON()
-            new_zone.write_to_file(zone_file)
+            if "master" in body_zone[zone]['type']:
+                soa = SOARecordData()
+                soa.fromJSON(body_soa)
+                soa_record = DNSResourceRecord("@", "", "", "SOA", soa)
+                resourcerecord = []
+                resourcerecord.append(soa_record)
+                ns_record = DNSResourceRecord("@", "", "", "NS",
+                                              RecordData(body_soa['authoritative_server']))
+                resourcerecord.append(ns_record)
+                new_zone = DNSZone(body_directives, resourcerecord)
+                zone_file = body_zone[zone]['file'].split('"')[1]
+                zone_file = ZONE_MNT_DIR[dns_server] + zone_file
+                local_zone_file = zone_file.replace(REMOTE_MNT_DIR, LOCAL_MNT_DIR[dns_server], 1)
+                logger.debug("Write zone file to directory " + local_zone_file)
+                logger.debug("Zone to write: " + new_zone.toJSON())
+                new_zone.write_to_file(local_zone_file)
 
             restart_bind(dns_server)
 
