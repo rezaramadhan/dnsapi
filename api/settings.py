@@ -7,6 +7,7 @@ import re
 import subprocess
 import logging
 
+logger = logging.getLogger(__name__)
 
 # You may need to change these variables
 REMOTE_MNT_DIR = "/"
@@ -25,64 +26,68 @@ LOCAL_MNT_DIR = {
 }
 
 # You must not change this variable
+IGNORED_ZONE = ['localhost', 'localhost.localdomain', '0.in-addr.arpa',
+                '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa',
+                '1.0.0.127.in-addr.arpa']
 ZONE_DICT = {}
 FILE_LOCATION = {}
-
-logger = logging.getLogger(__name__)
 
 
 def init_data():
     """Initialize all data required in a server."""
     global ZONE_DICT, FILE_LOCATION
 
+    FILE_LOCATION = {}
     for server in SERVER_LIST:
         ZONE_DICT[server] = []
-    FILE_LOCATION = {}
-
-    get_all_zone()
+        get_zone(server, LOCAL_MNT_DIR[server] + DEFAULT_CONF_FILENAME)
 
 
-def get_all_zone():
+def get_local_filename(remote_filename, relative_remote_dir, local_mnt_dir):
+    """Get the mounted local filename."""
+    remote_filename = remote_filename.strip('"')
+    if (remote_filename[0] != '/'):
+        remote_filename = relative_remote_dir + remote_filename
+
+    local_filename = remote_filename.replace(REMOTE_MNT_DIR, local_mnt_dir, 1)
+
+    return local_filename
+
+
+def get_zone(server, conf_filename, relative_remote_dir='/etc/'):
     """Read DEFAULT_CONF_FILENAME and parse the config file.
 
     This method will read all zonefile to get every zonefile available and
     also assign ZONE_DICT which server has a certain zonefile.
     """
-    for server in LOCAL_MNT_DIR:
-        with open(LOCAL_MNT_DIR[server] + DEFAULT_CONF_FILENAME, "r") as fin:
-            conf_dict, abcd = iscpy.ParseISCString(fin.read())
+    logger.debug('get_zone on: ' + server + ' ' + conf_filename + ' ' + relative_remote_dir)
+    with open(conf_filename, "r") as fin:
+        conf_dict, abcd = iscpy.ParseISCString(fin.read())
 
-        logger.debug("CONF_DICT: " +
-                     json.dumps(conf_dict, default=lambda o: o.__dict_, indent=4))
 
-        try:
-            relative_remote_dir = conf_dict['options']['directory'].strip('"') + '/'
-        except KeyError:
-            relative_remote_dir = '/etc/'
 
-        for key in conf_dict:
-            if ("zone" in key) and ("master" in conf_dict[key]['type']):
+    try:
+        bind_working_dir = conf_dict['options']['directory'].strip('"') + '/'
+    except KeyError:
+        bind_working_dir = relative_remote_dir
 
-                zone_name = re.search(r'"(.*)"', key).group(1)
+    for key in conf_dict:
+        if (("zone" in key) and ("master" in conf_dict[key]['type'])):
+            zone_name = re.search(r'"(.*)"', key).group(1)
 
-                # local_file_name = conf_dict[key]['file'].replace('"', '')
-                # if REMOTE_MNT_DIR in local_file_name:
-                #     local_file_name = local_file_name.replace(REMOTE_MNT_DIR,
-                #                                               LOCAL_MNT_DIR[server])
-                #
-                # if local_file_name[0] != '/':
-                #     local_file_name = LOCAL_MNT_DIR[server] + local_file_name
-                remote_filename = conf_dict[key]['file'].replace('"', '')
-                if (remote_filename[0] != '/'):
-                    remote_filename = relative_remote_dir + remote_filename
-
-                logger.debug('remote file for ' + zone_name + ':' + remote_filename)
-
-                local_filename = remote_filename.replace(REMOTE_MNT_DIR,
-                                                         LOCAL_MNT_DIR[server],
-                                                         1)
-                FILE_LOCATION[zone_name] = local_filename
+            if zone_name not in IGNORED_ZONE:
+                FILE_LOCATION[zone_name] = get_local_filename(conf_dict[key]['file'],
+                                                              bind_working_dir,
+                                                              LOCAL_MNT_DIR[server])
                 ZONE_DICT[server].append(zone_name)
+        elif ("include" in key):
+            # logger.log("get include :" + strconf_dict['include'])
+            for (_, value) in conf_dict['include'].items():
+                local_filename = get_local_filename(value, bind_working_dir,
+                                                    LOCAL_MNT_DIR[server])
+                logger.debug("reading include on: " + value + "\nworking dir:" +
+                             bind_working_dir)
+                get_zone(server, local_filename, bind_working_dir)
 
 
 def restart_bind(serverhostname):
@@ -96,7 +101,6 @@ def restart_bind(serverhostname):
                          stderr=subprocess.PIPE)
     stdout_str, stderr_str = p.communicate()
     if p.returncode != 0:
-        # logger.error("Failed to restart named: " + str(stderr_str))
         raise EnvironmentError('Unable to restart named: ' + str(stderr_str.strip('\n').strip('\r')))
 
 
