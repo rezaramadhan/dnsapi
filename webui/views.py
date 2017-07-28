@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from utils.zones_form import ZoneForm,RecordForm
 from utils.message_notif import get_message_notif
 from utils.api_service import *
+from utils.active_port import check_active_port
 from api.settings import FILE_LOCATION,ZONE_DICT
 import json
 import requests
@@ -23,19 +24,25 @@ def DataState(network_id, zones_id='', record_id=''):
 
 def index(request):
     base_url_api = 'http://'+request.get_host()+"/api/"
+    dashboard_count = {}
+    dashboard_count['server_total'] = len(ZONE_DICT)
+    dashboard_count['zones_total'] = len(FILE_LOCATION)
+    dashboard_count['record_total'] = 0
 
-    record_total = 0
-    server_total = len(ZONE_DICT)
-    zones_total = len(FILE_LOCATION)
+    server_status = {}
 
     for record in FILE_LOCATION:
         result = json.loads(get_allrecord(base_url_api, record))
-        record_total = record_total+len(result['resource_records'])
+        dashboard_count['record_total'] = dashboard_count['record_total']+len(result['resource_records'])
+
+    for server in ZONE_DICT:
+            print server
+            server_status[server] = check_active_port(server,53)
+
 
     return render(request, 'index.html',{
-                'server_total' : server_total,
-                'zones_total' : zones_total,
-                'record_total' : record_total,
+                'dashboard_count' : dashboard_count,
+                'server_status' : server_status,
             })
 
 def network(request):
