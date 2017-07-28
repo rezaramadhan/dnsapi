@@ -58,7 +58,7 @@ def get_all_zone():
         except KeyError:
             relative_remote_dir = '/etc/'
         ZONE_MNT_DIR[server] = relative_remote_dir
-        
+
         for key in conf_dict:
             if ("zone" in key) and ("master" in conf_dict[key]['type']):
 

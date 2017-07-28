@@ -74,7 +74,6 @@ def post_zones(base_url_api,network_id,form_zone,f_zonename):
     }
 
     zonetype = form_zone.cleaned_data['f_zonetype']
-    print "ZONE_TYPE " + zonetype
     post_data['zone'][zone_name]['type'] = zonetype
 
     if (zonetype == "master"):
@@ -105,13 +104,10 @@ def post_zones(base_url_api,network_id,form_zone,f_zonename):
     for statement in f_statement:
         statement = str(statement)
         if statement != '':
-            print "STATEMENT" + statement
             key = statement.split(':')[0]
             val = '{ ' + statement.split(':')[1] + ' }'
-            print val
             if key != '':
                 post_data['zone'][zone_name][key] = val
-    print "POST DATA" + json.dumps(post_data, default=lambda o: o.__dict_, indent=4)
     # redirect to a new URL:
     headers = {'content-type': 'application/json'}
     response = requests.post(base_url_api+'zone/'+network_id, data=json.dumps(post_data), headers=headers)

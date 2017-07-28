@@ -115,8 +115,7 @@ def records_manage(request, network_id, zones_id, record_id):
     request.session['message_notif'] = ''
 
     record_data = json.loads(get_record(base_url_api,zones_id,record_id))
-    printJSONObject(record_data)
-
+    
     return render(request, 'records-manage.html', {
                 'network_id' : network_id,
                 'zones_id': zones_id,

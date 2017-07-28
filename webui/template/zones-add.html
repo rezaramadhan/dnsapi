@@ -48,6 +48,7 @@
  										<div class="form-group-in">
  											<label for="f_zonetype">Zone Type</label>
                       <select id="f_zonetype" name="f_zonetype" class="form-control" onchange="showoptions()" required>
+                        <option></option>
                         <option value="master">Master</option>
                         <option value="slave">Slave</option>
                         <option value="forward">Forward</option>
@@ -57,7 +58,7 @@
  											<label for="f_zoneclass">Zone Class</label>
  											<input id="f_zoneclass" name="f_zoneclass" class="form-control" placeholder="Enter Zone Class (IN/HS/CH/CS)" required>
  										</div>
-                    <div class="form-group-in" id="zonefilefield">
+                    <div class="form-group-in" id="zonefilefield" style="display:none;">
  											<label for="f_zonefilename">Zone File Name</label>
  											<input id="f_zonefilename" name="f_zonefilename" class="form-control" placeholder="Enter Zone File Name" >
  										</div>
@@ -83,9 +84,9 @@
                     </div>
 
                     <!-- Master Zone Statements -->
-                    <div id="master_options">
+                    <div id="master_options" style="display:none;">
   										<h3><strong>DIRECTIVES</strong></h3><br>
-  										<div class="form-group-in-full">
+  										<div class="form-group">
   											<label for="f_directive">Directives</label>
   											<input id="f_directive" name="f_directive" class="form-control" placeholder="Enter Directives. Split each directive with ';' e.g. TTL 1H;ORIGIN example.com;">
   										</div>
@@ -151,27 +152,53 @@
       var e = document.getElementById("f_zonetype");
       var zonetype = e.options[e.selectedIndex].value;
 
-      // document.getElementById("master_options").style.display="block";
-      // document.getElementById("zonefilefield").style.display="block";
-      // document.getElementById("forward_options").style.display="block";
-      // document.getElementById("slave_options").style.display="block";
       if(zonetype == "master") {
           document.getElementById("master_options").style.display="block";
           document.getElementById("zonefilefield").style.display="block";
           document.getElementById("forward_options").style.display="none";
           document.getElementById("slave_options").style.display="none";
+          document.getElementById("f_zonefilename").setAttribute("required", "");
+          document.getElementById("f_authserv").setAttribute("required", "");
+          document.getElementById("f_adminemail").setAttribute("required", "");
+          document.getElementById("f_serialno").setAttribute("required", "");
+          document.getElementById("f_slvrefresh").setAttribute("required", "");
+          document.getElementById("f_slvretry").setAttribute("required", "");
+          document.getElementById("f_slvexpire").setAttribute("required", "");
+          document.getElementById("f_maxtimecache").setAttribute("required", "");
+          document.getElementById("f_forwarders").removeAttribute("required");
+          document.getElementById("f_masters").removeAttribute("required");
       }
       else if (zonetype == "slave"){
           document.getElementById("master_options").style.display="none";
           document.getElementById("zonefilefield").style.display="block";
           document.getElementById("forward_options").style.display="none";
           document.getElementById("slave_options").style.display="block";
+          document.getElementById("f_zonefilename").setAttribute("required", "");
+          document.getElementById("f_masters").setAttribute("required", "");
+          document.getElementById("f_authserv").removeAttribute("required");
+          document.getElementById("f_adminemail").removeAttribute("required");
+          document.getElementById("f_serialno").removeAttribute("required");
+          document.getElementById("f_slvrefresh").removeAttribute("required");
+          document.getElementById("f_slvretry").removeAttribute("required");
+          document.getElementById("f_slvexpire").removeAttribute("required");
+          document.getElementById("f_maxtimecache").removeAttribute("required");
+          document.getElementById("f_forwarders").removeAttribute("required");
       }
       else if (zonetype == "forward"){
           document.getElementById("master_options").style.display="none";
           document.getElementById("zonefilefield").style.display="none";
           document.getElementById("forward_options").style.display="block";
           document.getElementById("slave_options").style.display="none";
+          document.getElementById("f_forwarders").setAttribute("required", "");
+          document.getElementById("f_zonefilename").removeAttribute("required");
+          document.getElementById("f_masters").removeAttribute("required");
+          document.getElementById("f_authserv").removeAttribute("required");
+          document.getElementById("f_adminemail").removeAttribute("required");
+          document.getElementById("f_serialno").removeAttribute("required");
+          document.getElementById("f_slvrefresh").removeAttribute("required");
+          document.getElementById("f_slvretry").removeAttribute("required");
+          document.getElementById("f_slvexpire").removeAttribute("required");
+          document.getElementById("f_maxtimecache").removeAttribute("required");
       }
     }
   </script>
