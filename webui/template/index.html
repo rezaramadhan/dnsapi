@@ -23,7 +23,7 @@
 							<svg class="glyph stroked external hard drive"><use xlink:href="#stroked-external-hard-drive"/></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">{{server_total}}</div>
+							<div class="large">{{dashboard_count.server_total}}</div>
 							<div class="text-muted">Server Total</div>
 						</div>
 					</div>
@@ -36,7 +36,7 @@
 							<svg class="glyph stroked table"><use xlink:href="#stroked-table"/></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">{{zones_total}}</div>
+							<div class="large">{{dashboard_count.zones_total}}</div>
 							<div class="text-muted">Zones Totals</div>
 						</div>
 					</div>
@@ -49,7 +49,7 @@
 							<svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">{{record_total}}</div>
+							<div class="large">{{dashboard_count.record_total}}</div>
 							<div class="text-muted">Records Total</div>
 						</div>
 					</div>
@@ -87,27 +87,30 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<em class="fa fa-lg fa-list">&nbsp;</em>
-						Last Updated Record
+						Server Status
 					</div>
 					<div class="panel-body">
 						<table  data-toggle="table" id="table-style"
-										data-url="{% static 'assets/tables/datarecordX.json' %}"
 										data-page-size="5"
 										data-page-list="[10,5]"
 										data-only-info-pagination="true"
-										data-pagination="true"
-										data-row-style="rowStyle"
-										data-sort-name="r_date"
-										data-sort-order="desc"
-										data-sorter="s">
+										data-pagination="true">
 						    <thead>
 						    <tr>
-						        <th data-field="r_hostname" >Record Name</th>
-						        <th data-field="r_type" >Type</th>
-						        <th data-field="r_value" >Record Data</th>
-										<th data-field="r_date" >Last Update</th>
+						        <th class="col-md-1">Index</th>
+						        <th class="col-md-6">Server</th>
+						        <th class="col-md-4">Status (Port 53)</th>
 						    </tr>
 						    </thead>
+								<tbody>
+									{% for key, values in server_status.items %}
+									<tr {% if values != 'Active' %}class="danger"{% endif %}>
+							        <td>{{ forloop.counter }}</td>
+							        <td>{{key}}</td>
+							        <td>{{values}}</td>
+							    </tr>
+									{% endfor %}
+								</tbody>
 						</table>
 						<script>
 								$(function () {
@@ -131,12 +134,11 @@
 								function rowStyle(row, index) {
 										var classes = ['active', 'success', 'info', 'warning', 'danger'];
 
-										if (index % 2 === 0 && index / 2 < classes.length) {
+
 												return {
-														classes: classes[index / 2]
+														classes: classes[4]
 												};
-										}
-										return {};
+
 								}
 						</script>
 
@@ -144,102 +146,15 @@
 				</div>
 			</div>
 
-			<!-- ## WIDGET PLAN -->
+			<!-- ## LOG Panel -->
 			<div class="col-md-4">
-				<div class="panel panel-blue">
-					<div class="panel-heading dark-overlay"><svg class="glyph stroked clipboard-with-paper"><use xlink:href="#stroked-clipboard-with-paper"></use></svg>To-do List</div>
-					<div class="panel-body">
-						<ul class="todo-list">
-						<!-- <li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Make a plan for today</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Update Basecamp</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Send email to Jane</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Drink coffee</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Do some work</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li>
-							<li class="todo-list-item">
-								<div class="checkbox">
-									<input type="checkbox" id="checkbox" />
-									<label for="checkbox">Tidy up workspace</label>
-								</div>
-								<div class="pull-right action-buttons">
-									<a href="#"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg></a>
-									<a href="#" class="flag"><svg class="glyph stroked flag"><use xlink:href="#stroked-flag"></use></svg></a>
-									<a href="#" class="trash"><svg class="glyph stroked trash"><use xlink:href="#stroked-trash"></use></svg></a>
-								</div>
-							</li> -->
-						</ul>
-					</div>
-					<div class="panel-footer">
-						<div class="input-group">
-							<input id="btn-input" type="text" class="form-control input-md" placeholder="Add new task" />
-							<span class="input-group-btn">
-								<button class="btn btn-primary btn-md" id="btn-todo">Add</button>
-							</span>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div><!--/.row-->
-
-		<div class="row home-box">
-			<div class="col-md-8">
 
 				<div class="panel panel-danger">
 					<div class="panel-heading">
 						<em class="fa fa-lg fa-warning">&nbsp;</em>
 						App Log
 					</div>
-					<div class="panel-body home-box">
+					<div class="panel-body">
 						Main service log located at <code>dnsapi/log</code> folder :
 						<div class="panel-body">
 							<ul>
@@ -254,6 +169,10 @@
 				</div>
 
 			</div>
+		</div><!--/.row-->
+
+		<div class="row home-box">
+
 			<!-- End Col -->
 		</div>
 		<!-- End Row -->
