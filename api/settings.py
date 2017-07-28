@@ -40,7 +40,7 @@ def init_data():
     FILE_LOCATION = {}
     for server in SERVER_LIST:
         ZONE_DICT[server] = []
-        get_zone(server, LOCAL_MNT_DIR[server] + DEFAULT_CONF_FILENAME)
+        # get_zone(server, LOCAL_MNT_DIR[server] + DEFAULT_CONF_FILENAME)
 
 
 def get_local_filename(remote_filename, relative_remote_dir, local_mnt_dir):
@@ -138,7 +138,7 @@ def check_zone(zone_name):
     stdout_str, stderr_str = p.communicate()
     if p.returncode != 0:
         # Restore zone (check_zone failed)
-	    backup_restore_file('restore','zone',zone_name,'.bak')
+        backup_restore_file('restore','zone',zone_name,'.bak')
         # logger.error("Failed to restart named: " + str(stderr_str))
         raise EnvironmentError('Check-zone failed: ' + str(stderr_str.strip('\n').strip('\r')))
 
