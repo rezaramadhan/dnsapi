@@ -6,10 +6,11 @@ from django.views.generic import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from dns import (DNSZone, RecordData, MXRecordData, SOARecordData,
-                 DNSResourceRecord)
-from settings import FILE_LOCATION, restart_bind, find_server, backup_restore_file
-
+from utils.parser import (DNSZone, RecordData, MXRecordData, SOARecordData,
+                          DNSResourceRecord)
+from utils.config import FILE_LOCATION
+from utils.bind import restart_bind, backup_restore_file
+from utils.populator import find_server
 logger = logging.getLogger(__name__)
 
 

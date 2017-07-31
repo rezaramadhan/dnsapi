@@ -1,5 +1,5 @@
 from message_notif import get_message_notif
-from api.settings import FILE_LOCATION,ZONE_DICT
+from api.utils.config import FILE_LOCATION,ZONE_DICT
 import requests
 import json
 import ast

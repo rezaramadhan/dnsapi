@@ -4,6 +4,7 @@
 from shutil import copyfile
 import iscpy
 import json
+import os.path
 import re
 import subprocess
 import logging
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 REMOTE_MNT_DIR = "/"
 DEFAULT_CONF_DIR = 'etc/'
 DEFAULT_CONF_FILENAME = DEFAULT_CONF_DIR + "named.conf"
-SERVER_LIST = ["10.0.2.11", "10.0.2.6"]
+SERVER_LIST = ["10.0.2.11", "10.0.2.61"]
 
 USER_DICT = {
     SERVER_LIST[0]: "root",
@@ -32,7 +33,7 @@ IGNORED_ZONE = ['localhost', 'localhost.localdomain', '0.in-addr.arpa',
                 '1.0.0.127.in-addr.arpa']
 ZONE_DICT = {}
 FILE_LOCATION = {}
-ZONE_MNT_DIR = {}
+
 
 def init_data():
     """Initialize all data required in a server."""
@@ -71,7 +72,6 @@ def get_zone(server, conf_filename, relative_remote_dir='/etc/'):
         bind_working_dir = conf_dict['options']['directory'].strip('"') + '/'
     except KeyError:
         bind_working_dir = relative_remote_dir
-    ZONE_MNT_DIR[server] = bind_working_dir
 
     for key in conf_dict:
         if (("zone" in key) and ("master" in conf_dict[key]['type'])):
@@ -170,7 +170,9 @@ def backup_restore_file(action, file_type, origin, format_backup):
             file_dst = LOCAL_MNT_DIR[origin] + DEFAULT_CONF_FILENAME
             file_src = file_dst+format_backup
 
-    copyfile(file_src, file_dst)
+    if (os.path.isfile(file_src)):
+        copyfile(file_src, file_dst)
+
 
 init_data()
 # FILE_LOCATION['gdn.lokal'] = '~/haha'
@@ -181,4 +183,3 @@ init_data()
 # ZONE_DICT['10.0.2.11'].append('10.17.172.in-addr.arpa')
 logger.debug('FILE_LOCATION: ' + str(FILE_LOCATION))
 logger.debug('ZONE_DICT: ' + str(ZONE_DICT))
-logger.debug("ZONE_MNT_DIR: " + str(ZONE_MNT_DIR))

@@ -3,9 +3,11 @@ from django.views.generic import View
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from settings import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME, ZONE_MNT_DIR,
-                      REMOTE_MNT_DIR, restart_bind, init_data, backup_restore_file)
-from dns import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
+from utils.config import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME,
+                          ZONE_MNT_DIR, REMOTE_MNT_DIR)
+from utils.bind import restart_bind, backup_restore_file
+from utils.populator import init_data
+from utils.parser import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
 import iscpy
 import json
 import re
