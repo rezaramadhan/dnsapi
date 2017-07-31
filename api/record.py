@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from dns import (DNSZone, RecordData, MXRecordData, SOARecordData,
                  DNSResourceRecord)
-from settings import FILE_LOCATION, restart_bind, find_server, backup_restore_file
+from settings import FILE_LOCATION, restart_bind, find_server
 
 logger = logging.getLogger(__name__)
 
@@ -25,9 +25,6 @@ def reverse_record_add(name, origin_zone, address, ttl=""):
 
     if not (reverse_zone_origin in FILE_LOCATION):
         raise KeyError("Invalid Reverse Zone: " + reverse_zone_origin)
-
-    # Backup Zone (Post - Reverse Zone)
-    backup_restore_file('backup','zone',reverse_zone_origin,'.bak')
 
     reverse_zone = DNSZone()
     reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
@@ -126,15 +123,15 @@ class RecordView(View):
         except ValueError as v_err:
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
-            return HttpResponse('{"status" : "Invalid JSON arguments"}')
+            return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
         except (KeyError, LookupError) as k_err:
             logger.error(k_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(b_err)+'"}')
+            return HttpResponse('{"status" : "'+str(b_err)+'"}', status=500)
 
     def delete(self, request, zone_origin, record_name):
         """DELETW Method handler, used to delete a record.
@@ -166,9 +163,6 @@ class RecordView(View):
             if not (zone_origin in FILE_LOCATION):
                 raise KeyError('Invalid Zone: ' + zone_origin)
 
-            # Backup Zone (Delete)
-            backup_restore_file('backup','zone',zone_origin,'.bak')
-
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             deleted_record = zone.find_record(record_name, rclass, rtype, rdata)
@@ -187,15 +181,15 @@ class RecordView(View):
         except ValueError as v_err:
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
-            return HttpResponse('{"status" : "Invalid JSON arguments"}')
+            return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
         except (KeyError, LookupError) as k_err:
             logger.error(k_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(b_err)+'"}')
+            return HttpResponse('{"status" : "'+str(b_err)+'"}', status=500)
 
     def put(self, request, zone_origin, record_name):
         """GET Method handler, used to update a record.
@@ -222,9 +216,6 @@ class RecordView(View):
             if not (zone_origin in FILE_LOCATION):
                 raise KeyError('Invalid Zone: ' + zone_origin)
 
-            # Backup Zone (Put)
-            backup_restore_file('backup','zone',zone_origin,'.bak')
-
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             record = zone.find_record(record_name)
@@ -249,15 +240,15 @@ class RecordView(View):
         except ValueError as v_err:
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
-            return HttpResponse('{"status" : "Invalid JSON arguments"}')
+            return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
         except (KeyError, LookupError) as k_err:
             logger.error(k_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(b_err)+'"}')
+            return HttpResponse('{"status" : "'+str(b_err)+'"}', status=500)
 
     def post(self, request, zone_origin, record_name=""):
         """POST Method handler, used to create a new resource record.
@@ -284,9 +275,6 @@ class RecordView(View):
             if not (zone_origin in FILE_LOCATION):
                 raise KeyError('Invalid Zone: ' + zone_origin)
 
-            # Backup Zone (Post - Zone Origin)
-            backup_restore_file('backup','zone',zone_origin,'.bak')
-
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             if (payload['rtype'] == "MX"):
@@ -311,12 +299,12 @@ class RecordView(View):
         except ValueError as v_err:
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
-            return HttpResponse('{"status" : "Invalid JSON arguments"}')
+            return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
         except (KeyError, LookupError) as k_err:
             logger.error(k_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(b_err)+'"}')
+            return HttpResponse('{"status" : "'+str(b_err)+'"}', status=500)

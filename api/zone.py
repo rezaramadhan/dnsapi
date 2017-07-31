@@ -76,15 +76,15 @@ class ZoneView(View):
         except ValueError as v_err:
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
-            return HttpResponse('{"status" : "Invalid JSON arguments"}')
+            return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
         except (KeyError, LookupError) as k_err:
             logger.error(k_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(b_err)+'"}')
+            return HttpResponse('{"status" : "'+str(b_err)+'"}', status=500)
 
     def post(self, request, dns_server):
         """POST Method handler, used to create a new zone record.
@@ -160,12 +160,12 @@ class ZoneView(View):
         except ValueError as v_err:
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
-            return HttpResponse('{"status" : "Invalid JSON arguments"}')
+            return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
         except (KeyError, LookupError) as k_err:
             logger.error(k_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}')
+            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(b_err)+'"}')
+            return HttpResponse('{"status" : "'+str(b_err)+'"}', status=500)
