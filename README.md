@@ -1,7 +1,7 @@
 # dnsapi
 
 ## Description
-dnsapi provides API to retrieve and modify BIND files. Return formats of all endpoints is in JSON.
+__dnsapi__ provides API to retrieve and modify BIND files. Return formats of all endpoints is in JSON.
 
 ## API Usage
 If you want to see the API documentation, you may see the [following file](API.md)
@@ -28,11 +28,12 @@ Place `dnsapi` on any path, and `iscpy_modified/iscpy` on
 `/usr/lib/python2.7/site-packages/`
 
 #### Install required packages
-This application needs the following package on CentOS:
+dnsapi needs the following package on CentOS:
 > httpd
 > mod_wsgi
 > python2
 > python-pip
+> ssh
 
 Also install the following pip package
 > django
@@ -88,24 +89,28 @@ The default source code already gives some example of the value needed; you can 
 #### Configure Permission & Firewall
 Make sure that the user that run httpd has write permission on `dnsapi/*` as it needs to write the application log and to create socket that `dnsapi/wsgi.py` need to communicate with httpd. You may also need to configure SELinux according to your need.
 
-This application runs on `http`, so allow it on your firewall. If you want, you can also configure it to run on `https` and allow `https` on your firewall.
+dnsapi runs on `http`, so allow it on your firewall. If you want, you can also configure it to run on `https` and allow `https` on your firewall.
 
 ## Introduction to the log file
-This app produce the log on `log/` directory. The file produced are:
-1. `access.log` This is the access file produced by this application, contained the POST/GET/PUT/DELETE request sent by the client and the status code response given to each request.
-1. `api.log` This shows any logging given by the API. you can edit the debug level on `dnsapi/settings` on the loggers section.
-1. `webui.log` This shows any logging given by the API. you can edit the debug level on `dnsapi/settings` on the loggers section.
-1. `error.log` This produces any error that isn't handled by _api.log_ and _error.log_, usually error caused by django package.
+dnsapi produce the log on `log/` directory. The files produced are:
+
+1.  `access.log` This is the access file produced by dnsapi, contained the POST/GET/PUT/DELETE request sent by the client and the status code response given to each request.
+
+1.  `api.log` This shows any logging given by the API. you can edit the debug level on `dnsapi/settings` on the loggers section.
+
+1.  `webui.log` This shows any logging given by the API. you can edit the debug level on `dnsapi/settings` on the loggers section.
+
+1.  `error.log` This produces any error that isn't handled by _api.log_ and _error.log_, usually error caused by django package.
 
 If the following error doesn't solve your issue, you may need to see the httpd's log on `/var/log/httpd/`
 
 ## How it works: Populating `dnsapi/settings.py` variable
 
-This section will describe how dnsapi works. How it get all required data, how it modified a zone file and bind configuration file, and how it restart bind on a remote server.
+This section will describe how __dsnapi__ works. How it get all required data, how it modified a zone file and bind configuration file, and how it restart bind on a remote server.
 
 1.  Parse bind config using iscpy_modified.
 
-    Using the `LOCAL_MNT_DIR` and `DEFAULT_CONF_FILENAME` inside `api/settings.py`, dnsapi can locate the locally mounted bind configuration file. It can parse the config file using iscpy and gives the parsed result as a dictionary.
+    Using the `LOCAL_MNT_DIR` and `DEFAULT_CONF_FILENAME` inside `api/settings.py`, __dsnapi__ can locate the locally mounted bind configuration file. It can parse the config file using iscpy and gives the parsed result as a dictionary.
 
 1.  Find all available zone in the server.
 
@@ -114,45 +119,47 @@ This section will describe how dnsapi works. How it get all required data, how i
 ## How it works: Modifying a zone
 1.  Parse configuration file
 
-    Using the same method as the previous section, dnsapi will read the bind configuration file and convert it to a dictionary.
+    Using the same method as the previous section, __dsnapi__ will read the bind configuration file and convert it to a dictionary.
 
 1.  Backup the current file
 
-    Before it make any changes to the configuration file, dnsapi will make a copy of the working configuration file inside the same directory.
+    Before it make any changes to the configuration file, __dsnapi__ will make a copy of the working configuration file inside the same directory.
 
 1.  Create new zone statement and a new zone file
 
     The modified version of `iscpy` provides a method to create a new zone statement within the dictionary. This modified dictionary will be written to the bind configuration file. Please note that any comment in the previous configuration file will be deleted.
 
-    If needed, dnsapi will create a new zone file with the provided directives, SOA record, and NS record.
+    If needed, __dsnapi__ will create a new zone file with the provided directives, SOA record, and NS record.
 
 1.  Restart bind
 
-    Before restarting bind, dnsapi make sure that the modified configuration file is valid and all zone within the configuration file has a valid zone file using `named-checkconf` and `named-checkzone` provided by `bind` package.
+    Before restarting bind, __dsnapi__ make sure that the modified configuration file is valid and all zone within the configuration file has a valid zone file using `named-checkconf` and `named-checkzone` provided by `bind` package.
 
-    If any of the checks failed, dnsapi will revert the configuration and zone file to the previous version avaiable.
+    If any of the checks failed, __dsnapi__ will revert the configuration and zone file to the previous version avaiable.
 
 
 ## How it works: Modifying a record
 1.  Parse zone
 
-    dnsapi uses `FILE_LOCATION` variable in `api/settings.py` to get the file containing a zone given a certain zone name; after that, it will read the file and parse it using `api/dns.py`.
+    __dsnapi__ uses `FILE_LOCATION` variable in `api/settings.py` to get the file containing a zone given a certain zone name; after that, it will read the file and parse it using `api/dns.py`.
 
     The parsing process and the internal data structure will be explained on the next section.
 
 1.  Backup the current file
 
-    As usual, dnsapi will backup the zonefile before it makes any changes.
+    As usual, __dsnapi__ will backup the zonefile before it makes any changes.
 
 1.  Modify the record
 
-    dnsapi will modify the internal data, which is the resource_records attribute within the DNSZone class when it needs to create a new record, deleting a record, reading a record, or updating a new record.
+    __dsnapi__ will modify the internal data, which is the resource_records attribute within the DNSZone class when it needs to create a new record, deleting a record, reading a record, or updating a new record.
 
     After it make any changes, it will write the internal data to the appropriate zone file.
 
 1.  Restart bind
 
-    This process basically works the same one as restarting bind when you modify a zone.
+    This process basically works as if restarting bind when you modify a zone.
 
-## Introduction to the zone parser (dns.py)
-(gw lanjutin besok)
+## Introduction to the zone parser (`api/dns.py`)
+### Internal data structure
+
+### Parsing method
