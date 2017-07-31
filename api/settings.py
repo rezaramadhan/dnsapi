@@ -32,7 +32,7 @@ IGNORED_ZONE = ['localhost', 'localhost.localdomain', '0.in-addr.arpa',
                 '1.0.0.127.in-addr.arpa']
 ZONE_DICT = {}
 FILE_LOCATION = {}
-
+ZONE_MNT_DIR = {}
 
 def init_data():
     """Initialize all data required in a server."""
@@ -41,7 +41,7 @@ def init_data():
     FILE_LOCATION = {}
     for server in SERVER_LIST:
         ZONE_DICT[server] = []
-        # get_zone(server, LOCAL_MNT_DIR[server] + DEFAULT_CONF_FILENAME)
+        get_zone(server, LOCAL_MNT_DIR[server] + DEFAULT_CONF_FILENAME)
 
 
 def get_local_filename(remote_filename, relative_remote_dir, local_mnt_dir):
@@ -71,6 +71,7 @@ def get_zone(server, conf_filename, relative_remote_dir='/etc/'):
         bind_working_dir = conf_dict['options']['directory'].strip('"') + '/'
     except KeyError:
         bind_working_dir = relative_remote_dir
+    ZONE_MNT_DIR[server] = bind_working_dir
 
     for key in conf_dict:
         if (("zone" in key) and ("master" in conf_dict[key]['type'])):
@@ -180,3 +181,4 @@ init_data()
 # ZONE_DICT['10.0.2.11'].append('10.17.172.in-addr.arpa')
 logger.debug('FILE_LOCATION: ' + str(FILE_LOCATION))
 logger.debug('ZONE_DICT: ' + str(ZONE_DICT))
+logger.debug("ZONE_MNT_DIR: " + str(ZONE_MNT_DIR))
