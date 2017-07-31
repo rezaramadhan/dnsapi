@@ -102,6 +102,8 @@ def restart_bind(serverhostname):
                          stderr=subprocess.PIPE)
     stdout_str, stderr_str = p.communicate()
     if p.returncode != 0:
+        backup_restore_file('restore','zone',zone_name,'.bak')
+        backup_restore_file('restore','named',serverhostname,'.bak')
         raise EnvironmentError('Unable to restart named: ' + str(stderr_str.strip('\n').strip('\r')))
 
 

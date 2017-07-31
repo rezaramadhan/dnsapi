@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from dns import (DNSZone, RecordData, MXRecordData, SOARecordData,
                  DNSResourceRecord)
-from settings import FILE_LOCATION, restart_bind, find_server
+from settings import FILE_LOCATION, restart_bind, find_server, backup_restore_file
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +35,7 @@ def reverse_record_add(name, origin_zone, address, ttl=""):
     reverse_record.rtype = "PTR"
     reverse_record.rdata.address = name + '.' + origin_zone + '.'
     reverse_zone.add_record(reverse_record)
+    backup_restore_file('backup','zone',reverse_zone_origin,'.bak')
     reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
     logger.info("Created reverse record: " + str(reverse_record) +
                 "\nOn zone: " + origin_zone)
@@ -55,6 +56,7 @@ def reverse_record_delete(name, address, origin_zone):
                                              origin_zone + '.'})
     reverse_zone.delete_record(address.split('.')[3],
                                rdata={'address': name + '.' + origin_zone + '.'})
+    backup_restore_file('backup','zone',reverse_zone_origin,'.bak')
     reverse_zone.write_to_file(FILE_LOCATION[reverse_zone_origin])
     logger.info("Deleted reverse record: " + str(record) +
                 "\nOn zone: " + origin_zone)
@@ -167,6 +169,7 @@ class RecordView(View):
             zone.read_from_file(FILE_LOCATION[zone_origin])
             deleted_record = zone.find_record(record_name, rclass, rtype, rdata)
             zone.delete_record(record_name, rclass, rtype, rdata)
+            backup_restore_file('backup','zone',zone_origin,'.bak')
             zone.write_to_file(FILE_LOCATION[zone_origin])
 
             logger.info("Deleted record: " + str(deleted_record) +
@@ -226,6 +229,7 @@ class RecordView(View):
                                       zone_origin)
 
             record.fromJSON(payload)
+            backup_restore_file('backup','zone',zone_origin,'.bak')
             zone.write_to_file(FILE_LOCATION[zone_origin])
             logger.info("Updated record: " + str(record) +
                         "\nOn zone: " + zone_origin)
@@ -286,6 +290,7 @@ class RecordView(View):
             new_record = DNSResourceRecord(rdata=record_data)
             new_record.fromJSON(payload)
             zone.add_record(new_record)
+            backup_restore_file('backup','zone',zone_origin,'.bak')
             zone.write_to_file(FILE_LOCATION[zone_origin])
             logger.info("Created record: " + str(new_record) +
                         "\nOn zone: " + zone_origin)
