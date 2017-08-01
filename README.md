@@ -10,7 +10,7 @@ If you want to see the API documentation, you may see the [following file](API.m
 #### rpm/deb package
 *   httpd/apache2
 *   mod_wsgi
-*   python2
+*   python2.7
 *   python-pip
 *   ssh
 *   ssfs/nfs client
@@ -22,13 +22,13 @@ If you want to see the API documentation, you may see the [following file](API.m
 
 ## Installation & Setup
 #### Download source code
-Download the `dnsapi` source code and `iscpy_modified`. Currently, `dnsapi` located on <https://github.com/rezaramadhan/dnsapi.git> and `iscpy_modified` is on <https://github.com/utamid/iscpy_modified.git>
+Download the __dnsapi__ source code and `iscpy_modified`. Currently, __dnsapi__ located on <https://github.com/rezaramadhan/dnsapi.git> and `iscpy_modified` is on <https://github.com/utamid/iscpy_modified.git>
 
-Place `dnsapi` on any path, and `iscpy_modified/iscpy` on
+Place __dnsapi__ on any path, and `iscpy_modified/iscpy` on
 `/usr/lib/python2.7/site-packages/`
 
 #### Install required packages
-dnsapi needs the following package on CentOS:
+__dnsapi__ needs the following package on CentOS:
 > httpd
 > mod_wsgi
 > python2
@@ -56,8 +56,8 @@ Refer to this tutorial: <https://www.digitalocean.com/community/tutorials/how-to
 
 Make sure that the DNS server's user has read & write access on bind configuration and all zone file. This user also need to be able to use `sudo` without any password prompt.
 
-#### Setup `api/settings.py`
-There are a few variables value you need to change on `dnsapi` source code depends on your server configuration. Those are:
+#### Setup `api/utils/config.py`
+There are a few variables value you need to change on __dnsapi__ source code depends on your server configuration. Those are:
 
 *   `DEFAULT_CONF_DIR` The absolute path of bind configuration file __without__ the forward slash at the beggining (e.g. `/etc/` will become `etc/`)
 
@@ -89,12 +89,12 @@ The default source code already gives some example of the value needed; you can 
 #### Configure Permission & Firewall
 Make sure that the user that run httpd has write permission on `dnsapi/*` as it needs to write the application log and to create socket that `dnsapi/wsgi.py` need to communicate with httpd. You may also need to configure SELinux according to your need.
 
-dnsapi runs on `http`, so allow it on your firewall. If you want, you can also configure it to run on `https` and allow `https` on your firewall.
+__dnsapi__ runs on `http`, so allow it on your firewall. If you want, you can also configure it to run on `https` and allow `https` on your firewall.
 
 ## Introduction to the log file
-dnsapi produce the log on `log/` directory. The files produced are:
+__dnsapi__ produce the log on `log/` directory. The files produced are:
 
-1.  `access.log` This is the access file produced by dnsapi, contained the POST/GET/PUT/DELETE request sent by the client and the status code response given to each request.
+1.  `access.log` This is the access file produced by __dnsapi__ contained the POST/GET/PUT/DELETE request sent by the client and the status code response given to each request.
 
 1.  `api.log` This shows any logging given by the API. you can edit the debug level on `dnsapi/settings` on the loggers section.
 
@@ -104,17 +104,17 @@ dnsapi produce the log on `log/` directory. The files produced are:
 
 If the following error doesn't solve your issue, you may need to see the httpd's log on `/var/log/httpd/`
 
-## How it works: Populating `dnsapi/settings.py` variable
+## How it works: Populating `api/utils/config.py` variable
 
 This section will describe how __dsnapi__ works. How it get all required data, how it modified a zone file and bind configuration file, and how it restart bind on a remote server.
 
 1.  Parse bind config using iscpy_modified.
 
-    Using the `LOCAL_MNT_DIR` and `DEFAULT_CONF_FILENAME` inside `api/settings.py`, __dsnapi__ can locate the locally mounted bind configuration file. It can parse the config file using iscpy and gives the parsed result as a dictionary.
+    Using the `LOCAL_MNT_DIR` and `DEFAULT_CONF_FILENAME` inside `api/utils/config.py`, __dsnapi__ can locate the locally mounted bind configuration file. It can parse the config file using iscpy and gives the parsed result as a dictionary.
 
 1.  Find all available zone in the server.
 
-    The program will then get `directory` section in the `option` statement within the dictionary to get bind's working directory. Then, it will find all master zone and populate `FILE_LOCATION` and `ZONE_DICT` variable `within dnsapi/settings.py`
+    The program will then get `directory` section in the `option` statement within the dictionary to get bind's working directory. Then, it will find all master zone and populate `FILE_LOCATION` and `ZONE_DICT` variable `within api/utils/config.py`
 
 ## How it works: Modifying a zone
 1.  Parse configuration file
@@ -141,7 +141,7 @@ This section will describe how __dsnapi__ works. How it get all required data, h
 ## How it works: Modifying a record
 1.  Parse zone
 
-    __dsnapi__ uses `FILE_LOCATION` variable in `api/settings.py` to get the file containing a zone given a certain zone name; after that, it will read the file and parse it using `api/dns.py`.
+    __dsnapi__ uses `FILE_LOCATION` variable in `api/utils/config.py` to get the file containing a zone given a certain zone name; after that, it will read the file and parse it using `api/dns.py`.
 
     The parsing process and the internal data structure will be explained on the next section.
 
@@ -158,8 +158,3 @@ This section will describe how __dsnapi__ works. How it get all required data, h
 1.  Restart bind
 
     This process basically works as if restarting bind when you modify a zone.
-
-## Introduction to the zone parser (`api/dns.py`)
-### Internal data structure
-
-### Parsing method

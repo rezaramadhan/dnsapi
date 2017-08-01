@@ -180,9 +180,9 @@ class ZoneView(View):
         except BindError as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            backup_restore_file('restore', 'zone', zone_origin, '.bak')
-            backup_restore_file('restore', 'named', find_server(zone_origin), '.bak')
-            return HttpResponse('{"status" : "'+str(b_err.args[0])+'"}', status=500)
+            if b_err.args[0]['file_type']:
+                backup_restore_file('restore', b_err.args[0]['file_type'], b_err.args[0]['origin'], '.bak')
+            return HttpResponse('{"status" : "'+str(b_err.args[0]['msg'])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
