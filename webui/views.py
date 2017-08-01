@@ -13,7 +13,7 @@ from utils.active_port import check_active_port
 from api.utils.config import FILE_LOCATION, ZONE_DICT
 import json
 
-
+# "DataState Dict"
 def DataState(network_id, zones_id='', record_id=''):
     data_state = {}
     data_state['network_id'] = network_id
@@ -21,6 +21,7 @@ def DataState(network_id, zones_id='', record_id=''):
     data_state['record_id'] = record_id
     return data_state
 
+# "Dashboard View - Data Count & Active Port Checking"
 def index(request):
     base_url_api = 'http://'+request.get_host()+"/api/"
     dashboard_count = {}
@@ -34,8 +35,8 @@ def index(request):
         result = json.loads(get_allrecord(base_url_api, record))
         dashboard_count['record_total'] = dashboard_count['record_total']+len(result['resource_records'])
 
+    # "Check Active Port for each server."
     for server in ZONE_DICT:
-            print server
             server_status[server] = check_active_port(server, 53)
 
 
@@ -44,14 +45,17 @@ def index(request):
                 'server_status' : server_status,
             })
 
+# "Networking View - Show list of Server"
 def network(request):
     return render(request, 'network.html',{
                 'network_dict' : ZONE_DICT,
             })
 
+# "Help View"
 def help(request):
     return render(request, 'help.html')
 
+# "Zone View - List of Zones of a Server."
 def zones(request, network_id):
     data_state = DataState(network_id)
     message_notif = ''
@@ -70,6 +74,7 @@ def zones(request, network_id):
                 'message_notif': message_notif,
             })
 
+# "Add New Zone View - Add Zone Form"
 def zones_add(request, network_id):
     base_url_api = 'http://'+request.get_host()+"/api/"
     data_state = DataState(network_id)
@@ -89,6 +94,7 @@ def zones_add(request, network_id):
                 'message_notif': message_notif,
             })
 
+# "Zone Manage View - Add Record Form, List of Record View"
 def zones_manage(request, network_id, zones_id):
     base_url_api = 'http://'+request.get_host()+"/api/"
     data_state = DataState(network_id,zones_id)
@@ -113,7 +119,7 @@ def zones_manage(request, network_id, zones_id):
                 'message_notif': message_notif,
             })
 
-
+# "Record Manage View - Edit Form View"
 def records_manage(request, network_id, zones_id, record_id):
     base_url_api = 'http://'+request.get_host()+"/api/"
     data_state = DataState(network_id,zones_id,record_id)
@@ -131,7 +137,7 @@ def records_manage(request, network_id, zones_id, record_id):
                 'message_notif': message_notif,
             })
 
-
+# "Record Manage Action - Edit and Delete Action endpoint"
 def records_action(request, network_id, zones_id, record_id, action):
     base_url_api = 'http://'+request.get_host()+"/api/"
     data_state = DataState(network_id,zones_id,record_id)
@@ -174,6 +180,6 @@ def records_action(request, network_id, zones_id, record_id, action):
     request.session['message_notif'] = message_notif
     return redirect(url_rvr)
 
-
+# "Debug View"
 def debug(request):
     return HttpResponse('bla')

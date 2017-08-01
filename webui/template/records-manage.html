@@ -1,16 +1,18 @@
 {% extends 'layout.html' %}
+{% load static%}
+
+{% block stylesheet %}
+<link href="{% static 'assets/css/jquery-ui.min.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block pathurl %}
 	<li> Network</li>
 	<li>{{network_id}}</li>
 	<li>{{zones_id}}</li>
 	<li>{{record_id}}</li>
-
 {% endblock %}
 
 {% block content %}
-{% load staticfiles%}
-
 
 		<!-- ## HEADER -->
 		<div class="row home-box">
@@ -19,7 +21,6 @@
 				<a href="{% url 'zones_manage' network_id zones_id %}" class="btn btn-warning btn-head pull-right"> Back to Record List </a>
 			</div>
 		</div>
-
 
 		<!-- ## PANEL TAB CREATE RECORD -->
 		<div class="row home-box">
@@ -123,12 +124,9 @@
 
 										<input type="hidden" id="f_type" name="f_type" value="{{ record_data.rtype }}">
 
-
 									<button type="submit" class="btn btn-warning">EDIT RECORD</button>
 								</form>
 							</div>
-
-
 
 						</div>
 					</div>
@@ -137,13 +135,10 @@
 
 		</div><!-- /.row -->
 
-
-
 {% endblock %}
 
 {% block script %}
-{% load staticfiles%}
-
+	<script src="{% static 'assets/js/jquery-ui.min.js' %}"></script>
 	<script>
 		var ttl_tags = [
 			{"label": "1H", "code": "1H"},
