@@ -8,9 +8,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from utils.parser import (DNSZone, RecordData, MXRecordData, SOARecordData,
                           DNSResourceRecord)
-from utils.config import FILE_LOCATION
+from utils.config import FILE_LOCATION, find_server
 from utils.bind import restart_bind, backup_restore_file
-from utils.populator import find_server
+from utils.excpt import ZoneError, BindError
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +25,7 @@ def reverse_record_add(name, origin_zone, address, ttl=""):
     reverse_zone_origin = find_reverse_zone(address)
 
     if not (reverse_zone_origin in FILE_LOCATION):
-        raise KeyError("Invalid Reverse Zone: " + reverse_zone_origin)
+        raise ZoneError("Invalid Reverse Zone: " + reverse_zone_origin)
 
     reverse_zone = DNSZone()
     reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
@@ -48,7 +48,7 @@ def reverse_record_delete(name, address, origin_zone):
     reverse_zone_origin = find_reverse_zone(address)
 
     if not (reverse_zone_origin in FILE_LOCATION):
-        raise KeyError("Invalid Reverse Zone: " + reverse_zone_origin)
+        raise ZoneError("Invalid Reverse Zone: " + reverse_zone_origin)
 
     reverse_zone = DNSZone()
     reverse_zone.read_from_file(FILE_LOCATION[reverse_zone_origin])
@@ -113,7 +113,7 @@ class RecordView(View):
                 rclass = rtype = rdata = None
 
             if not (zone_origin in FILE_LOCATION):
-                raise KeyError('Invalid Zone: ' + zone_origin)
+                raise ZoneError('Invalid Zone: ' + zone_origin)
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
@@ -127,10 +127,16 @@ class RecordView(View):
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
-        except (KeyError, LookupError) as k_err:
-            logger.error(k_err.args)
+        except ZoneError as z_err:
+            logger.error(z_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
+            return HttpResponse('{"status" : "'+str(z_err.args[0])+'"}', status=500)
+        except BindError as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            if b_err['file_type']:
+                backup_restore_file('restore', b_err['file_type'], b_err['origin'], '.bak')
+            return HttpResponse('{"status" : "'+str(b_err.args['msg'])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
@@ -164,21 +170,22 @@ class RecordView(View):
                 rclass = rtype = rdata = None
 
             if not (zone_origin in FILE_LOCATION):
-                raise KeyError('Invalid Zone: ' + zone_origin)
+                raise ZoneError('Invalid Zone: ' + zone_origin)
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
             deleted_record = zone.find_record(record_name, rclass, rtype, rdata)
             zone.delete_record(record_name, rclass, rtype, rdata)
             backup_restore_file('backup','zone',zone_origin,'.bak')
-            zone.write_to_file(FILE_LOCATION[zone_origin])
-
-            logger.info("Deleted record: " + str(deleted_record) +
-                        "\nOn zone: " + zone_origin)
 
             if deleted_record.rtype == "A" or deleted_record.rtype == "MX":
                 reverse_record_delete(deleted_record.name,
                                       deleted_record.rdata.address, zone_origin)
+
+            zone.write_to_file(FILE_LOCATION[zone_origin])
+
+            logger.info("Deleted record: " + str(deleted_record) +
+                        "\nOn zone: " + zone_origin)
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{"status" : "ok"}')
@@ -186,10 +193,16 @@ class RecordView(View):
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
-        except (KeyError, LookupError) as k_err:
-            logger.error(k_err.args)
+        except ZoneError as z_err:
+            logger.error(z_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
+            return HttpResponse('{"status" : "'+str(z_err.args[0])+'"}', status=500)
+        except BindError as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            if b_err['file_type']:
+                backup_restore_file('restore', b_err['file_type'], b_err['origin'], '.bak')
+            return HttpResponse('{"status" : "'+str(b_err.args['msg'])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
@@ -218,7 +231,7 @@ class RecordView(View):
             payload = json.loads(request.body.decode('utf-8'))
 
             if not (zone_origin in FILE_LOCATION):
-                raise KeyError('Invalid Zone: ' + zone_origin)
+                raise ZoneError('Invalid Zone: ' + zone_origin)
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
@@ -231,14 +244,13 @@ class RecordView(View):
 
             record.fromJSON(payload)
             backup_restore_file('backup','zone',zone_origin,'.bak')
-            zone.write_to_file(FILE_LOCATION[zone_origin])
-            logger.info("Updated record: " + str(record) +
-                        "\nOn zone: " + zone_origin)
-
             # create new reverse record
             if (record.rtype == "A" or record.rtype == "MX"):
                 reverse_record_add(record.name, zone_origin,
                                    record.rdata.address, record.ttl)
+            zone.write_to_file(FILE_LOCATION[zone_origin])
+            logger.info("Updated record: " + str(record) +
+                        "\nOn zone: " + zone_origin)
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{"status" : "ok"}')
@@ -246,10 +258,16 @@ class RecordView(View):
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
-        except (KeyError, LookupError) as k_err:
-            logger.error(k_err.args)
+        except ZoneError as z_err:
+            logger.error(z_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
+            return HttpResponse('{"status" : "'+str(z_err.args[0])+'"}', status=500)
+        except BindError as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            if b_err['file_type']:
+                backup_restore_file('restore', b_err['file_type'], b_err['origin'], '.bak')
+            return HttpResponse('{"status" : "'+str(b_err.args['msg'])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
@@ -278,7 +296,7 @@ class RecordView(View):
             payload = json.loads(request.body.decode('utf-8'))
 
             if not (zone_origin in FILE_LOCATION):
-                raise KeyError('Invalid Zone: ' + zone_origin)
+                raise ZoneError('Invalid Zone: ' + zone_origin)
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
@@ -292,13 +310,14 @@ class RecordView(View):
             new_record.fromJSON(payload)
             zone.add_record(new_record)
             backup_restore_file('backup','zone',zone_origin,'.bak')
+            if new_record.rtype == "A" or new_record.rtype == "MX":
+                reverse_record_add(new_record.name, zone_origin,
+                                   new_record.rdata.address, new_record.ttl)
+
             zone.write_to_file(FILE_LOCATION[zone_origin])
             logger.info("Created record: " + str(new_record) +
                         "\nOn zone: " + zone_origin)
             # add reverse if rtype is A:
-            if new_record.rtype == "A" or new_record.rtype == "MX":
-                reverse_record_add(new_record.name, zone_origin,
-                                   new_record.rdata.address, new_record.ttl)
 
             restart_bind(find_server(zone_origin))
             return HttpResponse('{"status" : "ok"}')
@@ -306,10 +325,16 @@ class RecordView(View):
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
-        except (KeyError, LookupError) as k_err:
-            logger.error(k_err.args)
+        except ZoneError as z_err:
+            logger.error(z_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
+            return HttpResponse('{"status" : "'+str(z_err.args[0])+'"}', status=500)
+        except BindError as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            if b_err.args[0]['file_type']:
+                backup_restore_file('restore', b_err.args[0]['file_type'], b_err.args[0]['origin'], '.bak')
+            return HttpResponse('{"status" : "'+str(b_err.args[0]['msg'])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")

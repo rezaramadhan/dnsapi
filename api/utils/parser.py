@@ -1,5 +1,6 @@
 """This module handle a DNS Zone management."""
 
+from excpt import ZoneError
 import re
 import json
 import logging
@@ -277,7 +278,7 @@ class DNSZone():
     def find_record(self, name, rclass=None, rtype=None, rdata=None):
         """Find a record with the given name.
 
-        raise LookupError when record is not found
+        raise ZoneError when record is not found
         """
         logger.debug('Finding:' + name + " " + str(rdata))
         for record in self.resource_records:
@@ -291,7 +292,7 @@ class DNSZone():
             if (record.name == name):
                 logger.debug('Found: ' + str(record))
                 return record
-        raise LookupError("Record not found")
+        raise ZoneError("Record not found")
 
     def increment_soa(self):
         """Increment a SOA's serial number by 1."""

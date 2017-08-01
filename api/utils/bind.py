@@ -1,10 +1,11 @@
 """Bind related function."""
 from config import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME,
-                    REMOTE_MNT_DIR, ZONE_DICT, USER_DICT)
+                    REMOTE_MNT_DIR, ZONE_DICT, USER_DICT, find_server)
 from shutil import copyfile
-from populator import find_server
+from excpt import BindError
 import subprocess
 import logging
+import os.path
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,10 @@ def restart_bind(serverhostname):
     p = remote_exec("systemctl restart named", serverhostname)
     stdout_str, stderr_str = p.communicate()
     if p.returncode != 0:
-        raise EnvironmentError('Unable to restart named: ' + str(stderr_str.strip('\n').strip('\r')))
+        msg = 'Unable to restart named: ' + str(stderr_str.strip('\n').strip('\r'))
+        file_type = None
+        origin = None
+        raise BindError({'msg': msg, 'file_type': file_type, 'origin': origin})
 
 
 def check_conf(serverhostname):
@@ -36,10 +40,10 @@ def check_conf(serverhostname):
     p = remote_exec(remote_cmd, serverhostname)
     stdout_str, stderr_str = p.communicate()
     if p.returncode != 0:
-        # Restore named (check_conf failed)
-        backup_restore_file('restore', 'named', serverhostname, '.bak')
-        # logger.error("Failed to restart named: " + str(stderr_str))
-        raise EnvironmentError('Check-conf failed: ' + str(stderr_str.strip('\n').strip('\r')))
+        msg = 'Check-conf failed: ' + str(stderr_str.strip('\n').strip('\r'))
+        file_type = 'named'
+        origin = serverhostname
+        raise BindError({'msg': msg, 'file_type': file_type, 'origin': origin})
 
 
 def check_zone(zone_name):
@@ -52,11 +56,10 @@ def check_zone(zone_name):
     p = remote_exec(remote_cmd, server)
     stdout_str, stderr_str = p.communicate()
     if p.returncode != 0:
-        # Restore zone (check_zone failed)
-        backup_restore_file('restore', 'zone', zone_name, '.bak')
-        # logger.error("Failed to restart named: " + str(stderr_str))
-        raise EnvironmentError('Check-zone failed: ' + str(stderr_str.strip('\n').strip('\r')))
-
+        msg = 'Check-conf failed: ' + str(stderr_str.strip('\n').strip('\r'))
+        file_type = 'named'
+        origin = zone_name
+        raise BindError({'msg': msg, 'file_type': file_type, 'origin': origin})
 
 def backup_restore_file(action, file_type, origin, format_backup):
     """Backup/Restore Bind configuration (named.conf) or Zones File.
@@ -83,4 +86,5 @@ def backup_restore_file(action, file_type, origin, format_backup):
             file_dst = LOCAL_MNT_DIR[origin] + DEFAULT_CONF_FILENAME
             file_src = file_dst+format_backup
 
-    copyfile(file_src, file_dst)
+    if (os.path.isfile(file_src)):
+        copyfile(file_src, file_dst)

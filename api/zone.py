@@ -4,10 +4,11 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from utils.config import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME,
-                          ZONE_MNT_DIR, REMOTE_MNT_DIR)
+                          ZONE_MNT_DIR, REMOTE_MNT_DIR, ZONE_DICT, init_data,
+                          find_server)
 from utils.bind import restart_bind, backup_restore_file
-from utils.populator import init_data
 from utils.parser import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
+from utils.excpt import ZoneError, BindError
 import iscpy
 import json
 import re
@@ -69,8 +70,11 @@ class ZoneView(View):
         """
         # handle the get request
         try:
+            logger.debug('FILE_LOCATION: ' + str(FILE_LOCATION))
+            logger.debug('ZONE_DICT: ' + str(ZONE_DICT))
+            logger.debug("ZONE_MNT_DIR: " + str(ZONE_MNT_DIR))
             if not (zone_origin in FILE_LOCATION):
-                raise KeyError('Invalid Zone: ' + zone_origin)
+                raise ZoneError('Invalid Zone: ' + zone_origin)
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
@@ -79,10 +83,16 @@ class ZoneView(View):
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
-        except (KeyError, LookupError) as k_err:
-            logger.error(k_err.args)
+        except ZoneError as z_err:
+            logger.error(z_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
+            return HttpResponse('{"status" : "'+str(z_err.args[0])+'"}', status=500)
+        except BindError as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            backup_restore_file('restore', 'zone', zone_origin, '.bak')
+            backup_restore_file('restore', 'named', find_server(zone_origin), '.bak')
+            return HttpResponse('{"status" : "'+str(b_err.args[0])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
@@ -163,10 +173,16 @@ class ZoneView(View):
             logger.warning(v_err.args)
             logger.warning(traceback.format_exc(2) + "\n\n\n")
             return HttpResponse('{"status" : "Invalid JSON arguments"}', status=500)
-        except (KeyError, LookupError) as k_err:
-            logger.error(k_err.args)
+        except ZoneError as z_err:
+            logger.error(z_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
-            return HttpResponse('{"status" : "'+str(k_err.args[0])+'"}', status=500)
+            return HttpResponse('{"status" : "'+str(z_err.args[0])+'"}', status=500)
+        except BindError as b_err:
+            logger.error(b_err.args)
+            logger.error(traceback.format_exc() + "\n\n\n")
+            backup_restore_file('restore', 'zone', zone_origin, '.bak')
+            backup_restore_file('restore', 'named', find_server(zone_origin), '.bak')
+            return HttpResponse('{"status" : "'+str(b_err.args[0])+'"}', status=500)
         except Exception as b_err:
             logger.error(b_err.args)
             logger.error(traceback.format_exc() + "\n\n\n")
