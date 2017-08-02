@@ -41,7 +41,7 @@
 						<div class="tab-content" >
 							<div class="tab-pane fade in active text-box" id="pilltab">
 								<!-- ## Add Record Form -->
-								<form action="{{ request.path }}edit/" method="post" role="form" class="form-in">
+								<form action="{{ request.path }}edit/?type={{ record_data.rtype }}" method="post" role="form" class="form-in">
 									 {% csrf_token %}
 									 {% if record_data.rtype == 'A' or record_data.rtype == 'AAAA' %}
 	 									<div class="form-group-in">
