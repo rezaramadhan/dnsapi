@@ -123,10 +123,10 @@ def zones_add(request, network_id):
 def zones_manage(request, network_id, zones_id):
     base_url_api = 'http://'+request.get_host()+"/api/"
     data_state = DataState(network_id,zones_id)
+    records_data = {}
     message_notif = {}
     message_notif = request.session.get('message_notif', None)
     request.session['message_notif'] = ''
-
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -138,21 +138,48 @@ def zones_manage(request, network_id, zones_id):
         except :
             message_notif = get_message_notif('error','Zones Manage Errors')
 
+    # Get All Record from zones_id
+    try :
+        records_data = json.loads(get_allrecord(base_url_api,zones_id))
+        printJSONObject(records_data)
+    except BaseException as b_error :
+        message_notif = get_message_notif('error','get_all_record: '+str(b_error))
+    except :
+        message_notif = get_message_notif('error','get_all_record errors')
+
     return render(request, 'zones-manage.html', {
                 'network_id' : network_id,
                 'zones_id': zones_id,
                 'message_notif': message_notif,
+                'records_data' : records_data,
             })
 
 # "Record Manage View - Edit Form View"
 def records_manage(request, network_id, zones_id, record_id):
     base_url_api = 'http://'+request.get_host()+"/api/"
     data_state = DataState(network_id,zones_id,record_id)
+    record_data = {}
+    record = {}
     message_notif = request.session.get('message_notif', None)
     request.session['message_notif'] = ''
 
-    record_data = json.loads(get_record(base_url_api,zones_id,record_id))
-    printJSONObject(record_data)
+    # Get Single Record Data
+    try :
+        record['name']=record_id
+        record['type']=''
+        record['address']=''
+        if  request.method == 'GET' and 'type' in request.GET:
+            record['type']=request.GET['type']
+            print record['type']
+        if  request.method == 'GET' and 'address' in request.GET:
+            record['address']=request.GET['address']
+
+        record_data = json.loads(get_record(base_url_api,zones_id,record))
+        printJSONObject(record_data)
+    except BaseException as b_error :
+        message_notif = get_message_notif('error','get_record: '+str(b_error))
+    except :
+        message_notif = get_message_notif('error','get_record errors')
 
     return render(request, 'records-manage.html', {
                 'network_id' : network_id,
