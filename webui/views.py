@@ -10,7 +10,8 @@ from utils.zones_form import ZoneForm, RecordForm
 from utils.message_notif import get_message_notif
 from utils.api_service import *
 from utils.active_port import check_active_port
-from api.utils.config import FILE_LOCATION, ZONE_DICT
+from api.utils.config import FILE_LOCATION, ZONE_DICT, ZONE_SLAVES, LOG_DIR, REMOTE_MNT_DIR, LOCAL_MNT_DIR
+from api.utils.parser import DNSZone
 import json
 
 # "DataState Dict"
@@ -60,7 +61,27 @@ def zones(request, network_id):
     data_state = DataState(network_id)
     message_notif = ''
     zones_list = ZONE_DICT[network_id]
+    slave_list = ZONE_SLAVES[network_id]
 
+    for zone in slave_list:
+        if zone != '':
+            dnszone = DNSZone()
+            dnszone.read_from_file(FILE_LOCATION[zone])
+            soa_record = dnszone.find_record('@', None, 'SOA', None)
+            soa_serial = soa_record.rdata.serial_no
+
+            for slave in slave_list[zone]:
+                if slave != '':
+                    log_filename = LOG_DIR[slave].replace(REMOTE_MNT_DIR, LOCAL_MNT_DIR[slave], 1)
+                    serial = 0
+                    with open(log_filename, "r") as f:
+                        lines = f.read()
+                        search_str = 'zone ' + zone + '/IN: sending notifies (serial '
+                        serial = int(lines.rsplit(search_str,1)[1].split(')')[0])
+                    if serial == soa_serial:
+                        slave_list[zone][slave] = 'uptodate'
+                    else:
+                        slave_list[zone][slave] = 'outdated'
     # Set Message Notification
     if  request.method == 'GET' and 'status' in request.GET:
         message_notif=get_message_notif(request.GET['status'])
@@ -72,6 +93,7 @@ def zones(request, network_id):
                 'network_id' : network_id,
                 'zones_list' : zones_list,
                 'message_notif': message_notif,
+                'slave_list': slave_list,
             })
 
 # "Add New Zone View - Add Zone Form"

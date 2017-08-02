@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from utils.config import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME,
-                          ZONE_MNT_DIR, REMOTE_MNT_DIR, ZONE_DICT, init_data,
+                          ZONE_DIR, REMOTE_MNT_DIR, ZONE_DICT, init_data,
                           find_server)
 from utils.bind import restart_bind, backup_restore_file
 from utils.parser import (DNSZone, DNSResourceRecord, RecordData, SOARecordData)
@@ -72,7 +72,7 @@ class ZoneView(View):
         try:
             logger.debug('FILE_LOCATION: ' + str(FILE_LOCATION))
             logger.debug('ZONE_DICT: ' + str(ZONE_DICT))
-            logger.debug("ZONE_MNT_DIR: " + str(ZONE_MNT_DIR))
+            logger.debug("ZONE_DIR: " + str(ZONE_DIR))
             if not (zone_origin in FILE_LOCATION):
                 raise ZoneError('Invalid Zone: ' + zone_origin)
 
@@ -159,7 +159,7 @@ class ZoneView(View):
                 resourcerecord.append(ns_record)
                 new_zone = DNSZone(body_directives, resourcerecord)
                 zone_file = body_zone[zone]['file'].split('"')[1]
-                zone_file = ZONE_MNT_DIR[dns_server] + zone_file
+                zone_file = ZONE_DIR[dns_server] + zone_file
                 local_zone_file = zone_file.replace(REMOTE_MNT_DIR, LOCAL_MNT_DIR[dns_server], 1)
                 logger.debug("Write zone file to directory " + local_zone_file)
                 logger.debug("Zone to write: " + new_zone.toJSON())
