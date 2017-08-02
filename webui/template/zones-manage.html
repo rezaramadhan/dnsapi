@@ -221,17 +221,43 @@
 											data-sort-order="asc">
 							    <thead>
 							    <tr>
-											<th data-formatter="runningFormatter" >Index</th>
+											<th  data-sortable="true">Index</th>
 							        <th data-field="rtype" data-sortable="true" >Type</th>
 							        <th data-field="name" data-sortable="true">Hostname</th>
 							        <th data-field="rdata.address"  data-sortable="true">Value</th>
 							        <th data-field="ttl" data-sortable="true">TTL</th>
 											{% if zones_id|regexmatch:'arpa' == False %}
-											<th  data-align="center"
-													data-formatter="actionFormatter" data-events="actionEvents">Action</th>
+											<th  data-align="center">Action</th>
 											{% endif %}
 							    </tr>
 							    </thead>
+									<tbody>
+										{% for key in records_data.resource_records %}
+										<tr {% if values != 'Active' %}class="danger"{% endif %}>
+								        <td>{{ forloop.counter }}</td>
+								        <td>{{key.rtype}}</td>
+								        <td>{{key.name}}</td>
+
+												{% if key.rtype == 'SOA' %}
+													<td>Serial : {{key.rdata.serial_no}}</td>
+												{% else %}
+													<td>{{key.rdata.address}}</td>
+												{% endif %}
+
+												<td>{{key.ttl}}</td>
+												{% if zones_id|regexmatch:'arpa' == False %}
+													<td>
+														<a class="edit btn-action action-edit" href="{{ request.path }}{{key.name}}/?type={{key.rtype}}" title="Edit">
+														<i class="glyphicon glyphicon-edit"></i>
+														</a>
+														<a class="remove btn-action action-del" href="{{ request.path }}/delete" title="Remove">
+														<i class="glyphicon glyphicon-remove"></i>
+														</a>
+													</td>
+												{% endif %}
+								    </tr>
+										{% endfor %}
+									</tbody>
 							</table>
 						</div>
 					</div>
@@ -282,7 +308,7 @@
 
 			$.getJSON("http://{{ request.get_host }}/api/zone/{{zones_id}}", function (jsonFromFile) {
 					$('#resourcerecord').bootstrapTable({
-						data: responFlatenedJson(jsonFromFile.resource_records)
+						// data: responFlatenedJson(jsonFromFile.resource_records)
 					})
 			});
 

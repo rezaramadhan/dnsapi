@@ -10,7 +10,10 @@ def get_allrecord(base_url_api, zone_id):
     return response.content
 
 def get_record(base_url_api, zone_id, record):
-    response = requests.get(base_url_api+'record/'+zone_id+'/'+record)
+    get_data = {
+      "rtype" : record['type']
+    }
+    response = requests.get(base_url_api+'record/'+zone_id+'/'+record['name'], data=json.dumps(get_data))
     return response.content
 
 def post_record(base_url_api,form_record,zones_id,f_hostname):
