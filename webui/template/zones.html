@@ -40,7 +40,7 @@
 								{% endif %}
 								<div class="panel-body">
 									<!-- Zone Items -->
-									{% for zones_id in zones_list %}
+									{% for zones_id, slave_id in slave_list.items %}
 									<div class="panel panel-teal panel-widget border-rounded">
 										<div class="row no-padding">
 											<div class="col-sm-3 col-lg-2 widget-left">
@@ -55,7 +55,23 @@
 											</div>
 										</div>
 									</div>
-									{% endfor %}
+                  {% for slave, status in slave_id.items %}
+                  <div class="panel panel-teal panel-widget border-rounded">
+										<div class="row no-padding">
+											<div class="col-sm-3 col-lg-2 widget-left">
+												<svg class="glyph stroked app-window"><use xlink:href="#stroked-app-window"></use></svg>
+											</div>
+											<div class="col-sm-6 col-lg-7 widget-right">
+												<div class="large">{{slave}}</div>
+												<div class="text-muted">Slave Zone of {{zones_id}}</div>
+											</div>
+											<div class="col-sm-3 col-lg-3 widget-right">
+												<div class="medium">STATUS: {{status}}</div>
+											</div>
+										</div>
+									</div>
+                  {% endfor %}
+                {% endfor %}
 								</div>
 							</div>
 						</div>

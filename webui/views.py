@@ -68,8 +68,8 @@ def zones(request, network_id):
             dnszone = DNSZone()
             dnszone.read_from_file(FILE_LOCATION[zone])
             soa_record = dnszone.find_record('@', None, 'SOA', None)
-            soa_serial = soa_record.rdata.serial_no
-
+            soa_serial = int(soa_record.rdata.serial_no)
+            print "SOA_SERIAL: " + str(soa_serial)
             for slave in slave_list[zone]:
                 if slave != '':
                     log_filename = LOG_DIR[slave].replace(REMOTE_MNT_DIR, LOCAL_MNT_DIR[slave], 1)
@@ -78,10 +78,13 @@ def zones(request, network_id):
                         lines = f.read()
                         search_str = 'zone ' + zone + '/IN: sending notifies (serial '
                         serial = int(lines.rsplit(search_str,1)[1].split(')')[0])
+                        print "SLAVE SERIAL: " + str(serial)
                     if serial == soa_serial:
-                        slave_list[zone][slave] = 'uptodate'
+                        slave_list[zone][slave] = 'up-to-date'
                     else:
                         slave_list[zone][slave] = 'outdated'
+
+    print slave_list
     # Set Message Notification
     if  request.method == 'GET' and 'status' in request.GET:
         message_notif=get_message_notif(request.GET['status'])
