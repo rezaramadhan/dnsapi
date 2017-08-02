@@ -229,13 +229,16 @@ class RecordView(View):
         """
         try:
             payload = json.loads(request.body.decode('utf-8'))
-
+            rtype = payload.get("rtype")
+            rclass = None
+            rdata = None
+            
             if not (zone_origin in FILE_LOCATION):
                 raise ZoneError('Invalid Zone: ' + zone_origin)
 
             zone = DNSZone()
             zone.read_from_file(FILE_LOCATION[zone_origin])
-            record = zone.find_record(record_name)
+            record = zone.find_record(record_name, rclass, rtype, rdata)
 
             # delete old reverse record
             if (record.rtype == "A" or record.rtype == "MX"):
