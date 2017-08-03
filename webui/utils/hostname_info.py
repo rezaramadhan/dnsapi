@@ -7,3 +7,6 @@ def host_ip_address():
 
 def host_hostname():
     return socket.gethostname()
+
+def host_fqdn():
+    return socket.getfqdn()

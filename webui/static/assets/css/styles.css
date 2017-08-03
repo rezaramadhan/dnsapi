@@ -1153,6 +1153,7 @@ h1.page-header {
 .nav-head-info {
 	margin-top: 15px;
 	margin-bottom: 50px;
+	margin-left: 0px;
 }
 
 .sidebar ul.nav li.nav-head-info a:hover {
@@ -1160,16 +1161,16 @@ h1.page-header {
 }
 
 .nav-head-info .glyph {
-	height: 50px;
+	height: 55px;
 	width: 50px;
 }
 
 .nav-head-info a {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 600;
 }
 
 .nav-head-info span {
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 500;
 }
