@@ -170,7 +170,6 @@ def records_manage(request, network_id, zones_id, record_id):
         record['address']=''
         if  request.method == 'GET' and 'type' in request.GET:
             record['type']=request.GET['type']
-            print record['type']
         if  request.method == 'GET' and 'address' in request.GET:
             record['address']=request.GET['address']
 
@@ -206,6 +205,8 @@ def records_action(request, network_id, zones_id, record_id, action):
                 url_rvr = reverse('records_manage',args=[network_id,zones_id,record_id])
 
             request.session['message_notif'] = message_notif
+            if  request.method == 'GET' and 'type' in request.GET:
+                redirect(url_rvr+'?type='+request.GET['type'])
             return redirect(url_rvr)
         except BaseException as b_error :
             message_notif = get_message_notif('error','records_action edit : '+str(b_error))
