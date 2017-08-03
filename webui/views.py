@@ -40,7 +40,6 @@ def index(request):
     for server in ZONE_DICT:
             server_status[server] = check_active_port(server, 53)
 
-
     return render(request, 'index.html',{
                 'dashboard_count' : dashboard_count,
                 'server_status' : server_status,
@@ -205,7 +204,7 @@ def records_action(request, network_id, zones_id, record_id, action):
                 url_rvr = reverse('records_manage',args=[network_id,zones_id,record_id])
 
             request.session['message_notif'] = message_notif
-            if  request.method == 'GET' and 'type' in request.GET:
+            if  request.method == 'POST' and 'type' in request.GET:
                 redirect(url_rvr+'?type='+request.GET['type'])
             return redirect(url_rvr)
         except BaseException as b_error :

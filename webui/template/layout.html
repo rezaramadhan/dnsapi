@@ -40,6 +40,18 @@
 
 		<!-- ## Menu Sidebar -->
 		<ul class="nav menu">
+			<li class="nav-head-info" aria-label="Server Host Information">
+				<a>
+					<div class="col-md-3">
+						<svg class="glyph stroked desktop"><use xlink:href="#stroked-desktop"/></svg>
+					</div>
+					<div class="col-md-9" >
+						{{ host_name|truncatechars:17}}<br>
+						<span>{{host_ip}}</span>
+					</div>
+				</a>
+			</li>
+
 			<li role="presentation" class="divider"></li>
 			{% url 'index' as urlpath %}
 			<li {% if request.path == urlpath %}class="active"{% endif %}>

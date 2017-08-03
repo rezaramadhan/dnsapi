@@ -1148,3 +1148,28 @@ h1.page-header {
 .panel-heading em {
 	font-size: 22px;
 }
+
+/* Nav Head Info*/
+.nav-head-info {
+	margin-top: 15px;
+	margin-bottom: 50px;
+}
+
+.sidebar ul.nav li.nav-head-info a:hover {
+	background-color: #fff;
+}
+
+.nav-head-info .glyph {
+	height: 50px;
+	width: 50px;
+}
+
+.nav-head-info a {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.nav-head-info span {
+	font-size: 14px;
+	font-weight: 500;
+}
