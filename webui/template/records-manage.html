@@ -122,9 +122,49 @@
  	 									</div>
  										{% endif %}
 
+										{% if record_data.rtype == 'SOA' %}
+										<div class="form-group-in">
+											<label for="f_hostname">Hostname</label>
+											<input id="f_hostname"  class="form-control" value="{{record_data.name}}" placeholder="Enter Hostname (optional)" disabled>
+										</div>
+										<div class="form-group-in">
+											<label for="f_auth">Auth. Server </label>
+											<input id="f_auth" class="form-control" value="{{record_data.rdata.authoritative_server}}" placeholder="Enter Auth. Server" disabled>
+										</div>
+										<div class="form-group-in">
+											<label for="f_serial">Serial </label>
+											<input id="f_serial" class="form-control" value="{{record_data.rdata.serial_no}}" placeholder="Enter Nameserver" disabled>
+										</div>
+										<div class="form-group-in">
+											<label for="f_admin">Admin Email </label>
+											<input id="f_admin" class="form-control" value="{{record_data.rdata.admin_email}}" placeholder="Enter Admin Email" disabled>
+										</div>
+										<div class="form-group-in">
+ 	 										<label for="f_ttl">slv_retry</label>
+ 	 										<input id="f_ttl" class="form-control f_ttl" value="{{record_data.rdata.slv_retry}}" placeholder="None" disabled>
+ 	 									</div>
+										<div class="form-group-in">
+ 	 										<label for="f_ttl2">slv_refresh_period</label>
+ 	 										<input id="f_ttl2" class="form-control f_ttl" value="{{record_data.rdata.slv_refresh_period}}" placeholder="None" disabled>
+ 	 									</div>
+										<div class="form-group-in">
+ 	 										<label for="f_ttl3">slv_expire</label>
+ 	 										<input id="f_ttl3" class="form-control f_ttl" value="{{record_data.rdata.slv_expire}}" placeholder="None" disabled>
+ 	 									</div>
+										<div class="form-group-in">
+ 	 										<label for="f_ttl3">max_time_cache</label>
+ 	 										<input id="f_ttl3" class="form-control f_ttl" value="{{record_data.rdata.max_time_cache}}" placeholder="None" disabled>
+ 	 									</div>
+
+ 										{% endif %}
+
 										<input type="hidden" id="f_type" name="f_type" value="{{ record_data.rtype }}">
 
-									<button type="submit" class="btn btn-warning">EDIT RECORD</button>
+									{% if record_data.rtype != 'SOA' %}
+										<button type="submit" class="btn btn-warning">EDIT RECORD</button>
+									{% else %}
+										<button type="submit" class="btn btn-warning" disabled>EDIT DISABLED</button>
+									{% endif %}
 								</form>
 							</div>
 

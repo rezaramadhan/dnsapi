@@ -233,7 +233,7 @@
 							    </thead>
 									<tbody>
 										{% for key in records_data.resource_records %}
-										<tr {% if values != 'Active' %}class="danger"{% endif %}>
+										<tr {% if key.rtype == 'SOA' %}class="warning"{% endif %}>
 								        <td>{{ forloop.counter }}</td>
 								        <td>{{key.rtype}}</td>
 								        <td>{{key.name}}</td>

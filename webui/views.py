@@ -194,6 +194,7 @@ def records_action(request, network_id, zones_id, record_id, action):
     message_notif = {}
     url_rvr = reverse('records_manage',args=[network_id,zones_id,record_id])
 
+
     if action == 'edit':
         form = RecordForm(request.POST)
         try :
@@ -205,7 +206,7 @@ def records_action(request, network_id, zones_id, record_id, action):
 
             request.session['message_notif'] = message_notif
             if  request.method == 'POST' and 'type' in request.GET:
-                redirect(url_rvr+'?type='+request.GET['type'])
+                url_rvr=url_rvr+'?type='+request.GET['type']
             return redirect(url_rvr)
         except BaseException as b_error :
             message_notif = get_message_notif('error','records_action edit : '+str(b_error))
