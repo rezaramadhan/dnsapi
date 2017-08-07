@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from utils.zones_form import ZoneForm, RecordForm
 from utils.message_notif import get_message_notif
 from utils.api_service import *
-from utils.active_port import check_active_port
+from utils.hostname_info import check_active_port, host_byaddr
 from api.utils.config import FILE_LOCATION, ZONE_DICT, ZONE_SLAVES, LOG_DIR, REMOTE_MNT_DIR, LOCAL_MNT_DIR
 from api.utils.parser import DNSZone
 import json
@@ -38,7 +38,9 @@ def index(request):
 
     # "Check Active Port for each server."
     for server in ZONE_DICT:
-            server_status[server] = check_active_port(server, 53)
+            server_status[server] = {}
+            server_status[server]['port'] = check_active_port(server, 53)
+            server_status[server]['host'] = host_byaddr(server)
 
     return render(request, 'index.html',{
                 'dashboard_count' : dashboard_count,
@@ -235,4 +237,4 @@ def records_action(request, network_id, zones_id, record_id, action):
 
 # "Debug View"
 def debug(request):
-    return HttpResponse('bla')
+    return HttpResponse('Debug Something')

@@ -78,8 +78,9 @@
 						    <thead>
 						    <tr>
 						        <th class="col-md-1">Index</th>
-						        <th class="col-md-6">Server</th>
-						        <th class="col-md-4">Status (Port 53)</th>
+						        <th class="col-md-3">Server</th>
+										<th class="col-md-4">Hostname</th>
+						        <th class="col-md-3">Status (Port 53)</th>
 						    </tr>
 						    </thead>
 								<tbody>
@@ -87,19 +88,12 @@
 									<tr {% if values != 'Active' %}class="danger"{% endif %}>
 							        <td>{{ forloop.counter }}</td>
 							        <td>{{key}}</td>
-							        <td>{{values}}</td>
+											<td>{{values.host}}</td>
+							        <td>{{values.port}}</td>
 							    </tr>
 									{% endfor %}
 								</tbody>
 						</table>
-						<script>
-								function rowStyle(row, index) {
-										var classes = ['active', 'success', 'info', 'warning', 'danger'];
-												return {
-														classes: classes[4]
-												};
-								}
-						</script>
 					</div>
 				</div>
 			</div>
