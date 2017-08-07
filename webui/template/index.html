@@ -85,7 +85,7 @@
 						    </thead>
 								<tbody>
 									{% for key, values in server_status.items %}
-									<tr {% if values != 'Active' %}class="danger"{% endif %}>
+									<tr {% if values.port != 'Active' %}class="danger"{% endif %}>
 							        <td>{{ forloop.counter }}</td>
 							        <td>{{key}}</td>
 											<td>{{values.host}}</td>
