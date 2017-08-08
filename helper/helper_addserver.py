@@ -1,6 +1,8 @@
-from api.utils.config import SERVER_LIST,USER_DICT,LOCAL_MNT_DIR, FILE_LOCATION, ZONE_DICT, ZONE_SLAVES, LOG_DIR, REMOTE_MNT_DIR, LOCAL_MNT_DIR
+from api.utils.config import SERVER_LIST,USER_DICT,LOCAL_MNT_DIR
+from dnsapi.settings import BASE_DIR
 import sys
 import shutil
+import os
 
 
 
@@ -49,7 +51,7 @@ def append_data():
 
     # Open File to parse and config
     print "    Open file... \n    Add Data... "
-    file_path = '../api/utils/config.py'
+    file_path = os.path.join(BASE_DIR, "api/utils/config.py")
     shutil.copyfile(file_path,file_path+'.bak')
     with open(file_path+'.bak', 'r') as readfile, open(file_path, 'w') as outfile:
         for line in readfile:
