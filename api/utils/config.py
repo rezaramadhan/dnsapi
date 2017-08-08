@@ -9,16 +9,21 @@ logger = logging.getLogger(__name__)
 REMOTE_MNT_DIR = "/"
 DEFAULT_CONF_DIR = 'etc/'
 DEFAULT_CONF_FILENAME = DEFAULT_CONF_DIR + "named.conf"
-SERVER_LIST = ["10.0.2.31", "10.0.2.32"]
+
+# Keep the writing format of SERVER_LIST, USER_DICT, LOCAL_MNT_DIR (It's used by helper_viewserver)
+SERVER_LIST = [
+    "localhost",
+	"10.0.2.31"
+]
 
 USER_DICT = {
     SERVER_LIST[0]: "root",
-    SERVER_LIST[1]: "root"
+	SERVER_LIST[1]: "root"
 }
 
 LOCAL_MNT_DIR = {
-    SERVER_LIST[0]: "/mnt/dns-local-01/",
-    SERVER_LIST[1]: "/mnt/dns-local-02/"
+    SERVER_LIST[0]: "/mnt/dns-coba1/",
+	SERVER_LIST[1]: "/mnt/dns-local-02/"
 }
 
 SSH_PORT = 22
@@ -119,12 +124,6 @@ def find_server(zone_name):
 
 init_data()
 
-# FILE_LOCATION['gdn.lokal'] = '~/haha'
-
-# FILE_LOCATION['gdn.lokal'] = '/home/linux1-user/dnsapi/zone_gdn.lokal'
-# FILE_LOCATION['10.17.172.in-addr.arpa'] = '/home/linux1-user/dnsapi/ptr_gdn.lokal'
-# ZONE_DICT['10.0.2.11'].append('gdn.lokal')
-# ZONE_DICT['10.0.2.11'].append('10.17.172.in-addr.arpa')
 logger.debug('FILE_LOCATION: ' + str(FILE_LOCATION))
 logger.debug('ZONE_DICT: ' + str(ZONE_DICT))
 logger.debug("ZONE_DIR: " + str(ZONE_DIR))
