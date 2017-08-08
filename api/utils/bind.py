@@ -1,6 +1,6 @@
 """Bind related function."""
 from config import (FILE_LOCATION, LOCAL_MNT_DIR, DEFAULT_CONF_FILENAME,
-                    REMOTE_MNT_DIR, ZONE_DICT, USER_DICT, find_server)
+                    REMOTE_MNT_DIR, ZONE_DICT, USER_DICT,SSH_PORT, find_server)
 from shutil import copyfile
 from excpt import BindError
 import subprocess
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def remote_exec(remote_cmd, hostname):
     """Execute remote command on a certain hostname."""
-    return subprocess.Popen(["ssh", USER_DICT[hostname] + "@" + hostname,
+    return subprocess.Popen(["ssh","-p", SSH_PORT, USER_DICT[hostname] + "@" + hostname,
                              remote_cmd], stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
 
